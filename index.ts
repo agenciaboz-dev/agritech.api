@@ -51,7 +51,7 @@ try {
         handleSocket(socket)
     })
 
-    app.listen(port, () => {
-        console.log(`[server]: Server is running at http ${port}`)
+    server.listen(port, () => {
+        console.log(`[server]: Server is running at http://${port}`)
     })
 }

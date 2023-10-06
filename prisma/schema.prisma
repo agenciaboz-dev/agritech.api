@@ -15,8 +15,8 @@ model User{
     password        String  
     name            String      
     cpf             String
-    birth           DateTime    @db.Date
-    phone           String
+    birth           DateTime?   @db.Date
+    phone           String?
     image           String?     @db.Text
     image64         String?  
 

@@ -1,8 +1,9 @@
 import { Socket } from "socket.io"
 import { User } from "@prisma/client"
-import { getIoInstance } from "./socket"
+import { getIoInstance, handleSocket } from "./socket"
 import databaseHandler from "../databaseHandler"
 import { ClientBag } from "../definitions/client"
+import { LoginForm } from "../definitions/newUser"
 
 const prisma = databaseHandler
 
@@ -12,15 +13,29 @@ const logout = async (socket: Socket, clients: ClientBag, user: User) => {
     clients.remove(clients?.get(socket))
 }
 
-const newUser = async (socket: Socket, newUser: any) => {
-    let user = await prisma.user.new(newUser)
+const handleLogin = async (socket: Socket, data: LoginForm) => {
+    const user = await databaseHandler.user.login(data)
 
     if (user) {
-        socket.emit("user:new:success", user)
-        socket.broadcast.emit("user:new", user)
+        // Se o login for bem-sucedido, emitimos um evento "user:login:success" com os detalhes do usuário.
+        socket.emit("user:login:success", user)
     } else {
-        socket.emit("user:new:failed")
+        // Se o login falhar, emitimos um evento "user:login:failed" com uma mensagem de erro.
+        socket.emit("user:login:failed", { error: "Credenciais inválidas." })
     }
 }
 
-export default { logout, newUser }
+const newUser = async (socket: Socket, newUser: any) => {
+    console.log(newUser)
+    const user = await prisma.user.new(newUser)
+
+    if (user) {
+        socket.emit("user:signup:success", user)
+        socket.broadcast.emit("user:new", user)
+    } else {
+        socket.emit("user:signup:failed")
+    }
+}
+export default { logout, newUser, handleLogin }
+
+

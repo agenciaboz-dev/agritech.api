@@ -15,3 +15,8 @@ declare interface NewUser {
     employee?: Employee
     producer?: Producer
 }
+
+declare interface LoginForm {
+    login: string
+    password: string
+}

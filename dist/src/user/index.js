@@ -12,11 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
 const express_1 = __importDefault(require("express"));
-//import login from './src/login'
-exports.router = express_1.default.Router();
-exports.router.get("/", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    response.json({ test: true });
+const databaseHandler_1 = __importDefault(require("../databaseHandler"));
+const router = express_1.default.Router();
+const prisma = databaseHandler_1.default;
+router.get("/", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    response.json({ test: "success" });
 }));
-//router.use("/login", login)
+router.post("/login", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
+    const data = request.body;
+    const user = yield prisma.user.login(data);
+    if (user) {
+        response.json(Object.assign({}, user));
+    }
+}));
+exports.default = router;

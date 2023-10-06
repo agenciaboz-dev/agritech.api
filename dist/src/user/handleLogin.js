@@ -12,11 +12,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
-const express_1 = __importDefault(require("express"));
-//import login from './src/login'
-exports.router = express_1.default.Router();
-exports.router.get("/", (request, response) => __awaiter(void 0, void 0, void 0, function* () {
-    response.json({ test: true });
-}));
-//router.use("/login", login)
+exports.handleLogin = void 0;
+const socket_1 = require("../io/socket");
+const databaseHandler_1 = __importDefault(require("../databaseHandler"));
+const handleLogin = (socket) => {
+    const io = (0, socket_1.getIoInstance)();
+    socket.on("user:login", (data) => __awaiter(void 0, void 0, void 0, function* () {
+        const user = yield databaseHandler_1.default.user.login(data);
+        if (user) {
+            // Se o login for bem-sucedido, emitimos um evento "user:login:success" com os detalhes do usuário.
+            socket.emit("user:login:success", user);
+        }
+        else {
+            // Se o login falhar, emitimos um evento "user:login:failed" com uma mensagem de erro.
+            socket.emit("user:login:failed", { message: "Credenciais inválidas." });
+        }
+    }));
+};
+exports.handleLogin = handleLogin;

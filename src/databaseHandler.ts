@@ -12,6 +12,7 @@ import {
     Gallery,
     PrismaClient,
 } from "@prisma/client"
+import normalize from "./normalize"
 
 const prisma = new PrismaClient()
 
@@ -40,7 +41,7 @@ const user = {
                 OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
                 AND: { password: data.password },
             },
-            include: inclusions.user,
+            // include: inclusions.user,
         })
     },
 
@@ -51,40 +52,38 @@ const user = {
     },
 
     new: async (data: NewUser) => {
-        const birth = data.birth.split("/").reverse().join("/")
+        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
 
         const user = await prisma.user.create({
             data: {
-                birth: new Date(birth),
+                birth: birth,
                 cpf: data.cpf.replace(/\D/g, ""),
-                email: data.email,
+                email: normalize(data.email),
                 name: data.name,
-                password: data.username.toLowerCase(),
-                phone: data.phone.replace(/\D/g, ""),
-                username: data.username.toLowerCase(),
-                address: {
-                    create: data.address,
-                },
+                password: data.password,
+                phone: data.phone?.replace(/\D/g, ""),
+                username: normalize(data.username),
             },
-            include: inclusions.user,
         })
 
-        if (data.employee) {
-            await prisma.employee.create({
-                data: {
-                    ...data.employee,
-                    userid: user.id,
-                },
-            })
-        }
-        if (data.producer) {
-            await prisma.producer.create({
-                data: {
-                    ...data.producer,
-                    userid: user.id,
-                },
-            })
-        }
+        // const address = await prisma.address.create({ data: { ...data.address, userId: user.id } })
+
+        // if (data.employee) {
+        //     await prisma.employee.create({
+        //         data: {
+        //             ...data.employee,
+        //             userid: user.id,
+        //         },
+        //     })
+        // } else if (data.producer) {
+        //     await prisma.producer.create({
+        //         data: {
+        //             ...data.producer,
+        //             userid: user.id,
+        //         },
+        //     })
+        // }
+        // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
         return user
     },
 }
