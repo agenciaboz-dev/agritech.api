@@ -57,6 +57,5 @@ const handleSocket = (socket) => {
     socket.on("user:logout", (data) => user_1.default.logout(socket, clients, data));
     socket.on("user:signup", (newUser) => user_1.default.newUser(socket, newUser));
     socket.on("user:login", (data) => user_1.default.handleLogin(socket, data));
-    //handleLogin(socket)
 };
 exports.handleSocket = handleSocket;

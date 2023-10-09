@@ -54,6 +54,7 @@ const user = {
     new: async (data: NewUser) => {
         const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
 
+        console.log("Iniciando a criação do usuário...")
         const user = await prisma.user.create({
             data: {
                 birth: birth,
@@ -65,8 +66,21 @@ const user = {
                 username: normalize(data.username),
             },
         })
+        console.log({ address: data.address })
 
-        // const address = await prisma.address.create({ data: { ...data.address, userId: user.id } })
+        const address = await prisma.address.create({
+            data: {
+                street: data.address.street,
+                number: data.address.number,
+                city: data.address.city,
+                cep: data.address.cep,
+                complement: data.address.complement,
+                district: data.address.district,
+                uf: data.address.uf,
+                userId: user.id,
+            },
+        })
+        console.log("Usuário criado:", user)
 
         // if (data.employee) {
         //     await prisma.employee.create({
@@ -84,7 +98,7 @@ const user = {
         //     })
         // }
         // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
-        return user
+        return { user, address }
     },
 }
 

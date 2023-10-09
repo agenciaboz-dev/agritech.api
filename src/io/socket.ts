@@ -2,7 +2,6 @@ import { Server as SocketIoServer } from "socket.io"
 import { Server as HttpServer } from "http"
 import { Server as HttpsServer } from "https"
 import { Socket } from "socket.io"
-import { handleLogin } from "../user/handleLogin"
 import { User } from "@prisma/client"
 import user from "./user"
 import { Client, ClientBag } from "../definitions/client"
@@ -71,5 +70,4 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser))
 
     socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
-    //handleLogin(socket)
 }

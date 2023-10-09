@@ -49,18 +49,37 @@ const user = {
     new: (data) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined;
-        const user = yield prisma.user.create({
-            data: {
-                birth: birth,
-                cpf: data.cpf.replace(/\D/g, ""),
-                email: (0, normalize_1.default)(data.email),
-                name: data.name,
-                password: data.password,
-                phone: (_a = data.phone) === null || _a === void 0 ? void 0 : _a.replace(/\D/g, ""),
-                username: (0, normalize_1.default)(data.username),
-            },
-        });
-        // const address = await prisma.address.create({ data: { ...data.address, userId: user.id } })
+        try {
+            console.log("Iniciando a criação do usuário...");
+            const user = yield prisma.user.create({
+                data: {
+                    birth: birth,
+                    cpf: data.cpf.replace(/\D/g, ""),
+                    email: (0, normalize_1.default)(data.email),
+                    name: data.name,
+                    password: data.password,
+                    phone: (_a = data.phone) === null || _a === void 0 ? void 0 : _a.replace(/\D/g, ""),
+                    username: (0, normalize_1.default)(data.username),
+                },
+            });
+            console.log({ address: data.address });
+            const address = yield prisma.address.create({
+                data: {
+                    street: data.address.street,
+                    number: data.address.number,
+                    city: data.address.city,
+                    cep: data.address.cep,
+                    complement: data.address.complement,
+                    district: data.address.district,
+                    uf: data.address.uf,
+                    userId: user.id,
+                },
+            });
+            console.log("Usuário criado:", user);
+        }
+        catch (error) {
+            console.error("Erro ao criar usuário e endereço:", error);
+        }
         // if (data.employee) {
         //     await prisma.employee.create({
         //         data: {
@@ -77,7 +96,7 @@ const user = {
         //     })
         // }
         // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
-        return user;
+        return { user };
     }),
 };
 exports.default = { user };
