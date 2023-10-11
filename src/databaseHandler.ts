@@ -82,22 +82,31 @@ const user = {
         })
         console.log("Usuário criado:", user)
 
-        // if (data.employee) {
-        //     await prisma.employee.create({
-        //         data: {
-        //             ...data.employee,
-        //             userid: user.id,
-        //         },
-        //     })
-        // } else if (data.producer) {
-        //     await prisma.producer.create({
-        //         data: {
-        //             ...data.producer,
-        //             userid: user.id,
-        //         },
-        //     })
-        // }
-        // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
+        if (data.employee) {
+            await prisma.employee.create({
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: user.id,
+                },
+            })
+            console.log("Funcionário criado:", data.employee)
+        } else if (data.producer) {
+            await prisma.producer.create({
+                data: {
+                    cnpj: data.producer.cnpj,
+                    userid: user.id,
+                },
+            })
+            console.log("Funcionário criado:", data.producer)
+        }
+        //return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
         return { user, address }
     },
 }
