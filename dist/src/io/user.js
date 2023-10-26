@@ -33,13 +33,37 @@ const handleLogin = (socket, data) => __awaiter(void 0, void 0, void 0, function
 });
 const newUser = (socket, newUser) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(newUser);
-    const user = yield prisma.user.new(newUser);
-    if (user) {
-        socket.emit("user:signup:success", user);
-        socket.broadcast.emit("user:new", user);
+    try {
+        const user = yield prisma.user.new(newUser);
+        if (user) {
+            socket.emit("user:signup:success", user);
+            socket.broadcast.emit("user:new", user);
+        }
+        else {
+            socket.emit("user:signup:failed");
+        }
     }
-    else {
-        socket.emit("user:signup:failed");
+    catch (error) {
+        console.log(error);
+        if (error.code === "P2002" && error.meta) {
+            // Mapeamento de campos para mensagens de erro
+            const fieldErrorMap = {
+                username: "O nome de usuário já existe.",
+                email: "O e-mail já existe.",
+                cpf: "CPF já cadastrado.",
+                rg: "RG já cadastrado.",
+                cnpj: "CNPJ já cadastrado.",
+                voter_card: "Título de Eleitor já cadastrado.",
+                work_card: "Carteira de trabalho já existe.",
+            };
+            // Verifique qual campo causou o erro
+            for (const field in fieldErrorMap) {
+                if (error.meta.target.includes(field)) {
+                    socket.emit("user:signup:failed", { error: fieldErrorMap[field] });
+                    break; // Saia do loop assim que encontrar a correspondência
+                }
+            }
+        }
     }
 });
 exports.default = { logout, newUser, handleLogin };

@@ -76,7 +76,7 @@ const user = {
         });
         console.log("Usuário criado:", user);
         if (data.employee) {
-            yield prisma.employee.create({
+            const employee = yield prisma.employee.create({
                 data: {
                     gender: data.employee.gender,
                     relationship: data.employee.relationship,
@@ -87,6 +87,15 @@ const user = {
                     work_card: data.employee.work_card,
                     military: data.employee.military,
                     userid: user.id,
+                },
+            });
+            yield prisma.bank.create({
+                data: {
+                    account: data.employee.bank_data.account,
+                    agency: data.employee.bank_data.agency,
+                    name: data.employee.bank_data.name,
+                    type: data.employee.bank_data.type,
+                    employeeId: employee.id,
                 },
             });
             console.log("Funcionário criado:", data.employee);

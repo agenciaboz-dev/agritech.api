@@ -12,7 +12,22 @@ declare interface NewUser {
     image64: string
     address: Address
 
-    employee?: Employee
+    employee?: {
+        rg: string
+        gender: string
+        nationality: string
+        relationship: string
+        voter_card: string
+        work_card: string
+        military: string
+        residence: string
+        bank_data: {
+            account: string
+            type: string
+            name: string
+            agency: string
+        }
+    }
     producer?: Producer
 }
 
