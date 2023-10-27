@@ -70,4 +70,6 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser))
 
     socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
+
+    socket.on("user:find", (userId: number) => user.findUser(socket, userId))
 }

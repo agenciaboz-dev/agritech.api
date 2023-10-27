@@ -66,4 +66,23 @@ const newUser = (socket, newUser) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 });
-exports.default = { logout, newUser, handleLogin };
+const findUser = (socket, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`Received user:find event for user ID: ${userId}`);
+    try {
+        const userDetails = yield prisma.user.find.byId(userId);
+        console.log(userDetails);
+        if (userDetails) {
+            console.log(`Found user details for ID: ${userId}`);
+            socket.emit("user:find:success", userDetails);
+        }
+        else {
+            console.log(`No user found for ID: ${userId}`);
+            socket.emit("user:find:failed", { error: "Usuário não encontrado." });
+        }
+    }
+    catch (error) {
+        console.error(`Error fetching user for ID: ${userId}. Error: ${error}`);
+        socket.emit("user:find:error", { error: error });
+    }
+});
+exports.default = { logout, newUser, handleLogin, findUser };

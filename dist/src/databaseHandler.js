@@ -17,10 +17,14 @@ const normalize_1 = __importDefault(require("./normalize"));
 const prisma = new client_1.PrismaClient();
 const inclusions = {
     user: {
-        producer: {
-            include: { tillage: { include: { address: true, coordinate: true, gallery: true } } },
-        },
-        employee: { include: { bank: true, professional: true } },
+        producer: true,
+        employee: true,
+        // {
+        //     include: {
+        //         bank: true,
+        //         professional: true,
+        //     },
+        // },
         address: true,
     },
     employee: { bank: true, professional: true },
@@ -44,6 +48,7 @@ const user = {
     }),
     list: () => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findMany({ include: inclusions.user }); }),
     find: {
+        byId: (id) => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findFirst({ where: { id }, include: inclusions.user }); }),
         username: (username) => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findFirst({ where: { username }, include: inclusions.user }); }),
     },
     new: (data) => __awaiter(void 0, void 0, void 0, function* () {

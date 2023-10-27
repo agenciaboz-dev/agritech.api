@@ -18,12 +18,17 @@ const prisma = new PrismaClient()
 
 const inclusions = {
     user: {
-        producer: {
-            include: { tillage: { include: { address: true, coordinate: true, gallery: true } } },
-        },
-        employee: { include: { bank: true, professional: true } },
+        producer: true,
+        employee: true,
+        // {
+        //     include: {
+        //         bank: true,
+        //         professional: true,
+        //     },
+        // },
         address: true,
     },
+
     employee: { bank: true, professional: true },
     producer: { tillage: { include: { address: true, coordinate: true, gallery: true } } },
     tillage: { address: true, coordinate: true, gallery: true },
@@ -48,6 +53,7 @@ const user = {
     list: async () => await prisma.user.findMany({ include: inclusions.user }),
 
     find: {
+        byId: async (id: number) => await prisma.user.findFirst({ where: { id }, include: inclusions.user }),
         username: async (username: string) => await prisma.user.findFirst({ where: { username }, include: inclusions.user }),
     },
 
@@ -83,29 +89,29 @@ const user = {
         console.log("Usuário criado:", user)
 
         if (data.employee) {
-           const employee = await prisma.employee.create({
-               data: {
-                   gender: data.employee.gender,
-                   relationship: data.employee.relationship,
-                   nationality: data.employee.nationality,
-                   residence: data.employee.residence,
-                   rg: data.employee.rg,
-                   voter_card: data.employee.voter_card,
-                   work_card: data.employee.work_card,
-                   military: data.employee.military,
-                   userid: user.id,
-               },
-           })
+            const employee = await prisma.employee.create({
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: user.id,
+                },
+            })
 
-           await prisma.bank.create({
-               data: {
-                   account: data.employee.bank_data.account,
-                   agency: data.employee.bank_data.agency,
-                   name: data.employee.bank_data.name,
-                   type: data.employee.bank_data.type,
-                   employeeId: employee.id,
-               },
-           })
+            await prisma.bank.create({
+                data: {
+                    account: data.employee.bank_data.account,
+                    agency: data.employee.bank_data.agency,
+                    name: data.employee.bank_data.name,
+                    type: data.employee.bank_data.type,
+                    employeeId: employee.id,
+                },
+            })
             console.log("Funcionário criado:", data.employee)
         } else if (data.producer) {
             await prisma.producer.create({

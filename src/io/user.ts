@@ -62,6 +62,24 @@ const newUser = async (socket: Socket, newUser: any) => {
         }
     }
 }
-export default { logout, newUser, handleLogin }
+
+const findUser = async (socket: Socket, userId: number) => {
+    console.log(`Received user:find event for user ID: ${userId}`)
+    try {
+        const userDetails = await prisma.user.find.byId(userId)
+        console.log(userDetails)
+        if (userDetails) {
+            console.log(`Found user details for ID: ${userId}`)
+            socket.emit("user:find:success", userDetails)
+        } else {
+            console.log(`No user found for ID: ${userId}`)
+            socket.emit("user:find:failed", { error: "Usuário não encontrado." })
+        }
+    } catch (error) {
+        console.error(`Error fetching user for ID: ${userId}. Error: ${error}`)
+        socket.emit("user:find:error", { error: error })
+    }
+}
+export default { logout, newUser, handleLogin, findUser }
 
 
