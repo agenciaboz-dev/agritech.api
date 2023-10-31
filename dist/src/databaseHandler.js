@@ -18,16 +18,12 @@ const prisma = new client_1.PrismaClient();
 const inclusions = {
     user: {
         producer: true,
-        employee: true,
-        // {
-        //     include: {
-        //         bank: true,
-        //         professional: true,
-        //     },
-        // },
+        employee: {
+            include: { bank_data: true, professional: true },
+        },
         address: true,
     },
-    employee: { bank: true, professional: true },
+    employee: { bank_data: true, professional: true },
     producer: { tillage: { include: { address: true, coordinate: true, gallery: true } } },
     tillage: { address: true, coordinate: true, gallery: true },
     address: { use: true, tillage: true },
@@ -43,12 +39,26 @@ const user = {
                 OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
                 AND: { password: data.password },
             },
-            // include: inclusions.user,
+            //include: inclusions.user,
         });
     }),
     list: () => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findMany({ include: inclusions.user }); }),
     find: {
-        byId: (id) => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findFirst({ where: { id }, include: inclusions.user }); }),
+        byId: (id) => __awaiter(void 0, void 0, void 0, function* () {
+            return yield prisma.user.findFirst({
+                where: { id },
+                include: {
+                    producer: true,
+                    employee: {
+                        include: {
+                            bank_data: true,
+                            professional: true,
+                        },
+                    },
+                    address: true,
+                },
+            });
+        }),
         username: (username) => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findFirst({ where: { username }, include: inclusions.user }); }),
     },
     new: (data) => __awaiter(void 0, void 0, void 0, function* () {

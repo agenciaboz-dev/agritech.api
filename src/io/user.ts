@@ -63,7 +63,8 @@ const newUser = async (socket: Socket, newUser: any) => {
     }
 }
 
-const findUser = async (socket: Socket, userId: number) => {
+const findUser = async (socket: Socket, data: { userId: number }) => {
+    const userId = 111
     console.log(`Received user:find event for user ID: ${userId}`)
     try {
         const userDetails = await prisma.user.find.byId(userId)

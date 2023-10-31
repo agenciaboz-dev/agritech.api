@@ -23,7 +23,8 @@ model User{
     address         Address?    
 
     employee        Employee?
-    producer        Producer?   
+    producer        Producer?  
+     
 
 }
 

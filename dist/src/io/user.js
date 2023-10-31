@@ -66,7 +66,8 @@ const newUser = (socket, newUser) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 });
-const findUser = (socket, userId) => __awaiter(void 0, void 0, void 0, function* () {
+const findUser = (socket, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const userId = 111;
     console.log(`Received user:find event for user ID: ${userId}`);
     try {
         const userDetails = yield prisma.user.find.byId(userId);
