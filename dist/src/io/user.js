@@ -67,7 +67,7 @@ const newUser = (socket, newUser) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 const findUser = (socket, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const userId = 111;
+    const userId = data.userId;
     console.log(`Received user:find event for user ID: ${userId}`);
     try {
         const userDetails = yield prisma.user.find.byId(userId);
@@ -86,4 +86,21 @@ const findUser = (socket, data) => __awaiter(void 0, void 0, void 0, function* (
         socket.emit("user:find:error", { error: error });
     }
 });
-exports.default = { logout, newUser, handleLogin, findUser };
+const updateUser = (socket, updateUser) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Usuário atualizado:", updateUser);
+    try {
+        const user = yield prisma.user.update(updateUser);
+        if (user) {
+            socket.emit("user:update:success", user);
+            socket.broadcast.emit("user:update:success", user);
+        }
+        else {
+            socket.emit("user:update:failed");
+        }
+    }
+    catch (error) {
+        console.log(error);
+        socket.emit("user:update:failed", { error: error });
+    }
+});
+exports.default = { logout, newUser, handleLogin, findUser, updateUser };

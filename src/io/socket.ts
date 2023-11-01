@@ -71,5 +71,8 @@ export const handleSocket = (socket: Socket) => {
 
     socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
 
-    socket.on("user:find", (userId: number) => user.findUser(socket, userId))
+    socket.on("user:find", (userId: number) => user.findUser(socket, { userId }))
+
+    socket.on("user:update", (updateUser: User, userId: number) => user.updateUser(socket, updateUser))
+
 }

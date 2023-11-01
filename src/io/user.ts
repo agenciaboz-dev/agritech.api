@@ -3,7 +3,12 @@ import { User } from "@prisma/client"
 import { getIoInstance, handleSocket } from "./socket"
 import databaseHandler from "../databaseHandler"
 import { ClientBag } from "../definitions/client"
-import { LoginForm } from "../definitions/newUser"
+import { LoginForm, NewUser } from "../definitions/newUser"
+import { normalize } from "path"
+
+interface UpdateUser extends Omit<User, "id"> {
+    id: number
+}
 
 const prisma = databaseHandler
 
@@ -64,7 +69,7 @@ const newUser = async (socket: Socket, newUser: any) => {
 }
 
 const findUser = async (socket: Socket, data: { userId: number }) => {
-    const userId = 111
+    const userId = data.userId
     console.log(`Received user:find event for user ID: ${userId}`)
     try {
         const userDetails = await prisma.user.find.byId(userId)
@@ -81,6 +86,24 @@ const findUser = async (socket: Socket, data: { userId: number }) => {
         socket.emit("user:find:error", { error: error })
     }
 }
-export default { logout, newUser, handleLogin, findUser }
+
+const updateUser = async (socket: Socket, updateUser: any) => {
+    console.log("Usuário atualizado:", updateUser)
+
+    try {
+        const user = await prisma.user.update(updateUser)
+
+        if (user) {
+            socket.emit("user:update:success", user)
+            socket.broadcast.emit("user:update:success", user)
+        } else {
+            socket.emit("user:update:failed")
+        }
+    } catch (error) {
+        console.log(error)
+        socket.emit("user:update:failed", { error: error })
+    }
+}
+export default { logout, newUser, handleLogin, findUser, updateUser }
 
 

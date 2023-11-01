@@ -122,10 +122,125 @@ const user = {
                     userid: user.id,
                 },
             });
-            console.log("Funcionário criado:", data.producer);
+            console.log("Produtor criado:", data.producer);
         }
         //return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
         return { user, address };
     }),
+    update: (data) => __awaiter(void 0, void 0, void 0, function* () {
+        var _b;
+        const birth = data.birth.split("/").reverse().join("/");
+        const user = yield prisma.user.update({
+            where: { id: data.id },
+            data: {
+                birth: new Date(birth),
+                cpf: data.cpf.replace(/\D/g, ""),
+                email: (0, normalize_1.default)(data.email),
+                name: data.name,
+                password: data.password,
+                phone: (_b = data.phone) === null || _b === void 0 ? void 0 : _b.replace(/\D/g, ""),
+                username: (0, normalize_1.default)(data.username),
+            },
+        });
+        const address = yield prisma.address.update({
+            where: { userId: data.id },
+            data: {
+                street: data.address.street,
+                number: data.address.number,
+                city: data.address.city,
+                cep: data.address.cep,
+                complement: data.address.complement,
+                district: data.address.district,
+                uf: data.address.uf,
+                userId: user.id,
+            },
+        });
+        console.log("addreess update: ", data.address);
+        if (data.employee) {
+            const employee = yield prisma.employee.update({
+                where: { userid: data.id },
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: user.id,
+                },
+            });
+            yield prisma.bank.update({
+                where: { employeeId: employee.id },
+                data: {
+                    account: data.employee.bank_data.account,
+                    agency: data.employee.bank_data.agency,
+                    name: data.employee.bank_data.name,
+                    type: data.employee.bank_data.type,
+                    employeeId: employee.id,
+                },
+            });
+            console.log("Employee atualizado:", data.employee);
+        }
+        else if (data.producer) {
+            yield prisma.producer.update({
+                where: { userid: data.id },
+                data: {
+                    cnpj: data.producer.cnpj,
+                    userid: user.id,
+                },
+            });
+            console.log("Produtor atualizado:", data.producer);
+        }
+        return { user };
+    }),
 };
 exports.default = { user };
+// const jsonUpdate = {
+//     {
+//         "address": {
+//           "cep": "65.454-654",
+//           "city": "fdbnm",
+//           "complement": "dsfghjk",
+//           "district": "vbnnnmmn",
+//           "id": 85,
+//           "number": "6546",
+//           "street": "dfgccghbn",
+//           "uf": "AM",
+//           "userId": 111
+//         },
+//         "birth": "1945-10-15T00:00:00.000Z",
+//         "cpf": "854123",
+//         "email": "branco@gmail.com",
+//         "employee": {
+//           "bank_data": {
+//             "account": "145789",
+//             "agency": "89797",
+//             "employeeId": 27,
+//             "id": 8,
+//             "name": "Sanatnder",
+//             "type": "corrente"
+//           },
+//           "gender": "Feminino",
+//           "id": 27,
+//           "military": "",
+//           "nationality": "Braisleiro",
+//           "professional": null,
+//           "relationship": "uniao",
+//           "residence": "",
+//           "rg": "8465123",
+//           "userid": 111,
+//           "voter_card": "87456156445",
+//           "work_card": "454545465"
+//         },
+//         "id": 111,
+//         "image": null,
+//         "image64": null,
+//         "name": "Branco",
+//         "password": "123",
+//         "phone": "84564545564",
+//         "producer": null,
+//         "username": "white"
+//       }
+// }
