@@ -8,7 +8,10 @@ const socket_io_1 = require("socket.io");
 const user_1 = __importDefault(require("./user"));
 let io = null;
 const initializeIoServer = (server) => {
-    io = new socket_io_1.Server(server, { cors: { origin: "*" }, maxHttpBufferSize: 1e8 });
+    io = new socket_io_1.Server(server, {
+        cors: { origin: "*" },
+        maxHttpBufferSize: 1e8,
+    });
 };
 exports.initializeIoServer = initializeIoServer;
 const getIoInstance = () => {
@@ -34,7 +37,10 @@ const add = (client) => {
         remove(client);
     exports.clientList.push(client);
 };
-const update = (client, user) => (exports.clientList = [...exports.clientList.filter((item) => item.socket != client.socket), Object.assign(Object.assign({}, client), { user })]);
+const update = (client, user) => (exports.clientList = [
+    ...exports.clientList.filter((item) => item.socket != client.socket),
+    Object.assign(Object.assign({}, client), { user }),
+]);
 const handleSocket = (socket) => {
     const io = (0, exports.getIoInstance)();
     const clients = {
@@ -58,6 +64,7 @@ const handleSocket = (socket) => {
     socket.on("user:signup", (newUser) => user_1.default.newUser(socket, newUser));
     socket.on("user:login", (data) => user_1.default.handleLogin(socket, data));
     socket.on("user:find", (userId) => user_1.default.findUser(socket, { userId }));
+    socket.on("user:list", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:update", (updateUser, userId) => user_1.default.updateUser(socket, updateUser));
 };
 exports.handleSocket = handleSocket;

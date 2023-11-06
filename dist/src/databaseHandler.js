@@ -24,7 +24,9 @@ const inclusions = {
         address: true,
     },
     employee: { bank_data: true, professional: true },
-    producer: { tillage: { include: { address: true, coordinate: true, gallery: true } } },
+    producer: {
+        tillage: { include: { address: true, coordinate: true, gallery: true } },
+    },
     tillage: { address: true, coordinate: true, gallery: true },
     address: { use: true, tillage: true },
     bank: { employee: true },
@@ -36,7 +38,11 @@ const user = {
     login: (data) => __awaiter(void 0, void 0, void 0, function* () {
         return yield prisma.user.findFirst({
             where: {
-                OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
+                OR: [
+                    { email: data.login },
+                    { username: data.login },
+                    { cpf: data.login },
+                ],
                 AND: { password: data.password },
             },
             //include: inclusions.user,
@@ -59,11 +65,18 @@ const user = {
                 },
             });
         }),
-        username: (username) => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findFirst({ where: { username }, include: inclusions.user }); }),
+        username: (username) => __awaiter(void 0, void 0, void 0, function* () {
+            return yield prisma.user.findFirst({
+                where: { username },
+                include: inclusions.user,
+            });
+        }),
     },
     new: (data) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined;
+        const birth = data.birth
+            ? new Date(data.birth.split("/").reverse().join("/"))
+            : undefined;
         console.log("Iniciando a criação do usuário...");
         const user = yield prisma.user.create({
             data: {
@@ -74,6 +87,7 @@ const user = {
                 password: data.password,
                 phone: (_a = data.phone) === null || _a === void 0 ? void 0 : _a.replace(/\D/g, ""),
                 username: (0, normalize_1.default)(data.username),
+                isAdmin: data.isAdmin || false,
             },
         });
         console.log({ address: data.address });
@@ -140,6 +154,7 @@ const user = {
                 password: data.password,
                 phone: (_b = data.phone) === null || _b === void 0 ? void 0 : _b.replace(/\D/g, ""),
                 username: (0, normalize_1.default)(data.username),
+                isAdmin: data.isAdmin || false,
             },
         });
         const address = yield prisma.address.update({

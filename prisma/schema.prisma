@@ -19,11 +19,13 @@ model User{
     phone           String?
     image           String?     @db.Text
     image64         String?  
-
+    isAdmin         Boolean  @default(false)
+    
     address         Address?    
 
     employee        Employee?
-    producer        Producer?  
+    producer        Producer?
+
      
 
 }
