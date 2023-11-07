@@ -23,7 +23,7 @@ const logout = (socket, clients, user) => __awaiter(void 0, void 0, void 0, func
 const handleLogin = (socket, data) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield databaseHandler_1.default.user.login(data);
     if (user) {
-        if (user.isAdmin === true) {
+        if (user.isAdmin) {
             // If the user is an admin, perform admin-specific actions.
             // For example, you can emit an "admin:login:success" event.
             socket.emit("admin:login:success", user);
