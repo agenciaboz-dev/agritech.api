@@ -4,6 +4,7 @@ import { Server as HttpsServer } from "https";
 import { Socket } from "socket.io";
 import { User } from "@prisma/client";
 import user from "./user";
+import admin from "./admin";
 import { Client, ClientBag } from "../definitions/client";
 import client from "../definitions/client";
 import { LoginForm } from "../definitions/newUser";
@@ -87,4 +88,9 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:update", (updateUser: User, userId: number) =>
     user.updateUser(socket, updateUser)
   );
+
+  // TESTES, DEPOIS ISSO VAI SER MUDADO
+  socket.on("admin:signup", (userNew: User) => admin.userNew(socket, userNew));
+  socket.on("admin:reject", (id) => admin.reject(socket, id));
+  socket.on("admin:approve", (id) => admin.approve(socket, id));
 };

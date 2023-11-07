@@ -34,7 +34,41 @@ const inclusions = {
     coordinate: { tillage: true },
     gallery: {},
 };
+// username: "O nome de usuário já existe.",
+//         email: "O e-mail já existe.",
+//         cpf: "CPF já cadastrado.",
+//         rg: "RG já cadastrado.",
+//         cnpj: "CNPJ já cadastrado.",
+//         voter_card: "Título de Eleitor já cadastrado.",
+//         work_card: "Carteira de trabalho já existe.",
 const user = {
+    approve: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield prisma.user.update({
+            where: { id },
+            data: {
+                approved: true,
+                rejected: null,
+            },
+        });
+    }),
+    reject: (id) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield prisma.user.update({
+            where: { id },
+            data: {
+                approved: false,
+                rejected: "Rejection Reason", // Set rejection reason
+            },
+        });
+    }),
+    exists: (data) => __awaiter(void 0, void 0, void 0, function* () {
+        return yield prisma.user.findUnique({
+            where: {
+                username: data.username,
+                email: data.email,
+                cpf: data.cpf,
+            },
+        });
+    }),
     login: (data) => __awaiter(void 0, void 0, void 0, function* () {
         return yield prisma.user.findFirst({
             where: {

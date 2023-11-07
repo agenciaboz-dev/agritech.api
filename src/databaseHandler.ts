@@ -36,8 +36,45 @@ const inclusions = {
   coordinate: { tillage: true },
   gallery: {},
 };
+// username: "O nome de usuário já existe.",
+//         email: "O e-mail já existe.",
+//         cpf: "CPF já cadastrado.",
+//         rg: "RG já cadastrado.",
+//         cnpj: "CNPJ já cadastrado.",
+//         voter_card: "Título de Eleitor já cadastrado.",
+//         work_card: "Carteira de trabalho já existe.",
 
 const user = {
+  approve: async (id: number) => {
+    return await prisma.user.update({
+      where: { id },
+      data: {
+        approved: true,
+        rejected: null,
+      },
+    });
+  },
+
+  reject: async (id: number) => {
+    return await prisma.user.update({
+      where: { id },
+      data: {
+        approved: false,
+        rejected: "Rejection Reason", // Set rejection reason
+      },
+    });
+  },
+
+  exists: async (data: NewUser) => {
+    return await prisma.user.findUnique({
+      where: {
+        username: data.username,
+        email: data.email,
+        cpf: data.cpf,
+      },
+    });
+  },
+
   login: async (data: { login: string; password: string }) => {
     return await prisma.user.findFirst({
       where: {
@@ -155,8 +192,7 @@ const user = {
 
     const user = await prisma.user.update({
       where: { id: data.id },
-        data: {
-          
+      data: {
         birth: new Date(birth),
         cpf: data.cpf.replace(/\D/g, ""),
         email: normalize(data.email),

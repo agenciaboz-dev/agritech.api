@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleSocket = exports.clientList = exports.getIoInstance = exports.initializeIoServer = void 0;
 const socket_io_1 = require("socket.io");
 const user_1 = __importDefault(require("./user"));
+const admin_1 = __importDefault(require("./admin"));
 let io = null;
 const initializeIoServer = (server) => {
     io = new socket_io_1.Server(server, {
@@ -66,5 +67,9 @@ const handleSocket = (socket) => {
     socket.on("user:find", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:list", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:update", (updateUser, userId) => user_1.default.updateUser(socket, updateUser));
+    // TESTES, DEPOIS ISSO VAI SER MUDADO
+    socket.on("admin:signup", (userNew) => admin_1.default.userNew(socket, userNew));
+    socket.on("admin:reject", (id) => admin_1.default.reject(socket, id));
+    socket.on("admin:approve", (id) => admin_1.default.approve(socket, id));
 };
 exports.handleSocket = handleSocket;
