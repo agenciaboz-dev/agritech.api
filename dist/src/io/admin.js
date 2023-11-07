@@ -21,15 +21,15 @@ const userNew = (socket, userNew // Change 'any' to 'NewUser' to ensure type saf
         const existingUser = yield prisma.user.exists(userNew);
         if (existingUser) {
             // User with the same data already exists
-            socket.emit("application:fields:failed", {
-                error: "User with the same data already exists",
+            socket.emit("application:status:failed", {
+                error: "Conflicting User Data",
             });
         }
         else {
             // No user with the same data found, proceed with user creation
             const pendingUser = yield prisma.user.new(userNew);
             // Emit success event
-            socket.emit("user:application:inReview", pendingUser);
+            socket.emit("application:status:review", pendingUser);
         }
     }
     catch (error) {
@@ -48,7 +48,7 @@ const userNew = (socket, userNew // Change 'any' to 'NewUser' to ensure type saf
             // Check which field caused the error
             for (const field in fieldErrorMap) {
                 if (error.meta.target.includes(field)) {
-                    socket.emit("application:fields:failed", {
+                    socket.emit("application:status:failed", {
                         error: fieldErrorMap[field],
                     });
                     break;
@@ -61,11 +61,11 @@ const approve = (socket, id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield prisma.user.approve(id);
         if (user) {
-            socket.emit("user:application:approved", user);
+            socket.emit("application:status:approved", user);
         }
         else {
-            socket.emit("user:aproval:error", {
-                error: "Erro Approved",
+            socket.emit("application:aproval:error", {
+                error: "Approval Error",
             });
         }
         // Notify the user that their application is approved
@@ -78,10 +78,10 @@ const reject = (socket, id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield prisma.user.reject(id);
         if (user) {
-            socket.emit("user:application:rejected", user);
+            socket.emit("application:status:rejected", user);
         }
         else {
-            socket.emit("user:rejection:error", {
+            socket.emit("application:rejection:error", {
                 error: "Erro Rejected",
             });
         }
