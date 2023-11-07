@@ -155,7 +155,8 @@ const user = {
 
     const user = await prisma.user.update({
       where: { id: data.id },
-      data: {
+        data: {
+          
         birth: new Date(birth),
         cpf: data.cpf.replace(/\D/g, ""),
         email: normalize(data.email),
