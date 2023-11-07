@@ -23,14 +23,9 @@ const handleLogin = async (socket: Socket, data: LoginForm) => {
   const user = await databaseHandler.user.login(data);
 
   if (user) {
-    if (user.isAdmin) {
-        // If the user is an admin, perform admin-specific actions.
-        // For example, you can emit an "admin:login:success" event.
-        socket.emit("admin:login:success", user)
-    } else {
-        // If the user is not an admin, emit a "user:login:success" event with user details.
+   
         socket.emit("user:login:success", user)
-    }
+    
   } else {
     // If the login fails, emit a "user:login:failed" event with an error message.
     socket.emit("user:login:failed", { error: "Credenciais inválidas." });
