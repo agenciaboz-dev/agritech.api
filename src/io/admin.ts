@@ -18,7 +18,7 @@ const userNew = async (
     if (existingUser) {
       // User with the same data already exists
       socket.emit("application:status:failed", {
-        error: "Conflicting User Data",
+        error: "Usuário já está aprovado",
       });
     } else {
       // No user with the same data found, proceed with user creation

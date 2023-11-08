@@ -22,7 +22,7 @@ const userNew = (socket, userNew // Change 'any' to 'NewUser' to ensure type saf
         if (existingUser) {
             // User with the same data already exists
             socket.emit("application:status:failed", {
-                error: "Conflicting User Data",
+                error: "Usuário já está aprovado",
             });
         }
         else {
