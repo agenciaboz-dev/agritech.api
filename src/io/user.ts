@@ -81,21 +81,18 @@ const listPendingApproval = async (socket: Socket) => {
 };
 
 const findUser = async (socket: Socket, data: { userId: number }) => {
-  const userId = data.userId;
-  console.log(`Received user:find event for user ID: ${userId}`);
+  const userId = data.userId
   try {
-    const userDetails = await prisma.user.find.byId(userId);
-    console.log(userDetails);
-    if (userDetails) {
-      console.log(`Found user details for ID: ${userId}`);
-      socket.emit("user:find:success", userDetails);
-    } else {
-      console.log(`No user found for ID: ${userId}`);
-      socket.emit("user:find:failed", { error: "Usuário não encontrado." });
-    }
+      const userDetails = await prisma.user.find.byId(userId)
+      console.log(userDetails)
+      if (userDetails) {
+          socket.emit("user:find:success", userDetails)
+      } else {
+          socket.emit("user:find:failed", { error: "Usuário não encontrado." })
+      }
   } catch (error) {
-    console.error(`Error fetching user for ID: ${userId}. Error: ${error}`);
-    socket.emit("user:find:error", { error: error });
+      console.error(`Error fetching user for ID: ${userId}. Error: ${error}`)
+      socket.emit("user:find:error", { error: error })
   }
 };
 
