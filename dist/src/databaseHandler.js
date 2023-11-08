@@ -72,17 +72,13 @@ const user = {
     login: (data) => __awaiter(void 0, void 0, void 0, function* () {
         return yield prisma.user.findFirst({
             where: {
-                OR: [
-                    { email: data.login },
-                    { username: data.login },
-                    { cpf: data.login },
-                ],
+                OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
                 AND: { password: data.password },
             },
             //include: inclusions.user,
         });
     }),
-    list: () => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findMany({ include: inclusions.user }); }),
+    list: () => __awaiter(void 0, void 0, void 0, function* () { return yield prisma.user.findMany({ where: { approved: false }, include: inclusions.user }); }),
     find: {
         byId: (id) => __awaiter(void 0, void 0, void 0, function* () {
             return yield prisma.user.findFirst({
@@ -108,9 +104,7 @@ const user = {
     },
     new: (data) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
-        const birth = data.birth
-            ? new Date(data.birth.split("/").reverse().join("/"))
-            : undefined;
+        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined;
         console.log("Iniciando a criação do usuário...");
         const user = yield prisma.user.create({
             data: {
