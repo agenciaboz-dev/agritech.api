@@ -23,9 +23,7 @@ const handleLogin = async (socket: Socket, data: LoginForm) => {
   const user = await databaseHandler.user.login(data);
 
   if (user) {
-    
-      socket.emit("user:login:success", user)
-    
+    socket.emit("user:login:success", user);
   } else {
     // If the login fails, emit a "user:login:failed" event with an error message.
     socket.emit("user:login:failed", { error: "Credenciais inválidas." });
@@ -69,6 +67,19 @@ const newUser = async (socket: Socket, newUser: any) => {
   }
 };
 
+const listPendingApproval = async (socket: Socket) => {
+  console.log("List of users pending approval");
+  try {
+    const user = await prisma.user.list();
+    if (user) {
+      socket.emit("user:pendingApprovalList:success", user);
+    }
+  } catch (error) {
+    console.error(`Error fetching users pending admin approval`);
+    socket.emit("user:pendingApprovalList:error", { error });
+  }
+};
+
 const findUser = async (socket: Socket, data: { userId: number }) => {
   const userId = data.userId;
   console.log(`Received user:find event for user ID: ${userId}`);
@@ -106,12 +117,12 @@ const updateUser = async (socket: Socket, updateUser: any) => {
   }
 };
 
-
 export default {
   logout,
   newUser,
   handleLogin,
   findUser,
   updateUser,
+  listPendingApproval,
   // listUser,
 };

@@ -67,6 +67,7 @@ const handleSocket = (socket) => {
     socket.on("user:find", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:list", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:update", (updateUser, userId) => user_1.default.updateUser(socket, updateUser));
+    socket.on("user:pendingApproval", () => user_1.default.listPendingApproval(socket));
     // TESTES, DEPOIS ISSO VAI SER MUDADO
     socket.on("admin:signup", (userNew) => admin_1.default.userNew(socket, userNew));
     socket.on("admin:reject", (id) => admin_1.default.reject(socket, id));

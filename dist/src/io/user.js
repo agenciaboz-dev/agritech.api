@@ -65,6 +65,19 @@ const newUser = (socket, newUser) => __awaiter(void 0, void 0, void 0, function*
         }
     }
 });
+const listPendingApproval = (socket) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("List of users pending approval");
+    try {
+        const user = yield prisma.user.list();
+        if (user) {
+            socket.emit("user:pendingApprovalList:success", user);
+        }
+    }
+    catch (error) {
+        console.error(`Error fetching users pending admin approval`);
+        socket.emit("user:pendingApprovalList:error", { error });
+    }
+});
 const findUser = (socket, data) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = data.userId;
     console.log(`Received user:find event for user ID: ${userId}`);
@@ -108,5 +121,6 @@ exports.default = {
     handleLogin,
     findUser,
     updateUser,
+    listPendingApproval,
     // listUser,
 };
