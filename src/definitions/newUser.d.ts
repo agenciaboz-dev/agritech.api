@@ -12,6 +12,8 @@ declare interface NewUser {
   image64: string;
   address: Address;
   isAdmin: boolean;
+  approved: boolean;
+    rejected: string;
 
   employee?: {
     rg: string;
@@ -36,3 +38,4 @@ declare interface LoginForm {
   login: string;
   password: string;
 }
+

@@ -116,6 +116,8 @@ const user = {
                 phone: (_a = data.phone) === null || _a === void 0 ? void 0 : _a.replace(/\D/g, ""),
                 username: (0, normalize_1.default)(data.username),
                 isAdmin: data.isAdmin || false,
+                approved: false,
+                rejected: null
             },
         });
         console.log({ address: data.address });
@@ -284,6 +286,9 @@ exports.default = { user };
 //         "password": "123",
 //         "phone": "84564545564",
 //         "producer": null,
-//         "username": "white"
+//         "username": "white",
+//         "isAdmin":false,
+//         "approved":false,
+//         "rejected": ""
 //       }
 // }

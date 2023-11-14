@@ -122,16 +122,13 @@ const listPendingApproval = (socket) => __awaiter(void 0, void 0, void 0, functi
 });
 const findUser = (socket, data) => __awaiter(void 0, void 0, void 0, function* () {
     const userId = data.userId;
-    console.log(`Received user:find event for user ID: ${userId}`);
     try {
         const userDetails = yield prisma.user.find.byId(userId);
         console.log(userDetails);
         if (userDetails) {
-            console.log(`Found user details for ID: ${userId}`);
             socket.emit("user:find:success", userDetails);
         }
         else {
-            console.log(`No user found for ID: ${userId}`);
             socket.emit("user:find:failed", { error: "Usuário não encontrado." });
         }
     }

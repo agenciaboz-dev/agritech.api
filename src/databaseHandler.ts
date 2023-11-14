@@ -125,6 +125,8 @@ const user = {
                 phone: data.phone?.replace(/\D/g, ""),
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
+                approved: false,
+                rejected: null
             },
         })
         console.log({ address: data.address })
@@ -300,7 +302,10 @@ export default { user };
 //         "password": "123",
 //         "phone": "84564545564",
 //         "producer": null,
-//         "username": "white"
+//         "username": "white",
+//         "isAdmin":false,
+//         "approved":false,
+//         "rejected": ""
 //       }
 
 // }
