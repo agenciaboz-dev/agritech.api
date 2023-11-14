@@ -30,40 +30,82 @@ const handleLogin = async (socket: Socket, data: LoginForm) => {
   }
 };
 
-const newUser = async (socket: Socket, newUser: any) => {
-  console.log(newUser);
-
+const newUser = async (
+  socket: Socket,
+  userNew: any // Change 'any' to 'NewUser' to ensure type safety
+) => {
   try {
-    const user = await prisma.user.new(newUser);
+    // Check if a user with the same data already exists
+    const existingUser = await prisma.user.exists(userNew);
 
-    if (user) {
-      socket.emit("user:signup:success", user);
-      socket.broadcast.emit("user:new", user);
+    if (existingUser) {
+      // User with the same data already exists
+      socket.emit("application:status:failed", {
+        error: "Usuário já está aprovado",
+      });
     } else {
-      socket.emit("user:signup:failed");
+      // No user with the same data found, proceed with user creation
+      const pendingUser = await prisma.user.new(userNew);
+
+      // Emit success event
+      socket.emit("application:status:review", pendingUser);
+      socket.broadcast.emit("admin:list:update", pendingUser);
     }
   } catch (error: any) {
     console.log(error);
     if (error.code === "P2002" && error.meta) {
-      // Mapeamento de campos para mensagens de erro
+      // Mapping field errors to error messages
       const fieldErrorMap: any = {
-        username: "O nome de usuário já existe.",
-        email: "O e-mail já existe.",
-        cpf: "CPF já cadastrado.",
-        rg: "RG já cadastrado.",
-        cnpj: "CNPJ já cadastrado.",
-        voter_card: "Título de Eleitor já cadastrado.",
-        work_card: "Carteira de trabalho já existe.",
+        username: "The username already exists.",
+        email: "The email already exists.",
+        cpf: "CPF already registered.",
+        rg: "RG already registered.",
+        cnpj: "CNPJ already registered.",
+        voter_card: "Voter card already registered.",
+        work_card: "Work card already exists.",
       };
 
-      // Verifique qual campo causou o erro
+      // Check which field caused the error
       for (const field in fieldErrorMap) {
         if (error.meta.target.includes(field)) {
-          socket.emit("user:signup:failed", { error: fieldErrorMap[field] });
-          break; // Saia do loop assim que encontrar a correspondência
+          socket.emit("application:status:failed", {
+            error: fieldErrorMap[field],
+          });
+          break;
         }
       }
     }
+  }
+};
+
+const approve = async (socket: Socket, id: number) => {
+  try {
+    const user = await prisma.user.approve(id);
+    if (user) {
+      socket.emit("application:status:approved", user);
+    } else {
+      socket.emit("application:aproval:error", {
+        error: "Approval Error",
+      });
+    }
+    // Notify the user that their application is approved
+  } catch (error: any) {
+    console.log(error);
+  }
+};
+
+const reject = async (socket: Socket, id: number) => {
+  try {
+    const user = await prisma.user.reject(id);
+    if (user) {
+      socket.emit("application:status:rejected", user);
+    } else {
+      socket.emit("application:rejection:error", {
+        error: "Erro Rejected",
+      });
+    }
+  } catch (error: any) {
+    console.log(error);
   }
 };
 
@@ -120,6 +162,8 @@ const updateUser = async (socket: Socket, updateUser: any) => {
 export default {
   logout,
   newUser,
+  reject,
+  approve,
   handleLogin,
   findUser,
   updateUser,

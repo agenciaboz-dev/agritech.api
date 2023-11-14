@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.handleSocket = exports.clientList = exports.getIoInstance = exports.initializeIoServer = void 0;
 const socket_io_1 = require("socket.io");
 const user_1 = __importDefault(require("./user"));
-const admin_1 = __importDefault(require("./admin"));
 let io = null;
 const initializeIoServer = (server) => {
     io = new socket_io_1.Server(server, {
@@ -63,14 +62,12 @@ const handleSocket = (socket) => {
     });
     socket.on("user:logout", (data) => user_1.default.logout(socket, clients, data));
     socket.on("user:signup", (newUser) => user_1.default.newUser(socket, newUser));
+    socket.on("user:reject", (id) => user_1.default.reject(socket, id));
+    socket.on("user:approve", (id) => user_1.default.approve(socket, id));
     socket.on("user:login", (data) => user_1.default.handleLogin(socket, data));
     socket.on("user:find", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:list", (userId) => user_1.default.findUser(socket, { userId }));
     socket.on("user:update", (updateUser, userId) => user_1.default.updateUser(socket, updateUser));
     socket.on("user:pendingApproval", () => user_1.default.listPendingApproval(socket));
-    // TESTES, DEPOIS ISSO VAI SER MUDADO
-    socket.on("admin:signup", (userNew) => admin_1.default.userNew(socket, userNew));
-    socket.on("admin:reject", (id) => admin_1.default.reject(socket, id));
-    socket.on("admin:approve", (id) => admin_1.default.approve(socket, id));
 };
 exports.handleSocket = handleSocket;
