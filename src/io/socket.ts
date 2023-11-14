@@ -92,7 +92,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:pendingApproval", () => user.listPendingApproval(socket));
 
   // TESTES, DEPOIS ISSO VAI SER MUDADO
-  socket.on("admin:signup", (userNew: User) => admin.userNew(socket, userNew));
+  //socket.on("admin:signup", (userNew: User) => admin.userNew(socket, userNew));
   socket.on("admin:reject", (id) => admin.reject(socket, id));
   socket.on("admin:approve", (id) => admin.approve(socket, id));
 };

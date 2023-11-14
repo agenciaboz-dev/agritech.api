@@ -32,13 +32,13 @@ const userNew = async (
     if (error.code === "P2002" && error.meta) {
       // Mapping field errors to error messages
       const fieldErrorMap: any = {
-        username: "The username already exists.",
-        email: "The email already exists.",
-        cpf: "CPF already registered.",
-        rg: "RG already registered.",
-        cnpj: "CNPJ already registered.",
-        voter_card: "Voter card already registered.",
-        work_card: "Work card already exists.",
+        username: "O nome de usuário já existe.",
+        email: "O e-mail já existe.",
+        cpf: "CPF já cadastrado.",
+        rg: "RG já cadastrado.",
+        cnpj: "CNPJ já cadastrado.",
+        voter_card: "Título de Eleitor já cadastrado.",
+        work_card: "Carteira de trabalho já existe.",
       };
 
       // Check which field caused the error
