@@ -1,41 +1,44 @@
-import { getIoInstance } from "./io/socket";
-import { NewUser } from "./definitions/newUser";
+import { getIoInstance } from "./io/socket"
+import { NewUser } from "./definitions/newUser"
 import {
-  User,
-  Employee,
-  Producer,
-  Address,
-  Bank,
-  Professional,
-  Tillage,
-  Coordinate,
-  Gallery,
-  PrismaClient,
-} from "@prisma/client";
-import normalize from "./normalize";
+    User,
+    Employee,
+    Producer,
+    Address,
+    Bank,
+    Professional,
+    Tillage,
+    Coordinate,
+    Gallery,
+    PrismaClient,
+} from "@prisma/client"
+import normalize from "./normalize"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const inclusions = {
-  user: {
-    producer: true,
-    employee: {
-      include: { bank_data: true, professional: true },
+    user: {
+        producer: true,
+        employee: {
+            include: {
+                bank_data: true,
+                professional: true,
+            },
+        },
+        address: true,
     },
-    address: true,
-  },
 
-  employee: { bank_data: true, professional: true },
-  producer: {
-    tillage: { include: { address: true, coordinate: true, gallery: true } },
-  },
-  tillage: { address: true, coordinate: true, gallery: true },
-  address: { use: true, tillage: true },
-  bank: { employee: true },
-  professional: { employee: true },
-  coordinate: { tillage: true },
-  gallery: {},
-};
+    employee: { bank_data: true, professional: true },
+    producer: {
+        tillage: { include: { address: true, coordinate: true, gallery: true } },
+    },
+    tillage: { address: true, coordinate: true, gallery: true },
+    address: { use: true, tillage: true },
+    bank: { employee: true },
+    professional: { employee: true },
+    coordinate: { tillage: true },
+    gallery: {},
+}
 // username: "O nome de usuário já existe.",
 //         email: "O e-mail já existe.",
 //         cpf: "CPF já cadastrado.",
@@ -81,7 +84,7 @@ const user = {
                 OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
                 AND: { password: data.password },
             },
-            //include: inclusions.user,
+            include: inclusions.user,
         })
     },
 
@@ -92,16 +95,7 @@ const user = {
             return await prisma.user.findFirst({
                 where: { id },
 
-                include: {
-                    producer: true,
-                    employee: {
-                        include: {
-                            bank_data: true,
-                            professional: true,
-                        },
-                    },
-                    address: true,
-                },
+                include: inclusions.user,
             })
         },
         username: async (username: string) =>
@@ -125,8 +119,8 @@ const user = {
                 phone: data.phone?.replace(/\D/g, ""),
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
-                approved: false,
-                rejected: null
+                approved: data.employee ? false : true,
+                rejected: null,
             },
         })
         console.log({ address: data.address })
@@ -137,7 +131,7 @@ const user = {
                 number: data.address.number,
                 city: data.address.city,
                 cep: data.address.cep,
-                complement: data.address.complement,
+                complement: data.address.complement || "",
                 district: data.address.district,
                 uf: data.address.uf,
                 userId: user.id,
@@ -160,15 +154,15 @@ const user = {
                 },
             })
 
-            await prisma.bank.create({
-                data: {
-                    account: data.employee.bank_data.account,
-                    agency: data.employee.bank_data.agency,
-                    name: data.employee.bank_data.name,
-                    type: data.employee.bank_data.type,
-                    employeeId: employee.id,
-                },
-            })
+            // await prisma.bank.create({
+            //     data: {
+            //         account: data.employee.bank_data.account,
+            //         agency: data.employee.bank_data.agency,
+            //         name: data.employee.bank_data.name,
+            //         type: data.employee.bank_data.type,
+            //         employeeId: employee.id,
+            //     },
+            // })
             console.log("Funcionário criado:", data.employee)
         } else if (data.producer) {
             await prisma.producer.create({
@@ -186,20 +180,6 @@ const user = {
     update: async (data: NewUser & { id: number }) => {
         const birth = data.birth.split("/").reverse().join("/")
 
-        const user = await prisma.user.update({
-            where: { id: data.id },
-            data: {
-                birth: new Date(birth),
-                cpf: data.cpf.replace(/\D/g, ""),
-                email: normalize(data.email),
-                name: data.name,
-                password: data.password,
-                phone: data.phone?.replace(/\D/g, ""),
-                username: normalize(data.username),
-                isAdmin: data.isAdmin || false,
-            },
-        })
-
         const address = await prisma.address.update({
             where: { userId: data.id },
             data: {
@@ -210,7 +190,7 @@ const user = {
                 complement: data.address.complement,
                 district: data.address.district,
                 uf: data.address.uf,
-                userId: user.id,
+                userId: data.id,
             },
         })
         console.log("addreess update: ", data.address)
@@ -227,7 +207,7 @@ const user = {
                     voter_card: data.employee.voter_card,
                     work_card: data.employee.work_card,
                     military: data.employee.military,
-                    userid: user.id,
+                    userid: data.id,
                 },
             })
             await prisma.bank.update({
@@ -247,65 +227,82 @@ const user = {
                 where: { userid: data.id },
                 data: {
                     cnpj: data.producer.cnpj,
-                    userid: user.id,
+                    userid: data.id,
                 },
             })
             console.log("Produtor atualizado:", data.producer)
         }
+
+        const user = await prisma.user.update({
+            where: { id: data.id },
+            data: {
+                birth: new Date(birth),
+                cpf: data.cpf.replace(/\D/g, ""),
+                email: normalize(data.email),
+                name: data.name,
+                password: data.password,
+                phone: data.phone?.replace(/\D/g, ""),
+                username: normalize(data.username),
+                isAdmin: data.isAdmin || false,
+                approved: data.isAdmin,
+            },
+            include: inclusions.user,
+        })
+
         return { user }
     },
 }
 
-export default { user };
+export default { user }
 
 // const jsonUpdate = {
-//     {
-//         "address": {
-//           "cep": "65.454-654",
-//           "city": "fdbnm",
-//           "complement": "dsfghjk",
-//           "district": "vbnnnmmn",
-//           "id": 85,
-//           "number": "6546",
-//           "street": "dfgccghbn",
-//           "uf": "AM",
-//           "userId": 111
-//         },
-//         "birth": "1945-10-15T00:00:00.000Z",
-//         "cpf": "854123",
-//         "email": "branco@gmail.com",
-//         "employee": {
-//           "bank_data": {
-//             "account": "145789",
-//             "agency": "89797",
-//             "employeeId": 27,
-//             "id": 8,
-//             "name": "Sanatnder",
-//             "type": "corrente"
-//           },
-//           "gender": "Feminino",
-//           "id": 27,
-//           "military": "",
-//           "nationality": "Braisleiro",
-//           "professional": null,
-//           "relationship": "uniao",
-//           "residence": "",
-//           "rg": "8465123",
-//           "userid": 111,
-//           "voter_card": "87456156445",
-//           "work_card": "454545465"
-//         },
-//         "id": 111,
-//         "image": null,
-//         "image64": null,
-//         "name": "Branco",
-//         "password": "123",
-//         "phone": "84564545564",
-//         "producer": null,
-//         "username": "white",
-//         "isAdmin":false,
-//         "approved":false,
-//         "rejected": ""
-//       }
+// {
+//     "address": {
+//       "cep": "65.454-654",
+//       "city": "fdbnm",
+//       "complement": "dsfghjk",
+//       "district": "vbnnnmmn",
+//       "id": 85,
+//       "number": "6546",
+//       "street": "dfgccghbn",
+//       "uf": "AM",
+//       "userId": 111
+//     },
+//     "birth": "1945-10-15T00:00:00.000Z",
+//     "cpf": "854123",
+//     "email": "branco@gmail.com",
+//     "employee": {
+//       "bank_data": {
+//         "account": "145789",
+//         "agency": "89797",
+//         "employeeId": 27,
+//         "id": 8,
+//         "name": "Sanatnder",
+//         "type": "corrente"
+//       },
+//       "gender": "Feminino",
+//       "id": 27,
+//       "military": "",
+//       "nationality": "Braisleiro",
+//       "professional": null,
+//       "relationship": "uniao",
+//       "residence": "",
+//       "rg": "8465123",
+//       "userid": 111,
+//       "voter_card": "87456156445",
+//       "work_card": "454545465"
+//     },
+//     "id": 111,
+//     "image": null,
+//     "image64": null,
+//     "name": "Branco",
+//     "password": "123",
+//     "phone": "84564545564",
+//     "producer": null,
+//     "username": "white",
+//     "isAdmin":false,
+//     "approved":false,
+//     "rejected": ""
+//   }
 
 // }

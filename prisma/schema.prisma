@@ -38,8 +38,8 @@ model Employee{
     gender          String
     relationship    String  
     nationality     String
-    voter_card      String      @unique     //number
-    work_card       String      @unique     //number
+    voter_card      String      //@unique     //number
+    work_card       String      //@unique     //number
     military        String?     @db.Text    //url
     residence       String      @db.Text    //url   
 
