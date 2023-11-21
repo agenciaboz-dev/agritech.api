@@ -42,6 +42,9 @@ const newUser = async (socket: Socket, userNew: any) => {
         } else {
             const pendingUser = await prisma.user.new(userNew)
 
+            // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
+            socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
+
             socket.emit("application:status:review", pendingUser)
             socket.broadcast.emit("admin:list:update", pendingUser)
         }
