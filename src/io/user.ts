@@ -46,7 +46,7 @@ const newUser = async (socket: Socket, userNew: any) => {
             socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
 
             socket.emit("application:status:review", pendingUser)
-            socket.broadcast.emit("admin:list:update", pendingUser)
+            socket.broadcast.emit("admin:list:update", pendingUser.user) // coloquei .user aqui pra gambiarrar o broadcast
         }
     } catch (error: any) {
         console.log(error)
@@ -108,9 +108,9 @@ const reject = async (socket: Socket, id: number) => {
 const listPendingApproval = async (socket: Socket) => {
     console.log("List of users pending approval")
     try {
-        const user = await prisma.user.list()
-        if (user) {
-            socket.emit("user:pendingApprovalList:success", user)
+        const users = await prisma.user.pendingList()
+        if (users) {
+            socket.emit("user:pendingApprovalList:success", users)
         }
     } catch (error) {
         console.error(`Error fetching users pending admin approval`)
