@@ -88,7 +88,7 @@ const user = {
         })
     },
 
-    list: async () => await prisma.user.findMany({ where: { approved: false }, include: inclusions.user }),
+    pendingList: async () => await prisma.user.findMany({ where: { approved: false }, include: inclusions.user }),
 
     find: {
         byId: async (id: number) => {
