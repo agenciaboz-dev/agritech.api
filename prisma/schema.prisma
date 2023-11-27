@@ -14,7 +14,7 @@ model User{
     email           String      @unique
     password        String  
     name            String      
-    cpf             String
+    cpf             String      @unique
     birth           DateTime?   @db.Date
     phone           String?
     image           String?     @db.Text

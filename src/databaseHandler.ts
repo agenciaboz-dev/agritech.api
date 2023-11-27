@@ -119,7 +119,7 @@ const user = {
                 phone: data.phone?.replace(/\D/g, ""),
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
-                approved: false, // data.employee ? false : true, <<<<< gambiarrei
+                approved: data.approved, // <<<<< gambiarrei
                 rejected: null,
             },
         })
