@@ -106,6 +106,7 @@ const user = {
     },
 
     new: async (data: NewUser) => {
+        
         const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
 
         console.log("Iniciando a criação do usuário...")

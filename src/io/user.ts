@@ -36,7 +36,7 @@ const newUser = async (socket: Socket, userNew: any) => {
 
         if (existingUser) {
             if (existingUser)
-                socket.emit("application:status:failed", {
+                socket.emit("user:status:failed", {
                     error: "Usuário já está aprovado",
                 })
         } else {
@@ -45,26 +45,26 @@ const newUser = async (socket: Socket, userNew: any) => {
             // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
             socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
 
-            socket.emit("application:status:review", pendingUser)
+            socket.emit("user:status:review", pendingUser)
             socket.broadcast.emit("admin:list:update", pendingUser.user) // coloquei .user aqui pra gambiarrar o broadcast
         }
     } catch (error: any) {
-        console.log(error)
+        console.log("OLHA O GRANDE ERRO: ------------", error)
         if (error.code === "P2002" && error.meta) {
             // Mapping field errors to error messages
             const fieldErrorMap: any = {
-                username: "The username already exists.",
-                email: "The email already exists.",
-                cpf: "CPF already registered.",
-                rg: "RG already registered.",
-                cnpj: "CNPJ already registered.",
+                username: "O nome de usuário já existe.",
+                email: "Este e-mail já está cadastrado",
+                cpf: "CPF já cadastrado.",
+                rg: "RG já cadastrado.",
+                cnpj: "CNPJ já registrado.",
                 // voter_card: "Voter card already registered.",
                 // work_card: "Work card already exists.",
             }
 
             for (const field in fieldErrorMap) {
                 if (error.meta.target.includes(field)) {
-                    socket.emit("application:status:failed", {
+                    socket.emit("user:status:failed", {
                         error: fieldErrorMap[field],
                     })
                     break
