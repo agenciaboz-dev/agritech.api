@@ -119,7 +119,7 @@ const listPendingApproval = async (socket: Socket) => {
 }
 
 const listUsersApproved = async (socket: Socket) => {
-    console.log("Lista de aprovados")
+    // console.log("Lista de aprovados")
     try {
         const users = await prisma.user.approvedList()
         if (users) {
