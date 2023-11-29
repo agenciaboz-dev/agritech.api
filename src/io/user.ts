@@ -106,7 +106,7 @@ const reject = async (socket: Socket, id: number) => {
 }
 
 const listPendingApproval = async (socket: Socket) => {
-    console.log("List of users pending approval")
+    // console.log("List of users pending approval")
     try {
         const users = await prisma.user.pendingList()
         if (users) {
@@ -115,6 +115,19 @@ const listPendingApproval = async (socket: Socket) => {
     } catch (error) {
         console.error(`Error fetching users pending admin approval`)
         socket.emit("user:pendingApprovalList:error", { error })
+    }
+}
+
+const listUsersApproved = async (socket: Socket) => {
+    console.log("Lista de aprovados")
+    try {
+        const users = await prisma.user.approvedList()
+        if (users) {
+            socket.emit("users:list:success", users)
+        }
+    } catch (error) {
+        console.error("Erro para acessar lista de usuários")
+        socket.emit("users:list:error", { error })
     }
 }
 
@@ -160,6 +173,7 @@ export default {
     handleLogin,
     findUser,
     updateUser,
+    listUsersApproved,
     listPendingApproval,
     // istUser,
 }

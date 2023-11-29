@@ -89,6 +89,7 @@ const user = {
     },
 
     pendingList: async () => await prisma.user.findMany({ where: { approved: false }, include: inclusions.user }),
+    approvedList: async () => await prisma.user.findMany({ where: { approved: true }, include: inclusions.user }),
 
     find: {
         byId: async (id: number) => {
@@ -106,7 +107,6 @@ const user = {
     },
 
     new: async (data: NewUser) => {
-        
         const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
 
         console.log("Iniciando a criação do usuário...")
