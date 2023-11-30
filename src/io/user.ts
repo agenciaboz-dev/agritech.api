@@ -1,23 +1,14 @@
 import { Socket } from "socket.io";
 import { User, Employee } from "@prisma/client";
-import { getIoInstance, handleSocket } from "./socket";
 import databaseHandler from "../databaseHandler";
-import { ClientBag } from "../definitions/client";
 import { LoginForm, NewUser } from "../definitions/newUser";
-import { normalize } from "path";
+import { join } from "path";
 
 interface UpdateUser extends Omit<User, "id"> {
   id: number;
 }
 
 const prisma = databaseHandler;
-
-const logout = async (socket: Socket, clients: ClientBag, user: User) => {
-  const io = getIoInstance();
-
-  io.emit("user:disconnect", user);
-  clients.remove(clients?.get(socket));
-};
 
 const handleLogin = async (socket: Socket, data: LoginForm) => {
   const user = await databaseHandler.user.login(data);
@@ -30,24 +21,15 @@ const handleLogin = async (socket: Socket, data: LoginForm) => {
   }
 };
 
-const newUser = async (socket: Socket, userNew: any) => {
+const newUser = async (socket: Socket, data: any) => {
   try {
-    const existingUser = await prisma.user.exists(userNew);
+    const pendingUser = await databaseHandler.user.newUser(data);
 
-    if (existingUser) {
-      if (existingUser)
-        socket.emit("user:status:failed", {
-          error: "Usuário já está aprovado",
-        });
-    } else {
-      const pendingUser = await prisma.user.new(userNew);
+    // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
+    socket.emit("user:signup:success", pendingUser); // <<<<<<<<<<<<
 
-      // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
-      socket.emit("user:signup:success", pendingUser); // <<<<<<<<<<<<
-
-      socket.emit("user:status:review", pendingUser);
-      socket.broadcast.emit("admin:list:update", pendingUser.user); // coloquei .user aqui pra gambiarrar o broadcast
-    }
+    socket.emit("user:status:review", pendingUser);
+    socket.broadcast.emit("admin:list:update", pendingUser.user); // coloquei .user aqui pra gambiarrar o broadcast
   } catch (error: any) {
     console.log("OLHA O GRANDE ERRO: ------------", error);
     if (error.code === "P2002" && error.meta) {
@@ -76,7 +58,7 @@ const newUser = async (socket: Socket, userNew: any) => {
 
 const approve = async (socket: Socket, id: number) => {
   try {
-    const user = await prisma.user.approve(id);
+    const user = await databaseHandler.user.approve(id);
     if (user) {
       socket.emit("application:status:approved", user);
     } else {
@@ -92,7 +74,7 @@ const approve = async (socket: Socket, id: number) => {
 
 const reject = async (socket: Socket, id: number) => {
   try {
-    const user = await prisma.user.reject(id);
+    const user = await databaseHandler.user.reject(id);
     if (user) {
       socket.emit("application:status:rejected", user);
     } else {
@@ -108,7 +90,7 @@ const reject = async (socket: Socket, id: number) => {
 const listPendingApproval = async (socket: Socket) => {
   // console.log("List of users pending approval")
   try {
-    const users = await prisma.user.pendingList();
+    const users = await databaseHandler.user.pendingList();
     if (users) {
       socket.emit("user:pendingApprovalList:success", users);
     }
@@ -121,7 +103,7 @@ const listPendingApproval = async (socket: Socket) => {
 const listUsersApproved = async (socket: Socket) => {
   // console.log("Lista de aprovados")
   try {
-    const users = await prisma.user.approvedList();
+    const users = await databaseHandler.user.approvedList();
     if (users) {
       socket.emit("users:list:success", users);
     }
@@ -134,7 +116,7 @@ const listUsersApproved = async (socket: Socket) => {
 const findUser = async (socket: Socket, data: { userId: number }) => {
   const userId = data.userId;
   try {
-    const userDetails = await prisma.user.find.byId(userId);
+    const userDetails = await databaseHandler.user.findById(userId);
     console.log(userDetails);
     if (userDetails) {
       socket.emit("user:find:success", userDetails);
@@ -166,7 +148,6 @@ const updateUser = async (socket: Socket, updateUser: any) => {
 };
 
 export default {
-  logout,
   newUser,
   reject,
   approve,
@@ -175,5 +156,4 @@ export default {
   updateUser,
   listUsersApproved,
   listPendingApproval,
-  // istUser,
 };
