@@ -1,8 +1,11 @@
 <<<<<<< HEAD
 import { Socket } from "socket.io";
 import { User, Employee } from "@prisma/client";
+import { getIoInstance, handleSocket } from "./socket";
 import databaseHandler from "../databaseHandler";
+import { ClientBag } from "../definitions/client";
 import { LoginForm, NewUser } from "../definitions/newUser";
+<<<<<<< HEAD
 import { join } from "path";
 =======
 import { Socket } from "socket.io"
@@ -13,6 +16,9 @@ import { ClientBag } from "../definitions/client"
 import { LoginForm, NewUser } from "../definitions/newUser"
 import { normalize } from "path"
 >>>>>>> parent of 18b04b1 (refatoração databaseHandler)
+=======
+import { normalize } from "path";
+>>>>>>> parent of 1378fea (fixes to user lists)
 
 interface UpdateUser extends Omit<User, "id"> {
     id: number
@@ -20,6 +26,7 @@ interface UpdateUser extends Omit<User, "id"> {
 
 const prisma = databaseHandler
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 =======
 const logout = async (socket: Socket, clients: ClientBag, user: User) => {
@@ -30,6 +37,15 @@ const logout = async (socket: Socket, clients: ClientBag, user: User) => {
 }
 
 >>>>>>> parent of 18b04b1 (refatoração databaseHandler)
+=======
+const logout = async (socket: Socket, clients: ClientBag, user: User) => {
+  const io = getIoInstance();
+
+  io.emit("user:disconnect", user);
+  clients.remove(clients?.get(socket));
+};
+
+>>>>>>> parent of 1378fea (fixes to user lists)
 const handleLogin = async (socket: Socket, data: LoginForm) => {
     const user = await databaseHandler.user.login(data)
 
@@ -42,15 +58,28 @@ const handleLogin = async (socket: Socket, data: LoginForm) => {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 const newUser = async (socket: Socket, data: any) => {
+=======
+const newUser = async (socket: Socket, userNew: any) => {
+>>>>>>> parent of 1378fea (fixes to user lists)
   try {
-    const pendingUser = await databaseHandler.user.newUser(data);
+    const existingUser = await prisma.user.exists(userNew);
 
-    // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
-    socket.emit("user:signup:success", pendingUser); // <<<<<<<<<<<<
+    if (existingUser) {
+      if (existingUser)
+        socket.emit("user:status:failed", {
+          error: "Usuário já está aprovado",
+        });
+    } else {
+      const pendingUser = await prisma.user.new(userNew);
 
-    socket.emit("user:status:review", pendingUser);
-    socket.broadcast.emit("admin:list:update", pendingUser.user); // coloquei .user aqui pra gambiarrar o broadcast
+      // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
+      socket.emit("user:signup:success", pendingUser); // <<<<<<<<<<<<
+
+      socket.emit("user:status:review", pendingUser);
+      socket.broadcast.emit("admin:list:update", pendingUser.user); // coloquei .user aqui pra gambiarrar o broadcast
+    }
   } catch (error: any) {
     console.log("OLHA O GRANDE ERRO: ------------", error);
     if (error.code === "P2002" && error.meta) {
@@ -120,7 +149,7 @@ const newUser = async (socket: Socket, userNew: any) => {
 const approve = async (socket: Socket, id: number) => {
 <<<<<<< HEAD
   try {
-    const user = await databaseHandler.user.approve(id);
+    const user = await prisma.user.approve(id);
     if (user) {
       socket.emit("application:status:approved", user);
     } else {
@@ -147,7 +176,7 @@ const approve = async (socket: Socket, id: number) => {
 const reject = async (socket: Socket, id: number) => {
 <<<<<<< HEAD
   try {
-    const user = await databaseHandler.user.reject(id);
+    const user = await prisma.user.reject(id);
     if (user) {
       socket.emit("application:status:rejected", user);
     } else {
@@ -174,7 +203,7 @@ const listPendingApproval = async (socket: Socket) => {
 <<<<<<< HEAD
   // console.log("List of users pending approval")
   try {
-    const users = await databaseHandler.user.pendingList();
+    const users = await prisma.user.pendingList();
     if (users) {
       socket.emit("user:pendingApprovalList:success", users);
 =======
@@ -195,7 +224,7 @@ const listUsersApproved = async (socket: Socket) => {
 <<<<<<< HEAD
   // console.log("Lista de aprovados")
   try {
-    const users = await databaseHandler.user.approvedList();
+    const users = await prisma.user.approvedList();
     if (users) {
       socket.emit("users:list:success", users);
 =======
@@ -216,7 +245,7 @@ const findUser = async (socket: Socket, data: { userId: number }) => {
 <<<<<<< HEAD
   const userId = data.userId;
   try {
-    const userDetails = await databaseHandler.user.findById(userId);
+    const userDetails = await prisma.user.find.byId(userId);
     console.log(userDetails);
     if (userDetails) {
       socket.emit("user:find:success", userDetails);
@@ -259,6 +288,10 @@ const updateUser = async (socket: Socket, updateUser: any) => {
 
 export default {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  logout,
+>>>>>>> parent of 1378fea (fixes to user lists)
   newUser,
   reject,
   approve,
@@ -267,6 +300,7 @@ export default {
   updateUser,
   listUsersApproved,
   listPendingApproval,
+  // istUser,
 };
 =======
     logout,
