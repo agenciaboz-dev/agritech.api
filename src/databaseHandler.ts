@@ -1,44 +1,44 @@
-import { getIoInstance } from "./io/socket";
-import { NewUser } from "./definitions/newUser";
+import { getIoInstance } from "./io/socket"
+import { NewUser } from "./definitions/newUser"
 import {
-  User,
-  Employee,
-  Producer,
-  Address,
-  Bank,
-  Professional,
-  Tillage,
-  Coordinate,
-  Gallery,
-  PrismaClient,
-} from "@prisma/client";
-import normalize from "./normalize";
+    User,
+    Employee,
+    Producer,
+    Address,
+    Bank,
+    Professional,
+    Tillage,
+    Coordinate,
+    Gallery,
+    PrismaClient,
+} from "@prisma/client"
+import normalize from "./normalize"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const inclusions = {
-  user: {
-    producer: true,
-    employee: {
-      include: {
-        bank_data: true,
-        professional: true,
-      },
+    user: {
+        producer: true,
+        employee: {
+            include: {
+                bank_data: true,
+                professional: true,
+            },
+        },
+        address: true,
     },
-    address: true,
-  },
-  // test
-  employee: { bank_data: true, professional: true },
-  producer: {
-    tillage: { include: { address: true, coordinate: true, gallery: true } },
-  },
-  tillage: { address: true, coordinate: true, gallery: true },
-  address: { use: true, tillage: true },
-  bank: { employee: true },
-  professional: { employee: true },
-  coordinate: { tillage: true },
-  gallery: {},
-};
+    // test
+    employee: { bank_data: true, professional: true },
+    producer: {
+        tillage: { include: { address: true, coordinate: true, gallery: true } },
+    },
+    tillage: { address: true, coordinate: true, gallery: true },
+    address: { use: true, tillage: true },
+    bank: { employee: true },
+    professional: { employee: true },
+    coordinate: { tillage: true },
+    gallery: {},
+}
 // username: "O nome de usuário já existe.",
 //         email: "O e-mail já existe.",
 //         cpf: "CPF já cadastrado.",
@@ -48,227 +48,221 @@ const inclusions = {
 //         work_card: "Carteira de trabalho já existe.",
 
 const user = {
-  approve: async (id: number) => {
-    return await prisma.user.update({
-      where: { id },
-      data: {
-        approved: true,
-        rejected: null,
-      },
-    });
-  },
-
-  reject: async (id: number) => {
-    return await prisma.user.update({
-      where: { id },
-      data: {
-        approved: false,
-        rejected: "Rejection Reason", // Set rejection reason
-      },
-    });
-  },
-
-  exists: async (data: NewUser) => {
-    return await prisma.user.findUnique({
-      where: {
-        username: data.username,
-        email: data.email,
-        cpf: data.cpf,
-      },
-    });
-  },
-
-  login: async (data: { login: string; password: string }) => {
-    return await prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: data.login },
-          { username: data.login },
-          { cpf: data.login },
-        ],
-        AND: { password: data.password },
-      },
-      include: inclusions.user,
-    });
-  },
-
-  pendingList: async () =>
-    await prisma.user.findMany({
-      where: { approved: false },
-      include: inclusions.user,
-    }),
-  approvedList: async () =>
-    await prisma.user.findMany({
-      where: { approved: true },
-      include: inclusions.user,
-    }),
-
-  find: {
-    byId: async (id: number) => {
-      return await prisma.user.findFirst({
-        where: { id },
-
-        include: inclusions.user,
-      });
+    approve: async (id: number) => {
+        return await prisma.user.update({
+            where: { id },
+            data: {
+                approved: true,
+                rejected: null,
+            },
+        })
     },
-    username: async (username: string) =>
-      await prisma.user.findFirst({
-        where: { username },
-        include: inclusions.user,
-      }),
-  },
 
-  new: async (data: NewUser) => {
-    const birth = data.birth
-      ? new Date(data.birth.split("/").reverse().join("/"))
-      : undefined;
+    reject: async (id: number) => {
+        return await prisma.user.update({
+            where: { id },
+            data: {
+                approved: false,
+                rejected: "Rejection Reason", // Set rejection reason
+            },
+        })
+    },
 
-    console.log("Iniciando a criação do usuário...");
-    const user = await prisma.user.create({
-      data: {
-        birth: birth,
-        cpf: data.cpf.replace(/\D/g, ""),
-        email: normalize(data.email),
-        name: data.name,
-        password: data.password,
-        phone: data.phone?.replace(/\D/g, ""),
-        username: normalize(data.username),
-        isAdmin: data.isAdmin || false,
-        approved: data.approved, // <<<<< gambiarrei
-        rejected: null,
-      },
-    });
-    console.log({ address: data.address });
+    exists: async (data: NewUser) => {
+        return await prisma.user.findUnique({
+            where: {
+                username: data.username,
+                email: data.email,
+                cpf: data.cpf,
+            },
+        })
+    },
 
-    const address = await prisma.address.create({
-      data: {
-        street: data.address.street,
-        number: data.address.number,
-        city: data.address.city,
-        cep: data.address.cep,
-        complement: data.address.complement || "",
-        district: data.address.district,
-        uf: data.address.uf,
-        userId: user.id,
-      },
-    });
-    console.log("Usuário criado:", user);
+    login: async (data: { login: string; password: string }) => {
+        return await prisma.user.findFirst({
+            where: {
+                OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
+                AND: { password: data.password },
+            },
+            include: inclusions.user,
+        })
+    },
 
-    if (data.employee) {
-      const employee = await prisma.employee.create({
-        data: {
-          gender: data.employee.gender,
-          relationship: data.employee.relationship,
-          nationality: data.employee.nationality,
-          residence: data.employee.residence,
-          rg: data.employee.rg,
-          voter_card: data.employee.voter_card,
-          work_card: data.employee.work_card,
-          military: data.employee.military,
-          userid: user.id,
+    pendingList: async () =>
+        await prisma.user.findMany({
+            where: { approved: false },
+            include: inclusions.user,
+        }),
+    approvedList: async () =>
+        await prisma.user.findMany({
+            where: { approved: true },
+            include: inclusions.user,
+        }),
+
+    find: {
+        byId: async (id: number) => {
+            return await prisma.user.findFirst({
+                where: { id },
+
+                include: inclusions.user,
+            })
         },
-      });
+        username: async (username: string) =>
+            await prisma.user.findFirst({
+                where: { username },
+                include: inclusions.user,
+            }),
+    },
 
-      // await prisma.bank.create({
-      //     data: {
-      //         account: data.employee.bank_data.account,
-      //         agency: data.employee.bank_data.agency,
-      //         name: data.employee.bank_data.name,
-      //         type: data.employee.bank_data.type,
-      //         employeeId: employee.id,
-      //     },
-      // })
-      console.log("Funcionário criado:", data.employee);
-    } else if (data.producer) {
-      await prisma.producer.create({
-        data: {
-          cnpj: data.producer.cnpj,
-          userid: user.id,
-        },
-      });
-      console.log("Produtor criado:", data.producer);
-    }
-    //return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
-    return { user, address };
-  },
+    new: async (data: NewUser) => {
+        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
 
-  update: async (data: NewUser & { id: number }) => {
-    const birth = data.birth.split("/").reverse().join("/");
+        console.log("Iniciando a criação do usuário...")
+        const user = await prisma.user.create({
+            data: {
+                birth: birth,
+                cpf: data.cpf.replace(/\D/g, ""),
+                email: normalize(data.email),
+                name: data.name,
+                password: data.password,
+                phone: data.phone?.replace(/\D/g, ""),
+                username: normalize(data.username),
+                isAdmin: data.isAdmin || false,
+                approved: data.approved, // <<<<< gambiarrei
+                rejected: null,
+            },
+        })
+        console.log({ address: data.address })
 
-    const address = await prisma.address.update({
-      where: { userId: data.id },
-      data: {
-        street: data.address.street,
-        number: data.address.number,
-        city: data.address.city,
-        cep: data.address.cep,
-        complement: data.address.complement,
-        district: data.address.district,
-        uf: data.address.uf,
-        userId: data.id,
-      },
-    });
-    console.log("addreess update: ", data.address);
+        const address = await prisma.address.create({
+            data: {
+                street: data.address.street,
+                number: data.address.number,
+                city: data.address.city,
+                cep: data.address.cep,
+                complement: data.address.complement || "",
+                district: data.address.district,
+                uf: data.address.uf,
+                userId: user.id,
+            },
+        })
+        console.log("Usuário criado:", user)
 
-    if (data.employee) {
-      const employee = await prisma.employee.update({
-        where: { userid: data.id },
-        data: {
-          gender: data.employee.gender,
-          relationship: data.employee.relationship,
-          nationality: data.employee.nationality,
-          residence: data.employee.residence,
-          rg: data.employee.rg,
-          voter_card: data.employee.voter_card,
-          work_card: data.employee.work_card,
-          military: data.employee.military,
-          userid: data.id,
-        },
-      });
-      await prisma.bank.update({
-        where: { employeeId: employee.id },
-        data: {
-          account: data.employee.bank_data.account,
-          agency: data.employee.bank_data.agency,
-          name: data.employee.bank_data.name,
-          type: data.employee.bank_data.type,
-          employeeId: employee.id,
-        },
-      });
+        if (data.employee) {
+            const employee = await prisma.employee.create({
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: user.id,
+                },
+            })
 
-      console.log("Employee atualizado:", data.employee);
-    } else if (data.producer) {
-      await prisma.producer.update({
-        where: { userid: data.id },
-        data: {
-          cnpj: data.producer.cnpj,
-          userid: data.id,
-        },
-      });
-      console.log("Produtor atualizado:", data.producer);
-    }
+            // await prisma.bank.create({
+            //     data: {
+            //         account: data.employee.bank_data.account,
+            //         agency: data.employee.bank_data.agency,
+            //         name: data.employee.bank_data.name,
+            //         type: data.employee.bank_data.type,
+            //         employeeId: employee.id,
+            //     },
+            // })
+            console.log("Funcionário criado:", data.employee)
+        } else if (data.producer) {
+            await prisma.producer.create({
+                data: {
+                    cnpj: data.producer.cnpj,
+                    userid: user.id,
+                },
+            })
+            console.log("Produtor criado:", data.producer)
+        }
+        //return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
+        return { user, address }
+    },
 
-    const user = await prisma.user.update({
-      where: { id: data.id },
-      data: {
-        birth: new Date(birth),
-        cpf: data.cpf.replace(/\D/g, ""),
-        email: normalize(data.email),
-        name: data.name,
-        password: data.password,
-        phone: data.phone?.replace(/\D/g, ""),
-        username: normalize(data.username),
-        isAdmin: data.isAdmin || false,
-        approved: data.isAdmin,
-      },
-      include: inclusions.user,
-    });
+    update: async (data: NewUser & { id: number }) => {
+        const birth = data.birth.split("/").reverse().join("/")
 
-    return { user };
-  },
-};
+        const address = await prisma.address.update({
+            where: { userId: data.id },
+            data: {
+                street: data.address.street,
+                number: data.address.number,
+                city: data.address.city,
+                cep: data.address.cep,
+                complement: data.address.complement,
+                district: data.address.district,
+                uf: data.address.uf,
+                userId: data.id,
+            },
+        })
+        console.log("addreess update: ", data.address)
 
-export default { user };
+        if (data.employee) {
+            const employee = await prisma.employee.update({
+                where: { userid: data.id },
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: data.id,
+                },
+            })
+            await prisma.bank.update({
+                where: { employeeId: employee.id },
+                data: {
+                    account: data.employee.bank_data.account,
+                    agency: data.employee.bank_data.agency,
+                    name: data.employee.bank_data.name,
+                    type: data.employee.bank_data.type,
+                    employeeId: employee.id,
+                },
+            })
+
+            console.log("Employee atualizado:", data.employee)
+        } else if (data.producer) {
+            await prisma.producer.update({
+                where: { userid: data.id },
+                data: {
+                    cnpj: data.producer.cnpj,
+                    userid: data.id,
+                },
+            })
+            console.log("Produtor atualizado:", data.producer)
+        }
+
+        const user = await prisma.user.update({
+            where: { id: data.id },
+            data: {
+                birth: new Date(birth),
+                cpf: data.cpf.replace(/\D/g, ""),
+                email: normalize(data.email),
+                name: data.name,
+                password: data.password,
+                phone: data.phone?.replace(/\D/g, ""),
+                username: normalize(data.username),
+                isAdmin: data.isAdmin || false,
+                approved: data.isAdmin,
+            },
+            include: inclusions.user,
+        })
+
+        return { user }
+    },
+}
+
+export default { user }
 
 // const jsonUpdate = {
 // {
