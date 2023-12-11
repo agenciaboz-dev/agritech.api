@@ -1,7 +1,7 @@
 import { Socket } from "socket.io"
 import { User, Employee } from "@prisma/client"
 import { getIoInstance, handleSocket } from "./socket"
-import databaseHandler from "../databaseHandler"
+import user from "../databaseHandler2"
 import { ClientBag } from "../definitions/client"
 import { LoginForm, NewUser } from "../definitions/newUser"
 import { normalize } from "path"
@@ -10,7 +10,7 @@ interface UpdateUser extends Omit<User, "id"> {
     id: number
 }
 
-const prisma = databaseHandler
+const prisma = user
 
 const logout = async (socket: Socket, clients: ClientBag, user: User) => {
     const io = getIoInstance()
@@ -20,7 +20,7 @@ const logout = async (socket: Socket, clients: ClientBag, user: User) => {
 }
 
 const handleLogin = async (socket: Socket, data: LoginForm) => {
-    const user = await databaseHandler.user.login(data)
+    const user = await prisma.user.login(data)
 
     if (user) {
         socket.emit("user:login:success", user)
@@ -40,7 +40,7 @@ const newUser = async (socket: Socket, userNew: any) => {
                     error: "Usuário já está aprovado",
                 })
         } else {
-            const pendingUser = await prisma.user.new(userNew)
+            const pendingUser = await prisma.user.newUser(userNew)
 
             // gambiarra pra rodar redondo no front, coloquei isso pq no front tá esperando receber isso, depois vc arruma
             socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
@@ -134,7 +134,7 @@ const listUsersApproved = async (socket: Socket) => {
 const findUser = async (socket: Socket, data: { userId: number }) => {
     const userId = data.userId
     try {
-        const userDetails = await prisma.user.find.byId(userId)
+        const userDetails = await prisma.user.findById(userId)
         console.log(userDetails)
         if (userDetails) {
             socket.emit("user:find:success", userDetails)
