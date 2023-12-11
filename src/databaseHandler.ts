@@ -130,6 +130,7 @@ const user = {
                 isAdmin: data.isAdmin || false,
                 approved: data.approved, // <<<<< gambiarrei
                 rejected: null,
+                // office: data.office,
             },
         })
         console.log({ address: data.address })
