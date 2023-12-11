@@ -1,17 +1,6 @@
 import { getIoInstance } from "../io/socket";
 import { NewUser } from "../definitions/newUser";
-import {
-  User,
-  Employee,
-  Producer,
-  Address,
-  Bank,
-  Professional,
-  Tillage,
-  Coordinate,
-  Gallery,
-  PrismaClient,
-} from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import normalize from "../normalize";
 
 const prisma = new PrismaClient();
@@ -86,7 +75,7 @@ const login = async (data: { login: string; password: string }) => {
 
 const pendingList = async () =>
   await prisma.user.findMany({
-    where: { approved: false },
+    where: { approved: false, rejected: null },
     include: inclusions.user,
   });
 
