@@ -22,7 +22,8 @@ model User{
     isAdmin         Boolean     @default(false)
     approved        Boolean     @default(false)
     rejected        String?     
-    
+    office          String      
+   
     address         Address?    
 
     employee        Employee?
@@ -110,11 +111,12 @@ model Tillage{
     area        String      
     owner       String
     ceo         String
-    manager     String
-    agronomist  String
-    technician  String
-    others      String
-    commments   String
+    manager     String?
+    agronomist  String?
+    technician  String?
+    others      String?
+    commments   String?
+    pilot       String?
 
     //address         Address?     
     local_tillage   Coordinate[]

@@ -13,6 +13,7 @@ declare interface NewUser {
     isAdmin: boolean
     approved: boolean
     rejected: string
+    office:string
     address: {
         street: string
         district: string
