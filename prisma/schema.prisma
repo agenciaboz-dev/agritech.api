@@ -61,8 +61,8 @@ model Address{
     user            User         @relation(fields: [userId],references: [id], onDelete: Cascade)
     userId          Int          @unique
 
-    tillage         Tillage     @relation(fields: [tillageId],references: [id])
-    tillageId       Int          @unique       
+    tillage         Tillage?     @relation(fields: [tillageId],references: [id])
+    tillageId       Int?          @unique       
 
 }
 
@@ -74,11 +74,11 @@ model Producer{
     user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int         @unique
 
-    employee        Employee    @relation(fields: [employeeId],references: [id])
-    employeeId      Int         @unique
+    employee        Employee?    @relation(fields: [employeeId],references: [id])
+    employeeId      Int?         @unique
 
-    report          Report     @relation(fields: [reportId],references: [id])
-    reportId        Int        @unique
+    report          Report?     @relation(fields: [reportId],references: [id])
+    reportId        Int?        @unique
 
     tillage         Tillage[]
     call            Call[]
@@ -144,8 +144,8 @@ model Employee{
     user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int         @unique
 
-    kit             Kit        @relation(fields: [kitId],references: [id])
-    kitId           Int
+    kit             Kit?        @relation(fields: [kitId],references: [id])
+    kitId           Int?
 
     producers       Producer[]
     calendars       Calendar[]
