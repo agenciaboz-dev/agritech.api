@@ -8,6 +8,7 @@ import { Client, ClientBag } from "../definitions/client"
 import client from "../definitions/client"
 import { LoginForm } from "../definitions/newUser"
 import cep from "./geolocalTest"
+import weather from "./weatherApi"
 
 let io: SocketIoServer | null = null
 
@@ -89,4 +90,5 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
 
     socket.on("coordinate:cep", (data) => cep.coordinate(socket, data))
+    socket.on("weather:cep", (data) => weather.climate(socket, data))
 }
