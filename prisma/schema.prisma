@@ -8,31 +8,126 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model Chat{
+    id             Int         @id @default(autoincrement())
+    users          User[]
+    messages       Message[]
+}
+
+model Message{
+    id             Int         @id @default(autoincrement())
+    send        DateTime    @db.Date
+    text        String?
+    audio       String?     
+    
+    chat        Chat        @relation(fields: [chatId],references: [id],onDelete: Cascade)
+    chatId      Int         @unique
+}
+
 model User{
     id              Int         @id @default(autoincrement())
-    username        String      @unique
-    email           String      @unique
-    password        String  
     name            String      
     cpf             String      @unique
     birth           DateTime?   @db.Date
     phone           String?
     image           String?     @db.Text
     image64         String?  
+    username        String      @unique
+    email           String      @unique
+    password        String  
     isAdmin         Boolean     @default(false)
     approved        Boolean     @default(false)
-    rejected        String?     
-    office          String      
-   
-    address         Address?    
+    rejected        String?   
+    office          String    
 
+    calls           Call[]
+    chats           Chat[]
+
+    address         Address?    
     employee        Employee?
     producer        Producer?
+}
 
-     
+model Address{
+    id              Int         @id @default(autoincrement())
+    street          String      
+    district        String  
+    number          String
+    cep             String
+    city            String
+    uf              String
+    adjunct         String
+
+    user            User         @relation(fields: [userId],references: [id], onDelete: Cascade)
+    userId          Int          @unique
+
+    tillage         Tillage     @relation(fields: [tillageId],references: [id])
+    tillageId       Int          @unique       
 
 }
 
+model Producer{
+    id              Int         @id @default(autoincrement())
+    cnpj            String      @unique
+    contract        Boolean     @default(false)
+
+    user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
+    userid          Int         @unique
+
+    employee        Employee    @relation(fields: [employeeId],references: [id])
+    employeeId      Int         @unique
+
+    report          Report     @relation(fields: [reportId],references: [id])
+    reportId        Int        @unique
+
+    tillage         Tillage[]
+    call            Call[]
+
+
+}
+
+model Tillage{
+    id              Int         @id @default(autoincrement())
+    name            String      
+    area            String      
+    owner           String
+    ceo             String
+    manager         String?
+    agronomist      String?
+    technician      String?
+    pilot           String?
+    others          String?
+    commments       String?
+
+    address         Address?
+
+    location        Coordinate[]
+    gallery         Gallery[]
+
+    producer        Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int         @unique
+
+
+
+}
+
+model Coordinate{
+    id              Int         @id @default(autoincrement())
+    x               String      
+    y               String
+
+    tillage         Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int         @unique
+}
+
+model Gallery{
+    id              Int         @id @default(autoincrement())
+    image           String?     @db.Text    //array
+
+    tillage         Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int         @unique
+    
+}
 model Employee{
     id              Int         @id @default(autoincrement())
     rg              String      @unique
@@ -41,106 +136,198 @@ model Employee{
     nationality     String
     voter_card      String      //@unique     //number
     work_card       String      //@unique     //number
-    military        String?     @db.Text    //url
-    residence       String      @db.Text    //url   
+    military        String?     @db.Text      //url
+    residence       String      @db.Text      //url   
     office          String      @default("")
 
-    bank_data       Bank?
+    bank            Bank?
     professional    Professional?
 
     user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int         @unique
+
+    kit             Kit        @relation(fields: [kitId],references: [id])
+    kitId           Int
+
+    producers       Producer[]
+    calendars       Calendar[]
     
 }
 
-model Producer{
-    id              Int         @id @default(autoincrement())
-    cnpj            String      @unique
-
-    user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
-    userid          Int         @unique
-
-    tillage         Tillage[]
-}
-
-model Address{
-    id          Int         @id @default(autoincrement())
-    street      String      
-    district    String  
-    number      String
-    cep         String
-    city        String
-    uf          String
-    complement  String
-
-    user        User        @relation(fields: [userId],references: [id], onDelete: Cascade)
-    userId      Int          @unique
-
-    // tillage     Tillage?      @relation(fields: [tillageId],references: [id])
-    // tillageId   Int          @unique       
-
-}
-
 model Bank{
-    id          Int         @id @default(autoincrement())
-    name        String      
-    agency      String
-    type        String
-    account     String
+    id              Int         @id @default(autoincrement())
+    name            String      
+    agency          String
+    type            String
+    account         String
 
-    employee    Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
-    employeeId  Int         @unique
+    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
+    employeeId      Int         @unique
 }
 
 
 model Professional{
-    id          Int         @id @default(autoincrement())
-    department  String  
-    office      String
-    admission   DateTime    @db.Date
-    salary      String
-    work_time   DateTime    @db.Time()
+    id              Int         @id @default(autoincrement())
+    department      String  
+    office          String
+    admission       DateTime    @db.Date
+    salary          String
+    work_time       DateTime    @db.Time()
 
-    employee    Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
-    employeeId  Int         @unique
-
-}
-model Tillage{
-    id          Int         @id @default(autoincrement())
-    name        String      
-    area        String      
-    owner       String
-    ceo         String
-    manager     String?
-    agronomist  String?
-    technician  String?
-    others      String?
-    commments   String?
-    pilot       String?
-
-    //address         Address?     
-    local_tillage   Coordinate[]
-    gallery         Gallery[]
-
-    producer    Producer    @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId  Int         @unique
+    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
+    employeeId      Int         @unique
 
 }
-model Coordinate{
-    id          Int         @id @default(autoincrement())
-    x           String      
-    y           String
 
-    tillage     Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId   Int         @unique
+model Calendar {
+    id              Int         @id @default(autoincrement())
+    name            String
+
+    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
+    employeeId      Int         @unique
+
+    kit             Kit         @relation(fields: [kitId],references: [id])
+    kitId           Int         @unique
+
 }
 
-model Gallery{
-    id          Int         @id @default(autoincrement())
-    image       String?     @db.Text    //array
+model Call {
+    id              Int         @id @default(autoincrement())
+    open            DateTime    @db.Date
+    finish          DateTime    @db.Date
 
-    tillage     Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId   Int         @unique
+    stages          Stage[]
+
+    report          Report?
+    
+    kit             Kit        @relation(fields: [kitId],references: [id])
+    kitId           Int         
+
+    producer        Producer    @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int         @unique       
+
+    user            User        @relation(fields: [userId],references: [id],onDelete: Cascade)
+    userId          Int         @unique
+
+
+
+}
+
+model Stage {
+    id              Int         @id @default(autoincrement())
+    name            String
+    date            DateTime    @db.Date
+    start           DateTime    @db.Time()
+    finish          DateTime    @db.Time()
+    duration        DateTime    @db.Time()
+    comments        String?
+
+    callId          Int
+    call            Call        @relation(fields: [callId],references: [id],onDelete: Cascade)
     
 }
-  
+
+model Kit {
+    id              Int         @id @default(autoincrement())
+    name            String
+    description     String
+    
+    objects         Object[]
+    employees       Employee[]
+    calls           Call[]        
+
+    calendar        Calendar?
+}
+
+model Object {
+    id              Int         @id @default(autoincrement())
+    name            String
+    description     String
+    quantity        Int
+
+    kit             Kit         @relation(fields: [kitId],references: [id],onDelete: Cascade)
+    kitId           Int         @unique
+}
+
+model Report {
+    id              Int         @id @default(autoincrement())
+
+    
+    call            Call        @relation(fields: [callId],references: [id],onDelete: Cascade)
+    callId          Int         @unique
+
+    producer        Producer?
+    operation       Operation?
+    treatment       Treatment?
+    material        Material?
+    techReport      TechReport?
+
+}
+model Operation {
+    id              Int         @id @default(autoincrement())
+    service         String
+    culture         String
+    areaMap         String
+    equipment       String
+    model           String
+
+    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int         @unique
+
+}
+model Treatment {
+    id              Int         @id @default(autoincrement())
+    product         String
+    dosage          String
+
+    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int         @unique
+
+}
+
+model Material{
+    id              Int         @id @default(autoincrement())
+    talhao          Int
+    area            Float
+    product         Int
+    dosage          Float
+    classification  String
+    total           Float
+    removed         String
+    applied         String
+    returned        String
+    comments        String
+
+    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int         @unique
+}
+
+model TechReport{
+    id              Int         @id @default(autoincrement())
+    date            DateTime    @db.Date
+    init            DateTime    @db.Time()
+    finish          DateTime    @db.Time()
+    comments        String
+
+    flight          Flight[]
+
+    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int         @unique
+
+}
+
+model Flight{
+    id              Int         @id @default(autoincrement())
+    temperature     Float
+    humidity        Float
+    wind_velocity   Float
+    height          Float
+    faixa           Float
+    flight_velocity Float
+    tank_volume     Float
+    rate            Float
+    performance     Float
+
+    techReport      TechReport  @relation(fields: [techReportId],references: [id],onDelete: Cascade)
+    techReportId    Int         @unique
+}
