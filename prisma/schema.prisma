@@ -107,8 +107,6 @@ model Tillage{
     producer        Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId      Int         @unique
 
-
-
 }
 
 model Coordinate{
