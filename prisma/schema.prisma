@@ -227,6 +227,8 @@ model Stage {
 
 model Kit {
     id              Int         @id @default(autoincrement())
+    image           String?     @db.Text
+    image64         String?     
     name            String
     description     String
     
