@@ -184,8 +184,8 @@ model Calendar {
     employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
     employeeId      Int         @unique
 
-    kit             Kit?         @relation(fields: [kitId],references: [id])
-    kitId           Int?         @unique
+    kit              Kit?         @relation(fields: [kitId],references: [id])
+    kitId            Int?         @unique
 
 }
 
