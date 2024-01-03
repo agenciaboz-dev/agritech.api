@@ -2,15 +2,16 @@ import { Server as SocketIoServer } from "socket.io";
 import { Server as HttpServer } from "http";
 import { Server as HttpsServer } from "https";
 import { Socket } from "socket.io";
-import { User, Tillage, Address } from "@prisma/client";
+import { User, Tillage, Coordinate } from "@prisma/client";
 import user from "./user";
 import tillage from "./tillage";
 import { Client, ClientBag } from "../definitions/client";
-import client from "../definitions/client";
-import { LoginForm } from "../definitions/newUser";
+import { LoginForm } from "../definitions/user";
 import cep from "./geolocalTest";
 import weather from "./weatherApi";
-import { NewTillage } from "../definitions/operations";
+import { NewTillage } from "../definitions/tillage";
+import { NewCoordinate } from "../definitions/coordinate";
+import coordinate from "./coordinate";
 
 let io: SocketIoServer | null = null;
 
@@ -111,6 +112,21 @@ export const handleSocket = (socket: Socket) => {
   );
 
   socket.on("tillage:list", () => tillage.listTillage(socket));
+
+  // COORDINATE OPS
+  socket.on("coordinate:new", (newCoorinate: NewCoordinate) =>
+    coordinate.newCoordinate(socket, newCoorinate)
+  );
+
+  // GALLERY OPS
+
+  // KIT OPS
+
+  // CALL OPS
+
+  // STAGE OPS
+
+  // REPORT OPS
 
   // GEOLOCAL TEST
 

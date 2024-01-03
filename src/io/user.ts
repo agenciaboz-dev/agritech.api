@@ -3,8 +3,7 @@ import { User, Employee } from "@prisma/client";
 import { getIoInstance, handleSocket } from "./socket";
 import user from "../databaseHandler";
 import { ClientBag } from "../definitions/client";
-import { LoginForm, NewUser } from "../definitions/newUser";
-import { normalize } from "path";
+import { LoginForm } from "../definitions/user";
 
 interface UpdateUser extends Omit<User, "id"> {
   id: number;
