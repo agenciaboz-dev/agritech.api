@@ -74,6 +74,7 @@ const list = async () => {
     include: {
       address: true,
       location: true,
+      gallery: true,
     },
   });
 };

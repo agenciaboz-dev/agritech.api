@@ -1,14 +1,10 @@
-import { Address, Coordinate, Producer } from "@prisma/client";
-
-type Coordinate = {
-  x: string;
-  y: string;
-};
-
-type Gallery = {
-  image: string;
-};
-
+import {
+  Address,
+  Coordinate,
+  Producer,
+  Gallery,
+  Tillage,
+} from "@prisma/client";
 declare interface NewTillage {
   name: string;
   area: string;

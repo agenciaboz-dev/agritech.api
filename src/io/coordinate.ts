@@ -19,32 +19,32 @@ const newCoordinate = async (socket: Socket, data: any) => {
   }
 };
 
-// const updateTillage = async (socket: Socket, data: any) => {
-//   console.log("Usuário atualizado:", data);
+const updateCoordinate = async (socket: Socket, data: any) => {
+  console.log("Coordenada atualizada:", data);
 
-//   try {
-//     const tillage = await databaseHandler.tillage.update(data);
+  try {
+    const coordinate = await databaseHandler.coordinate.update(data);
 
-//     if (tillage) {
-//       socket.emit("tillage:update:success", tillage);
-//       // socket.broadcast.emit("user:update", user)
-//     } else {
-//       socket.emit("tillage:update:failed");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     socket.emit("tillage:update:failed", { error: error });
-//   }
-// };
+    if (coordinate) {
+      socket.emit("coordinate:update:success", coordinate);
+      // socket.broadcast.emit("user:update", user)
+    } else {
+      socket.emit("coordinate:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("coordinate:update:failed", { error: error });
+  }
+};
 
-// const listTillage = async (socket: Socket) => {
-//   console.log("Lista de tillages");
-//   const tillage = await databaseHandler.tillage.list();
-//   socket.emit("tillage:list:success", tillage);
-// };
+const listCoordinate = async (socket: Socket) => {
+  console.log("Lista de coordenadas");
+  const coordinate = await databaseHandler.coordinate.list();
+  socket.emit("tillage:list:success", coordinate);
+};
 
 export default {
   newCoordinate,
-  //   updateCoordinate,
-  //   listCoordinate
+  updateCoordinate,
+  listCoordinate,
 };

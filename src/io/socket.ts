@@ -1,17 +1,26 @@
 import { Server as SocketIoServer } from "socket.io";
 import { Server as HttpServer } from "http";
 import { Server as HttpsServer } from "https";
+
 import { Socket } from "socket.io";
-import { User, Tillage, Coordinate } from "@prisma/client";
-import user from "./user";
-import tillage from "./tillage";
-import { Client, ClientBag } from "../definitions/client";
-import { LoginForm } from "../definitions/user";
 import cep from "./geolocalTest";
 import weather from "./weatherApi";
+
+import { Client, ClientBag } from "../definitions/client";
+import { LoginForm } from "../definitions/user";
+
+import user from "./user";
+import tillage from "./tillage";
+import coordinate from "./coordinate";
+import kit from "./kit";
+
+import { User, Tillage, Coordinate, Gallery, Kit } from "@prisma/client";
+
 import { NewTillage } from "../definitions/tillage";
 import { NewCoordinate } from "../definitions/coordinate";
-import coordinate from "./coordinate";
+import { NewGallery } from "../definitions/gallery";
+import { NewKit } from "../definitions/kit";
+import gallery from "./gallery";
 
 let io: SocketIoServer | null = null;
 
@@ -118,9 +127,40 @@ export const handleSocket = (socket: Socket) => {
     coordinate.newCoordinate(socket, newCoorinate)
   );
 
+  socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
+    coordinate.updateCoordinate(socket, updateCoordinate)
+  );
+
+  socket.on("coordinate:list", () => {
+    coordinate.listCoordinate(socket);
+  });
+
   // GALLERY OPS
+  socket.on("gallery:new", (newGallery: NewGallery) =>
+    gallery.newGallery(socket, newGallery)
+  );
+
+  socket.on("gallery:update", (updateGallery: Gallery) =>
+    gallery.updateGallery(socket, updateGallery)
+  );
+
+  socket.on("gallery:list", () => {
+    gallery.listGallery(socket);
+  });
 
   // KIT OPS
+
+  socket.on("kit:new", (newKit: NewKit) => kit.newKit(socket, newKit));
+
+  socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit));
+
+  socket.on("kit:list", () => {
+    kit.listKit(socket);
+  });
+
+  socket.on("kit:add:employee", (updateKit: Kit) =>
+    kit.addEmployeeKit(socket, updateKit)
+  );
 
   // CALL OPS
 

@@ -18,48 +18,29 @@ const create = async (data: NewCoordinate) => {
   return { coordinate };
 };
 
-// const update = async (data: NewTillage & { id: number }) => {
-//   const tillage = await prisma.tillage.update({
-//     where: { id: data.id },
-//     data: {
-//       name: data.name,
-//       area: data.area,
-//       owner: data.owner,
-//       ceo: data.ceo,
-//       manager: data.manager,
-//       agronomist: data.agronomist,
-//       technician: data.technician,
-//       pilot: data.pilot,
-//       others: data.others,
-//       comments: data.comments,
-//       address: {
-//         update: {
-//           street: data.address.street,
-//           number: data.address.number,
-//           city: data.address.city,
-//           cep: data.address.cep,
-//           adjunct: data.address.adjunct || "",
-//           district: data.address.district,
-//           uf: data.address.uf,
-//         },
-//       },
-//     },
-//   });
-//   console.log("tillage update: ", data);
+const update = async (data: NewCoordinate & { id: number }) => {
+  const coordinate = await prisma.coordinate.update({
+    where: { tillageId: data.tillageId },
+    data: {
+      x: data.x,
+      y: data.y,
+    },
+  });
+  console.log("Coordinate Update: ", data);
 
-//   return { tillage };
-// };
+  return { coordinate };
+};
 
-// const list = async () => {
-//   return await prisma.tillage.findMany({
-//     include: {
-//       address: true,
-//     },
-//   });
-// };
+const list = async () => {
+  return await prisma.coordinate.findMany({
+    include: {
+      tillage: true,
+    },
+  });
+};
 
 export default {
   create,
-  //   update,
-  //   list,
+  update,
+  list,
 };
