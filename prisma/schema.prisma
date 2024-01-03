@@ -58,8 +58,8 @@ model Address{
     uf              String
     adjunct         String
 
-    user            User         @relation(fields: [userId],references: [id], onDelete: Cascade)
-    userId          Int          @unique
+    user            User?         @relation(fields: [userId],references: [id], onDelete: Cascade)
+    userId          Int?          @unique
 
     tillage         Tillage?     @relation(fields: [tillageId],references: [id])
     tillageId       Int?          @unique       
@@ -97,7 +97,7 @@ model Tillage{
     technician      String?
     pilot           String?
     others          String?
-    commments       String?
+    comments        String?
 
     address         Address?
 
@@ -105,7 +105,7 @@ model Tillage{
     gallery         Gallery[]
 
     producer        Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int         @unique
+    producerId      Int?         @unique
 
 }
 
@@ -186,7 +186,6 @@ model Calendar {
 
     kit              Kit?         @relation(fields: [kitId],references: [id])
     kitId            Int?         @unique
-
 }
 
 model Call {
@@ -206,9 +205,6 @@ model Call {
 
     user            User        @relation(fields: [userId],references: [id],onDelete: Cascade)
     userId          Int         @unique
-
-
-
 }
 
 model Stage {

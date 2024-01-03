@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Kit` ADD COLUMN `image` TEXT NULL,
+    ADD COLUMN `image64` VARCHAR(191) NULL;
