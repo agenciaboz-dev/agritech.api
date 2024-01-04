@@ -158,8 +158,12 @@ export const handleSocket = (socket: Socket) => {
     kit.listKit(socket);
   });
 
-  socket.on("kit:add:employee", (updateKit: Kit) =>
-    kit.addEmployeeKit(socket, updateKit)
+  socket.on("kit:add:employee", (manageKit: Kit) =>
+    kit.addEmployeeKit(socket, manageKit)
+  );
+
+  socket.on("kit:remove:employee", (manageKit: Kit) =>
+    kit.removeEmployeeKit(socket, manageKit)
   );
 
   // CALL OPS

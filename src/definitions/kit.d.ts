@@ -13,7 +13,7 @@ declare interface NewKit {
   calendar?: Calendar;
 }
 
-declare interface AddEmployeeToKit {
+declare interface ManageKitMembers {
   kitId: number;
   employeeId: number;
 }

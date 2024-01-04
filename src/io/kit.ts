@@ -61,9 +61,28 @@ const addEmployeeKit = async (socket: Socket, data: any) => {
   }
 };
 
+const removeEmployeeKit = async (socket: Socket, data: any) => {
+  console.log("Removendo funcionário do kit:", data);
+
+  try {
+    const kit = await databaseHandler.kit.remove(data);
+
+    if (kit) {
+      socket.emit("kit:removeEmployee:success", kit);
+      // socket.broadcast.emit("user:update", user)
+    } else {
+      socket.emit("kit:removeEmployee:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("kit:removeEmployee:failed", { error: error });
+  }
+};
+
 export default {
   newKit,
   updateKit,
   listKit,
   addEmployeeKit,
+  removeEmployeeKit,
 };
