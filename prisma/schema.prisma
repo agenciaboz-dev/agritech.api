@@ -9,34 +9,34 @@ datasource db {
 }
 
 model Chat{
-    id             Int         @id @default(autoincrement())
+    id             Int           @id @default(autoincrement())
     users          User[]
     messages       Message[]
 }
 
 model Message{
-    id             Int         @id @default(autoincrement())
-    send        DateTime    @db.Date
+    id             Int           @id @default(autoincrement())
+    send        DateTime         @db.Date
     text        String?
     audio       String?     
     
-    chat        Chat        @relation(fields: [chatId],references: [id],onDelete: Cascade)
-    chatId      Int         @unique
+    chat        Chat             @relation(fields: [chatId],references: [id],onDelete: Cascade)
+    chatId      Int              @unique
 }
 
 model User{
-    id              Int         @id @default(autoincrement())
+    id              Int          @id @default(autoincrement())
     name            String      
-    cpf             String      @unique
-    birth           DateTime?   @db.Date
+    cpf             String       @unique
+    birth           DateTime?    @db.Date
     phone           String?
-    image           String?     @db.Text
+    image           String?      @db.Text
     image64         String?  
-    username        String      @unique
-    email           String      @unique
+    username        String       @unique
+    email           String       @unique
     password        String  
-    isAdmin         Boolean     @default(false)
-    approved        Boolean     @default(false)
+    isAdmin         Boolean      @default(false)
+    approved        Boolean      @default(false)
     rejected        String?   
     office          String    
 
@@ -49,7 +49,7 @@ model User{
 }
 
 model Address{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     street          String      
     district        String  
     number          String
@@ -61,24 +61,24 @@ model Address{
     user            User?         @relation(fields: [userId],references: [id], onDelete: Cascade)
     userId          Int?          @unique
 
-    tillage         Tillage?     @relation(fields: [tillageId],references: [id])
+    tillage         Tillage?      @relation(fields: [tillageId],references: [id])
     tillageId       Int?          @unique       
 
 }
 
 model Producer{
-    id              Int         @id @default(autoincrement())
-    cnpj            String      @unique
-    contract        Boolean     @default(false)
+    id              Int          @id @default(autoincrement())
+    cnpj            String       @unique
+    contract        Boolean      @default(false)
 
-    user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
-    userid          Int         @unique
+    user            User         @relation(fields: [userid],references: [id],onDelete: Cascade)
+    userid          Int          @unique
 
     employee        Employee?    @relation(fields: [employeeId],references: [id])
     employeeId      Int?         @unique
 
-    report          Report?     @relation(fields: [reportId],references: [id])
-    reportId        Int?        @unique
+    report          Report?      @relation(fields: [reportId],references: [id])
+    reportId        Int?         @unique
 
     tillage         Tillage[]
     call            Call[]
@@ -87,7 +87,7 @@ model Producer{
 }
 
 model Tillage{
-    id              Int         @id @default(autoincrement())
+    id              Int          @id @default(autoincrement())
     name            String      
     area            String      
     owner           String
@@ -104,47 +104,47 @@ model Tillage{
     location        Coordinate[]
     gallery         Gallery[]
 
-    producer        Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int?         @unique
+    producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int?          @unique
 
 }
 
 model Coordinate{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     x               String      
     y               String
 
-    tillage         Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int         @unique
+    tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int           @unique
 }
 
 model Gallery{
-    id              Int         @id @default(autoincrement())
-    image           String?     @db.Text    //array
+    id              Int           @id @default(autoincrement())
+    image           String?       @db.Text    //array
 
-    tillage         Tillage     @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int         @unique
+    tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int           @unique
     
 }
 model Employee{
-    id              Int         @id @default(autoincrement())
-    rg              String      @unique
+    id              Int           @id @default(autoincrement())
+    rg              String        @unique
     gender          String
     relationship    String  
     nationality     String
-    voter_card      String      //@unique     //number
-    work_card       String      //@unique     //number
-    military        String?     @db.Text      //url
-    residence       String      @db.Text      //url   
-    office          String      @default("")
+    voter_card      String        //@unique     //number
+    work_card       String        //@unique     //number
+    military        String?       @db.Text      //url
+    residence       String        @db.Text      //url   
+    office          String        @default("")
 
     bank            Bank?
     professional    Professional?
 
-    user            User        @relation(fields: [userid],references: [id],onDelete: Cascade)
-    userid          Int         @unique
+    user            User          @relation(fields: [userid],references: [id],onDelete: Cascade)
+    userid          Int           @unique
 
-    kit             Kit?        @relation(fields: [kitId],references: [id])
+    kit             Kit?          @relation(fields: [kitId],references: [id])
     kitId           Int?
 
     producers       Producer[]
@@ -153,77 +153,77 @@ model Employee{
 }
 
 model Bank{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     name            String      
     agency          String
     type            String
     account         String
 
-    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
-    employeeId      Int         @unique
+    employee        Employee      @relation(fields: [employeeId],references: [id],onDelete: Cascade)
+    employeeId      Int           @unique
 }
 
 
 model Professional{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     department      String  
     office          String
-    admission       DateTime    @db.Date
+    admission       DateTime      @db.Date
     salary          String
-    work_time       DateTime    @db.Time()
+    work_time       DateTime      @db.Time()
 
-    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
-    employeeId      Int         @unique
+    employee        Employee      @relation(fields: [employeeId],references: [id],onDelete: Cascade)
+    employeeId      Int           @unique
 
 }
 
 model Calendar {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     name            String
 
-    employee        Employee    @relation(fields: [employeeId],references: [id],onDelete: Cascade)
-    employeeId      Int         @unique
+    employee        Employee?     @relation(fields: [employeeId],references: [id])
+    employeeId      Int?          @unique
 
     kit              Kit?         @relation(fields: [kitId],references: [id])
     kitId            Int?         @unique
 }
 
 model Call {
-    id              Int         @id @default(autoincrement())
-    open            DateTime    @db.Date
-    finish          DateTime    @db.Date
+    id              Int           @id @default(autoincrement())
+    open            DateTime?     @db.Date
+    finish          DateTime?     @db.Date
 
     stages          Stage[]
 
     report          Report?
     
-    kit             Kit        @relation(fields: [kitId],references: [id])
-    kitId           Int         
+    kit             Kit?           @relation(fields: [kitId],references: [id])
+    kitId           Int?         
 
-    producer        Producer    @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int         @unique       
+    producer        Producer      @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int           @unique       
 
-    user            User        @relation(fields: [userId],references: [id],onDelete: Cascade)
-    userId          Int         @unique
+    user            User          @relation(fields: [userId],references: [id],onDelete: Cascade)
+    userId          Int           @unique
 }
 
 model Stage {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     name            String
-    date            DateTime    @db.Date
-    start           DateTime    @db.Time()
-    finish          DateTime    @db.Time()
-    duration        DateTime    @db.Time()
+    date            DateTime      @db.Date
+    start           DateTime      @db.Time()
+    finish          DateTime      @db.Time()
+    duration        DateTime      @db.Time()
     comments        String?
 
     callId          Int
-    call            Call        @relation(fields: [callId],references: [id],onDelete: Cascade)
+    call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     
 }
 
 model Kit {
-    id              Int         @id @default(autoincrement())
-    image           String?     @db.Text
+    id              Int           @id @default(autoincrement())
+    image           String?       @db.Text
     image64         String?     
     name            String
     description     String
@@ -236,21 +236,21 @@ model Kit {
 }
 
 model Object {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     name            String
     description     String
     quantity        Int
 
-    kit             Kit         @relation(fields: [kitId],references: [id],onDelete: Cascade)
-    kitId           Int         @unique
+    kit             Kit?          @relation(fields: [kitId],references: [id],onDelete: Cascade)
+    kitId           Int?          @unique
 }
 
 model Report {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
 
     
-    call            Call        @relation(fields: [callId],references: [id],onDelete: Cascade)
-    callId          Int         @unique
+    call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
+    callId          Int           @unique
 
     producer        Producer?
     operation       Operation?
@@ -260,29 +260,29 @@ model Report {
 
 }
 model Operation {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     service         String
     culture         String
     areaMap         String
     equipment       String
     model           String
 
-    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int         @unique
+    report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int           @unique
 
 }
 model Treatment {
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     product         String
     dosage          String
 
-    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int         @unique
+    report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int           @unique
 
 }
 
 model Material{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     talhao          Int
     area            Float
     product         Int
@@ -294,26 +294,26 @@ model Material{
     returned        String
     comments        String
 
-    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int         @unique
+    report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int           @unique
 }
 
 model TechReport{
-    id              Int         @id @default(autoincrement())
-    date            DateTime    @db.Date
-    init            DateTime    @db.Time()
-    finish          DateTime    @db.Time()
+    id              Int           @id @default(autoincrement())
+    date            DateTime      @db.Date
+    init            DateTime      @db.Time()
+    finish          DateTime      @db.Time()
     comments        String
 
     flight          Flight[]
 
-    report          Report      @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int         @unique
+    report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    reportId        Int           @unique
 
 }
 
 model Flight{
-    id              Int         @id @default(autoincrement())
+    id              Int           @id @default(autoincrement())
     temperature     Float
     humidity        Float
     wind_velocity   Float
@@ -324,6 +324,6 @@ model Flight{
     rate            Float
     performance     Float
 
-    techReport      TechReport  @relation(fields: [techReportId],references: [id],onDelete: Cascade)
-    techReportId    Int         @unique
+    techReport      TechReport    @relation(fields: [techReportId],references: [id],onDelete: Cascade)
+    techReportId    Int           @unique
 }

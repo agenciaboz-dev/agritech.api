@@ -13,14 +13,21 @@ import user from "./user";
 import tillage from "./tillage";
 import coordinate from "./coordinate";
 import kit from "./kit";
-
-import { User, Tillage, Coordinate, Gallery, Kit } from "@prisma/client";
-
-import { NewTillage } from "../definitions/tillage";
-import { NewCoordinate } from "../definitions/coordinate";
-import { NewGallery } from "../definitions/gallery";
-import { NewKit } from "../definitions/kit";
+import object from "./object";
 import gallery from "./gallery";
+import calendar from "./calendar";
+import call from "./call";
+
+import {
+  User,
+  Tillage,
+  Coordinate,
+  Gallery,
+  Kit,
+  Object,
+  Calendar,
+  Call,
+} from "@prisma/client";
 
 let io: SocketIoServer | null = null;
 
@@ -89,7 +96,6 @@ export const handleSocket = (socket: Socket) => {
   });
 
   //USER OPS
-
   socket.on("user:logout", (data) => user.logout(socket, clients, data));
 
   socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser));
@@ -108,12 +114,10 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:update", (updateUser: User, userId: number) =>
     user.updateUser(socket, updateUser)
   );
-
   socket.on("user:pendingApproval", () => user.listPendingApproval(socket));
 
   // TILLAGE OPS
-
-  socket.on("tillage:new", (newTillage: NewTillage) =>
+  socket.on("tillage:new", (newTillage: Tillage) =>
     tillage.newTillage(socket, newTillage)
   );
   socket.on("tillage:update", (updateTillage: Tillage) =>
@@ -123,7 +127,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("tillage:list", () => tillage.listTillage(socket));
 
   // COORDINATE OPS
-  socket.on("coordinate:new", (newCoorinate: NewCoordinate) =>
+  socket.on("coordinate:new", (newCoorinate: Coordinate) =>
     coordinate.newCoordinate(socket, newCoorinate)
   );
 
@@ -136,7 +140,7 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // GALLERY OPS
-  socket.on("gallery:new", (newGallery: NewGallery) =>
+  socket.on("gallery:new", (newGallery: Gallery) =>
     gallery.newGallery(socket, newGallery)
   );
 
@@ -149,8 +153,7 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // KIT OPS
-
-  socket.on("kit:new", (newKit: NewKit) => kit.newKit(socket, newKit));
+  socket.on("kit:new", (newKit: Kit) => kit.newKit(socket, newKit));
 
   socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit));
 
@@ -166,7 +169,41 @@ export const handleSocket = (socket: Socket) => {
     kit.removeEmployeeKit(socket, manageKit)
   );
 
+  // OBJECT OPS
+  socket.on("object:new", (newObject: Object) =>
+    object.newObject(socket, newObject)
+  );
+
+  socket.on("object:update", (updateObject: Object) =>
+    object.updateObject(socket, updateObject)
+  );
+
+  socket.on("object:list", () => {
+    object.listObject(socket);
+  });
+
+  // CALENDAR OPS
+  socket.on("calendar:employee:new", (newObject: Calendar) =>
+    calendar.newCalendarEmp(socket, newObject)
+  );
+
+  socket.on("calendar:kit:new", (newObject: Calendar) =>
+    calendar.newCalendarKit(socket, newObject)
+  );
+
+  socket.on("calendar:update", (updateCalendar: Calendar) =>
+    calendar.updateCalendar(socket, updateCalendar)
+  );
+
+  socket.on("calendar:list", () => {
+    calendar.listCalendar(socket);
+  });
+
   // CALL OPS
+  socket.on("call:new", (newCall: Call) => call.newCall(socket, newCall));
+  socket.on("call:approve", (data: any) => call.approveCall(socket, data));
+  socket.on("call:list", () => call.listCall(socket));
+  socket.on("call:cancel", (data: any) => call.cancelCall(socket, data));
 
   // STAGE OPS
 

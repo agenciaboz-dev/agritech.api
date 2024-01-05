@@ -3,6 +3,9 @@ import tillage from "./tillage";
 import coordinate from "./coordinate";
 import gallery from "./gallery";
 import kit from "./kit";
+import object from "./object";
+import calendar from "./calendar";
+import call from "./call";
 
 export default {
   user,
@@ -10,4 +13,7 @@ export default {
   coordinate,
   gallery,
   kit,
+  object,
+  calendar,
+  call,
 };
