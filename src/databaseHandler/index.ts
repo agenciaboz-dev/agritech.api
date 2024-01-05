@@ -6,6 +6,7 @@ import kit from "./kit";
 import object from "./object";
 import calendar from "./calendar";
 import call from "./call";
+import report from "./report";
 
 export default {
   user,
@@ -16,4 +17,5 @@ export default {
   object,
   calendar,
   call,
+  report,
 };

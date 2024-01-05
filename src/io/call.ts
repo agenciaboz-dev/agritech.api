@@ -1,7 +1,6 @@
 import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler";
 import { Call } from "@prisma/client";
-import { CloseCall } from "../definitions/call";
 
 const newCall = async (socket: Socket, data: any) => {
   console.log("Novo Chamado:", data);
@@ -57,19 +56,26 @@ const approveCall = async (socket: Socket, data: Call) => {
 };
 
 const closeCall = async (socket: Socket, data: Call) => {
-  console.log("Chamado Fechado:", data);
+  console.log("Closing Call:", data);
 
   try {
     const call = await databaseHandler.call.close(data);
 
+    console.log("Call Closed:", call);
+
     if (call) {
       socket.emit("call:close:success", call);
+      console.log("call:close:success emitted");
+      socket.emit("report:creation:success", call.report);
+      console.log("report:creation:success emitted");
     } else {
       socket.emit("call:close:failed");
+      console.log("call:close:failed emitted");
     }
   } catch (error) {
-    console.log(error);
+    console.error("Error in closeCall:", error);
     socket.emit("call:close:failed", { error: error });
+    socket.emit("report:creation:failed", { error: error });
   }
 };
 

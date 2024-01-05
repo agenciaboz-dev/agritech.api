@@ -1,5 +1,6 @@
-import { CloseCall, OpenCall } from "../definitions/call";
-import { Call, Kit, PrismaClient } from "@prisma/client";
+// import { CloseCall, OpenCall } from "../definitions/call";
+import { Call, PrismaClient, Report } from "@prisma/client";
+import createReport from "./report";
 
 const prisma = new PrismaClient();
 
@@ -50,7 +51,14 @@ const close = async (data: Call) => {
   console.log({ call });
 
   console.log("Chamado fechado:", call);
-  return call;
+
+  const report = await prisma.report.create({
+    data: {
+      callId: call.id,
+    },
+  });
+  console.log("Report criado para o chamado:", report);
+  return { call, report };
 };
 
 const cancel = async (data: Call) => {
@@ -94,10 +102,17 @@ const list = async () => {
   });
 };
 
+const find = async (id: number) => {
+  const report = await prisma.report.findUnique({ where: { id } });
+  console.log({ report });
+  return report;
+};
+
 export default {
   create,
   approve,
   close,
   cancel,
   list,
+  find,
 };
