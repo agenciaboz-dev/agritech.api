@@ -1,9 +1,9 @@
-import { OpenCall } from "../definitions/call";
+import { CloseCall, OpenCall } from "../definitions/call";
 import { Call, Kit, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const create = async (data: OpenCall) => {
+const create = async (data: Call) => {
   console.log("Iniciando a criação do chamado...");
   const call = await prisma.call.create({
     data: {
@@ -37,6 +37,20 @@ const approve = async (data: Call) => {
     console.error("Error in approving call:", error);
     throw error;
   }
+};
+
+const close = async (data: Call) => {
+  console.log("Iniciando a fechamento do chamado...");
+  const call = await prisma.call.update({
+    where: { id: data.id },
+    data: {
+      finish: new Date().toISOString(),
+    },
+  });
+  console.log({ call });
+
+  console.log("Chamado fechado:", call);
+  return call;
 };
 
 const cancel = async (data: Call) => {
@@ -83,6 +97,7 @@ const list = async () => {
 export default {
   create,
   approve,
+  close,
   cancel,
   list,
 };
