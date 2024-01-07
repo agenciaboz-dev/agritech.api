@@ -77,6 +77,7 @@ const list = async () => {
       address: true,
       location: true,
       gallery: true,
+      producer: true,
     },
   });
 };
