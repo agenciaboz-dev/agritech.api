@@ -40,7 +40,7 @@ const updateCoordinate = async (socket: Socket, data: any) => {
 const listCoordinate = async (socket: Socket) => {
   console.log("Lista de coordenadas");
   const coordinate = await databaseHandler.coordinate.list();
-  socket.emit("tillage:list:success", coordinate);
+  socket.emit("coordinate:list:success", coordinate);
 };
 
 export default {
