@@ -40,7 +40,7 @@ const updateKit = async (socket: Socket, data: any) => {
 const listKit = async (socket: Socket) => {
   console.log("Lista de kits");
   const kit = await databaseHandler.kit.list();
-  socket.emit("tillage:list:success", kit);
+  socket.emit("kit:list:success", kit);
 };
 
 const addEmployeeKit = async (socket: Socket, data: any) => {

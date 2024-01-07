@@ -15,7 +15,7 @@ const newGallery = async (socket: Socket, data: any) => {
     }
   } catch (error) {
     console.log(error);
-    socket.emit("gallery:update:failed", { error: error });
+    socket.emit("gallery:creation:failed", { error: error });
   }
 };
 

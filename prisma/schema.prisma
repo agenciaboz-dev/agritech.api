@@ -123,7 +123,7 @@ model Gallery{
     image           String?       @db.Text    //array
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int           @unique
+    tillageId       Int           
     
 }
 model Employee{

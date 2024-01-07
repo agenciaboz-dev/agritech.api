@@ -13,7 +13,7 @@ const create = async (data: NewGallery) => {
   });
   console.log({ gallery });
 
-  console.log("Coordenada criada e associada ao terren:", gallery);
+  console.log("Coordenada criada e associada ao terreno:", gallery);
   return { gallery };
 };
 
@@ -30,11 +30,7 @@ const update = async (data: NewGallery & { id: number }) => {
 };
 
 const list = async () => {
-  return await prisma.gallery.findMany({
-    include: {
-      tillage: true,
-    },
-  });
+  return await prisma.gallery.findMany({});
 };
 
 export default {
