@@ -51,6 +51,7 @@ const update = async (data: NewTillage & { id: number }) => {
       pilot: data.pilot,
       others: data.others,
       comments: data.comments,
+      producerId: data.producerId,
       address: {
         update: {
           street: data.address.street,
@@ -63,6 +64,7 @@ const update = async (data: NewTillage & { id: number }) => {
         },
       },
     },
+    include: { address: true, producer: true },
   });
   console.log("tillage update: ", data);
 

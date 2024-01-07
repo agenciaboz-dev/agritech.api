@@ -48,7 +48,8 @@ const close = async (data: Call) => {
       finish: new Date().toISOString(),
     },
   });
-  console.log({ call });
+  //www.figma.com/file/lY8mdg2JSASqrrWhjth3ca/DEV---AgriTech?type=design&node-id=0-1&mode=design&t=aOSaeEmBZu4UpZbx-0
+  https: console.log({ call });
 
   console.log("Chamado fechado:", call);
 

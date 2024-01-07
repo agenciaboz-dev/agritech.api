@@ -17,6 +17,7 @@ import object from "./object";
 import gallery from "./gallery";
 import calendar from "./calendar";
 import call from "./call";
+import chat from "./chat";
 
 import {
   User,
@@ -27,6 +28,7 @@ import {
   Object,
   Calendar,
   Call,
+  Chat,
 } from "@prisma/client";
 
 let io: SocketIoServer | null = null;
@@ -117,7 +119,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:pendingApproval", () => user.listPendingApproval(socket));
 
   // TILLAGE OPS
-  socket.on("tillage:new", (newTillage: Tillage) =>
+  socket.on("tillage:create", (newTillage: Tillage) =>
     tillage.newTillage(socket, newTillage)
   );
   socket.on("tillage:update", (updateTillage: Tillage) =>
@@ -127,7 +129,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("tillage:list", () => tillage.listTillage(socket));
 
   // COORDINATE OPS
-  socket.on("coordinate:new", (newCoorinate: Coordinate) =>
+  socket.on("coordinate:create", (newCoorinate: Coordinate) =>
     coordinate.newCoordinate(socket, newCoorinate)
   );
 
@@ -140,7 +142,7 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // GALLERY OPS
-  socket.on("gallery:new", (newGallery: Gallery) =>
+  socket.on("gallery:create", (newGallery: Gallery) =>
     gallery.newGallery(socket, newGallery)
   );
 
@@ -153,7 +155,7 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // KIT OPS
-  socket.on("kit:new", (newKit: Kit) => kit.newKit(socket, newKit));
+  socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit));
 
   socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit));
 
@@ -170,7 +172,7 @@ export const handleSocket = (socket: Socket) => {
   );
 
   // OBJECT OPS
-  socket.on("object:new", (newObject: Object) =>
+  socket.on("object:create", (newObject: Object) =>
     object.newObject(socket, newObject)
   );
 
@@ -183,11 +185,11 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // CALENDAR OPS
-  socket.on("calendar:employee:new", (newObject: Calendar) =>
+  socket.on("employee:calendar:create", (newObject: Calendar) =>
     calendar.newCalendarEmp(socket, newObject)
   );
 
-  socket.on("calendar:kit:new", (newObject: Calendar) =>
+  socket.on("kit:calendar:create", (newObject: Calendar) =>
     calendar.newCalendarKit(socket, newObject)
   );
 
@@ -200,11 +202,16 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // CALL OPS
-  socket.on("call:new", (newCall: Call) => call.newCall(socket, newCall));
+  socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall));
   socket.on("call:approve", (data: any) => call.approveCall(socket, data));
   socket.on("call:list", () => call.listCall(socket));
   socket.on("call:cancel", (data: any) => call.cancelCall(socket, data));
   socket.on("call:close", (data: any) => call.closeCall(socket, data));
+
+  // CHAT OPS
+  socket.on("chat:new", (data1: any, data2: any) =>
+    chat.newChat(socket, data1, data2)
+  );
 
   // STAGE OPS
 

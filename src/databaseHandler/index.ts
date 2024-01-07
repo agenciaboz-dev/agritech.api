@@ -7,6 +7,7 @@ import object from "./object";
 import calendar from "./calendar";
 import call from "./call";
 import report from "./report";
+import chat from "./chat";
 
 export default {
   user,
@@ -18,4 +19,5 @@ export default {
   calendar,
   call,
   report,
+  chat,
 };

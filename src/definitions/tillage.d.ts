@@ -28,5 +28,5 @@ declare interface NewTillage {
   location?: Coordinate[];
   gallery?: Gallery[];
 
-  producer?: { id: number };
+  producerId?: number;
 }
