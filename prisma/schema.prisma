@@ -115,7 +115,7 @@ model Coordinate{
     y               String
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int           @unique
+    tillageId       Int          
 }
 
 model Gallery{
