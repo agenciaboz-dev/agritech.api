@@ -1,0 +1,48 @@
+{
+    "address": {
+        "cep": "65.454-654",
+        "city": "fdbnm",
+        "complement": "dsfghjk",
+        "district": "vbnnnmmn",
+        "id": 85,
+        "number": "6546",
+        "street": "dfgccghbn",
+        "uf": "AM",
+        "userId": 111
+    },
+    "birth": "1945-10-15T00:00:00.000Z",
+    "cpf": "854123",
+    "email": "branco@gmail.com",
+    "employee": {
+        "bank_data": {
+            "account": "145789",
+            "agency": "89797",
+            "employeeId": 27,
+            "id": 8,
+            "name": "Sanatnder",
+            "type": "corrente"
+        },
+        "gender": "Feminino",
+        "id": 27,
+        "military": "",
+        "nationality": "Braisleiro",
+        "professional": null,
+        "relationship": "uniao",
+        "residence": "",
+        "rg": "8465123",
+        "userid": 111,
+        "voter_card": "87456156445",
+        "work_card": "454545465"
+    },
+    "id": 111,
+    "image": null,
+    "image64": null,
+    "name": "Branco",
+    "password": "123",
+    "phone": "84564545564",
+    "producer": null,
+    "username": "white",
+    "isAdmin": false,
+    "approved": false,
+    "rejected": ""
+}

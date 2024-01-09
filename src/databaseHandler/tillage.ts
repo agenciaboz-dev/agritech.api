@@ -17,6 +17,7 @@ const create = async (data: NewTillage) => {
             pilot: data.pilot,
             others: data.others,
             comments: data.comments,
+            // producerId:data.producerId
         },
     })
     console.log({ address: data.address })

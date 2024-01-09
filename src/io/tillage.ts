@@ -2,7 +2,7 @@ import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler//tillage"
 
 const newTillage = async (socket: Socket, data: any) => {
-    console.log("Usuário atualizado:", data)
+    console.log("Lavoura recebida:", data)
 
     try {
         const tillage = await databaseHandler.create(data)
@@ -20,7 +20,7 @@ const newTillage = async (socket: Socket, data: any) => {
 }
 
 const updateTillage = async (socket: Socket, data: any) => {
-    console.log("Usuário atualizado:", data)
+    console.log("Lavoura recebida atualizada:", data)
 
     try {
         const tillage = await databaseHandler.update(data)

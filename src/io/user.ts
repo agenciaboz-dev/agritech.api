@@ -10,7 +10,6 @@ interface UpdateUser extends Omit<User, "id"> {
 }
 
 const prisma = user
-console.log(prisma)
 
 const logout = async (socket: Socket, clients: ClientBag, user: User) => {
     const io = getIoInstance()
@@ -20,7 +19,6 @@ const logout = async (socket: Socket, clients: ClientBag, user: User) => {
 }
 
 const handleLogin = async (socket: Socket, data: LoginForm) => {
-    console.log(prisma)
     const user = await prisma.login(data)
 
     if (user) {
