@@ -170,6 +170,7 @@ const newUser = async (data: NewUser) => {
         await prisma.producer.create({
             data: {
                 cnpj: data.producer.cnpj,
+                tillage: data.producer.tillage,
                 userid: user.id,
             },
         })
@@ -268,4 +269,3 @@ export default {
     newUser,
     update,
 }
-

@@ -80,7 +80,7 @@ model Producer{
     report          Report?      @relation(fields: [reportId],references: [id])
     reportId        Int?         @unique
 
-    tillage         Tillage[]
+    tillage         Tillage[]    
     call            Call[]
 
 
