@@ -105,7 +105,7 @@ model Tillage{
     gallery         Gallery[]
 
     producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int?          @unique
+    producerId      Int?          
 
 }
 
