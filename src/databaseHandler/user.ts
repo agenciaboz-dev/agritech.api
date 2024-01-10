@@ -128,6 +128,7 @@ const newUser = async (data: NewUser) => {
             rejected: null,
             office: data.office,
         },
+        include: inclusions.user,
     })
     console.log({ address: data.address })
 
@@ -171,17 +172,19 @@ const newUser = async (data: NewUser) => {
         // })
         console.log("Funcionário criado:", data.employee)
     } else if (data.producer) {
-        await prisma.producer.create({
+        const producer = await prisma.producer.create({
             data: {
                 cnpj: data.producer.cnpj,
+                contract: data.producer.contract,
+                employeeId: Number(data.producer.employeeId),
                 tillage: data.producer.tillage,
                 userid: user.id,
             },
         })
         console.log("Produtor criado:", data.producer)
     }
-    // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
-    return { user, address }
+    return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
+    // return { user, address }
 }
 
 const update = async (data: NewUser & { id: number }) => {

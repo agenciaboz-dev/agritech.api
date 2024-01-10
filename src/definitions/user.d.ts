@@ -40,7 +40,7 @@ declare interface NewUser {
             agency: string
         }
     }
-    producer?: { cnpj: string; tillage: Tillage }
+    producer?: { cnpj: string; tillage: Tillage; contract: boolean; employeeId: string }
 }
 
 declare interface LoginForm {
