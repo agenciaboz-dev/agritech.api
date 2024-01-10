@@ -18,7 +18,11 @@ const prisma = new PrismaClient()
 
 const inclusions = {
     user: {
-        producer: true,
+        producer: {
+            include: {
+                tillage: { include: { address: true, location: true, gallery: true } },
+            },
+        },
         employee: {
             include: {
                 bank: true,
@@ -176,7 +180,7 @@ const newUser = async (data: NewUser) => {
         })
         console.log("Produtor criado:", data.producer)
     }
-    //return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
+    // return await prisma.user.findFirst({ where: { id: user.id }, include: inclusions.user })
     return { user, address }
 }
 
