@@ -43,6 +43,12 @@ declare interface NewUser {
     producer?: { cnpj: string; tillage: Tillage; contract: boolean; employeeId: number }
 }
 
+declare interface User extends NewUser {
+    kit?: Kit
+    kitId: number
+    producers?: Producer[]
+    calendars?: Calendar[]
+}
 declare interface LoginForm {
     login: string
     password: string

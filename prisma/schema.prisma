@@ -229,7 +229,7 @@ model Kit {
     description     String
     
     objects         Object[]
-    employees       Employee[]
+    employees       Employee[]  
     calls           Call[]        
 
     calendar        Calendar?

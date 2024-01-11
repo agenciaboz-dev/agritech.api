@@ -4,9 +4,7 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const inclusions = {
-    // producer: {
-    //     tillage: { include: { address: true, location: true, gallery: true } },
-    // },
+  
     tillage: { address: true, location: true, gallery: true },
     address: { use: true, tillage: true },
     location: { tillage: true },
