@@ -34,9 +34,9 @@ const inclusions = {
 
     employee: { bank: true, professional: true },
     producer: {
-        tillage: { include: { address: true, coordinate: true, gallery: true } },
+        tillage: { include: { address: true, location: true, gallery: true } },
     },
-    tillage: { address: true, coordinate: true, gallery: true },
+    tillage: { address: true, location: true, gallery: true },
     address: { use: true, tillage: true },
     bank: { employee: true },
     professional: { employee: true },
@@ -172,11 +172,12 @@ const newUser = async (data: NewUser) => {
         // })
         console.log("Funcionário criado:", data.employee)
     } else if (data.producer) {
+        // console.log({ "Recebendo no Back:": data })
         const producer = await prisma.producer.create({
             data: {
                 cnpj: data.producer.cnpj,
                 contract: data.producer.contract,
-                employeeId: Number(data.producer.employeeId),
+                employeeId: data.producer.employeeId,
                 tillage: data.producer.tillage,
                 userid: user.id,
             },

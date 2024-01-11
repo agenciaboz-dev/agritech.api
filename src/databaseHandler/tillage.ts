@@ -4,12 +4,12 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const inclusions = {
-    producer: {
-        tillage: { include: { address: true, coordinate: true, gallery: true } },
-    },
-    tillage: { address: true, coordinate: true, gallery: true },
+    // producer: {
+    //     tillage: { include: { address: true, location: true, gallery: true } },
+    // },
+    tillage: { address: true, location: true, gallery: true },
     address: { use: true, tillage: true },
-    coordinate: { tillage: true },
+    location: { tillage: true },
     gallery: {},
 }
 const create = async (data: NewTillage) => {
@@ -56,12 +56,11 @@ const create = async (data: NewTillage) => {
                 })
             })
         )
-        // return { locations }
     }
 
     console.log("Lavoura criada:", tillage)
 
-    return await prisma.user.findFirst({ where: { id: tillage.id }, include: inclusions.tillage })
+    return { tillage }
 }
 
 const update = async (data: NewTillage & { id: number }) => {

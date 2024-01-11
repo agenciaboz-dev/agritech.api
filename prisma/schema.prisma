@@ -75,7 +75,7 @@ model Producer{
     userid          Int          @unique
 
     employee        Employee?    @relation(fields: [employeeId],references: [id])
-    employeeId      Int?         @unique
+    employeeId      Int?         
 
     report          Report?      @relation(fields: [reportId],references: [id])
     reportId        Int?         @unique
