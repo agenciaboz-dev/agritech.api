@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const inclusions = {
-  
     tillage: { address: true, location: true, gallery: true },
     address: { use: true, tillage: true },
     location: { tillage: true },
@@ -58,7 +57,7 @@ const create = async (data: NewTillage) => {
 
     console.log("Lavoura criada:", tillage)
 
-    return { tillage }
+    return await prisma.tillage.findFirst({ where: { id: tillage.id }, include: inclusions.tillage })
 }
 
 const update = async (data: NewTillage & { id: number }) => {

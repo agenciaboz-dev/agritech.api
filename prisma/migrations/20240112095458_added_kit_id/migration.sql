@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE `Object` ADD COLUMN `kitId` INTEGER NULL;
+
+-- AddForeignKey
+ALTER TABLE `Object` ADD CONSTRAINT `Object_kitId_fkey` FOREIGN KEY (`kitId`) REFERENCES `Kit`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

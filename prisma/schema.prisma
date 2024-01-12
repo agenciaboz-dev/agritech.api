@@ -144,8 +144,8 @@ model Employee{
     user            User          @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int           @unique
 
-    kit             Kit?          @relation(fields: [kitId],references: [id])
-    kitId           Int?
+    kits            Kit[]         
+
 
     producers       Producer[]
     calendars       Calendar[]
@@ -242,8 +242,11 @@ model Object {
     quantity        Int
 
     kit             Kit?          @relation(fields: [kitId],references: [id],onDelete: Cascade)
-    kitId           Int?          @unique
+    kitId           Int?          
 }
+
+
+
 
 model Report {
     id              Int           @id @default(autoincrement())

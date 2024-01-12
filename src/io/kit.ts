@@ -2,7 +2,7 @@ import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler/kit"
 
 const newKit = async (socket: Socket, data: any) => {
-    console.log("Kit Criado:", data)
+    console.log("Kit recebido:", data)
 
     try {
         const kit = await databaseHandler.create(data)
@@ -20,7 +20,7 @@ const newKit = async (socket: Socket, data: any) => {
 }
 
 const updateKit = async (socket: Socket, data: any) => {
-    console.log("Kit atualizado:", data)
+    console.log("Kit pra atualizar:", data)
 
     try {
         const kit = await databaseHandler.update(data)
@@ -30,10 +30,13 @@ const updateKit = async (socket: Socket, data: any) => {
             // socket.broadcast.emit("user:update", user)
         } else {
             socket.emit("kit:update:failed")
+            console.log("Erro de dados do Kit ou id não encontrado")
         }
-    } catch (error) {
-        console.log(error)
-        socket.emit("kit:update:failed", { error: error })
+    } catch (error: any) {
+        let message = error
+        if (error.code === "P2025") message = "Id não encontrado"
+        socket.emit("kit:update:failed", { error: message })
+        console.log(message)
     }
 }
 
@@ -55,9 +58,11 @@ const addEmployeeKit = async (socket: Socket, data: any) => {
         } else {
             socket.emit("kit:addEmployee:failed")
         }
-    } catch (error) {
-        console.log(error)
-        socket.emit("kit:addEmployee:failed", { error: error })
+    } catch (error: any) {
+        let message = error
+        if (error.code === "P2016") message = "Algum dos id's não foi encontrado"
+        socket.emit("kit:addEmployee:failed", { error: message })
+        console.log(message)
     }
 }
 
@@ -73,9 +78,11 @@ const removeEmployeeKit = async (socket: Socket, data: any) => {
         } else {
             socket.emit("kit:removeEmployee:failed")
         }
-    } catch (error) {
-        console.log(error)
-        socket.emit("kit:removeEmployee:failed", { error: error })
+    } catch (error: any) {
+        let message = error
+        if (error.code === "P2025") message = "Algum id está incorreto"
+        socket.emit("kit:removeEmployee:failed", { error: message })
+        console.log(message)
     }
 }
 

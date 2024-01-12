@@ -14,9 +14,15 @@ const inclusions = {
             include: {
                 bank: true,
                 professional: true,
+                calendars: true,
+                producers: true,
             },
         },
         address: true,
+    },
+    employee: { bank: true, professional: true, calendars: true, producers: true },
+    producer: {
+        tillage: { include: { address: true, location: true, gallery: true } },
     },
     tillage: { address: true, location: true, gallery: true },
     address: { use: true, tillage: true },
@@ -36,21 +42,31 @@ const create = async (data: NewKit) => {
             image64: data.image64,
             name: data.name,
             description: data.description,
+            employees: {
+                connect: data.employees?.map((employee) => ({ id: employee.id })),
+            },
+        },
+        include: {
+            employees: true, // Certifique-se de incluir os employees no resultado
         },
     })
-    if (data.employees) {
-        const employeesList = await Promise.all(
-            data.employees.map(async (employee: Employee) => {
-                return await prisma.employee.update({
-                    where: { id: employee.id },
-                    data: { kitId: kit.id },
+    if (data.objects) {
+        const objectsList = await Promise.all(
+            data.objects.map(async (object) => {
+                return await prisma.object.create({
+                    data: {
+                        name: object.name,
+                        description: object.description,
+                        quantity: object.quantity,
+                        kitId: kit.id,
+                    },
                 })
             })
         )
     }
 
     console.log("Kit criado:", kit)
-    return { kit }
+    return await prisma.kit.findFirst({ where: { id: kit.id }, include: inclusions.kit })
 }
 
 const update = async (data: NewKit & { id: number }) => {
@@ -70,12 +86,7 @@ const update = async (data: NewKit & { id: number }) => {
 
 const list = async () => {
     return await prisma.kit.findMany({
-        include: {
-            calendar: true,
-            calls: true,
-            employees: true,
-            objects: true,
-        },
+        include: inclusions.kit,
     })
 }
 

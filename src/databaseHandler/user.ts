@@ -27,12 +27,14 @@ const inclusions = {
             include: {
                 bank: true,
                 professional: true,
+                calendars: true,
+                producers: true,
             },
         },
         address: true,
     },
 
-    employee: { bank: true, professional: true },
+    employee: { bank: true, professional: true, calendars: true, producers: true },
     producer: {
         tillage: { include: { address: true, location: true, gallery: true } },
     },
