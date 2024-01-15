@@ -1,85 +1,90 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
-import { Call, PrismaClient, Report } from "@prisma/client";
-import createReport from "./report";
+import { Call, PrismaClient, Report } from "@prisma/client"
+import createReport from "./report"
+import { OpenCall } from "../definitions/call"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
-const create = async (data: Call) => {
-  console.log("Iniciando a criação do chamado...");
-  const call = await prisma.call.create({
-    data: {
-      open: new Date().toISOString(),
-      producerId: data.producerId,
-      userId: data.userId,
-    },
-  });
-  console.log({ call });
+const create = async (data: OpenCall) => {
+    console.log("Iniciando a criação do chamado...")
+    const call = await prisma.call.create({
+        data: {
+            open: new Date().toISOString(),
+            approved: data.approved,
+            comments: data.comments,
+            producerId: data.producerId,
+            userId: data.userId,
+            kitId: data.kitId,
+        },
+    })
+    console.log({ call })
 
-  console.log("Chamado aberto:", call);
-  return call;
-};
+    console.log("Chamado aberto:", call)
+    return call
+}
 
 const approve = async (data: Call) => {
-  try {
-    const call = await prisma.call.findUnique({ where: { id: data.id } });
+    try {
+        const call = await prisma.call.findUnique({ where: { id: data.id } })
 
-    if (call && call.kitId === null) {
-      const updatedCall = await prisma.call.update({
-        where: { id: data.id },
-        data: {
-          kitId: data.kitId,
-        },
-      });
-      return updatedCall;
-    } else {
-      throw new Error("Call not found or kit already assigned");
+        if (call) {
+            const updatedCall = await prisma.call.update({
+                where: { id: data.id },
+                data: {
+                    approved: data.kitId ? true : false,
+                    kitId: data.kitId,
+                },
+            })
+            return updatedCall
+        } else {
+            throw new Error("Call not found or kit already assigned")
+        }
+    } catch (error) {
+        console.error("Error in approving call:", error)
+        throw error
     }
-  } catch (error) {
-    console.error("Error in approving call:", error);
-    throw error;
-  }
-};
+}
 
 const close = async (data: Call) => {
-  console.log("Iniciando a fechamento do chamado...");
-  const call = await prisma.call.update({
-    where: { id: data.id },
-    data: {
-      finish: new Date().toISOString(),
-    },
-  });
-  //www.figma.com/file/lY8mdg2JSASqrrWhjth3ca/DEV---AgriTech?type=design&node-id=0-1&mode=design&t=aOSaeEmBZu4UpZbx-0
-  https: console.log({ call });
+    console.log("Iniciando a fechamento do chamado...")
+    const call = await prisma.call.update({
+        where: { id: data.id },
+        data: {
+            finish: new Date().toISOString(),
+        },
+    })
+    //www.figma.com/file/lY8mdg2JSASqrrWhjth3ca/DEV---AgriTech?type=design&node-id=0-1&mode=design&t=aOSaeEmBZu4UpZbx-0
+    https: console.log({ call })
 
-  console.log("Chamado fechado:", call);
+    console.log("Chamado fechado:", call)
 
-  const report = await prisma.report.create({
-    data: {
-      callId: call.id,
-    },
-  });
-  console.log("Report criado para o chamado:", report);
-  return { call, report };
-};
+    const report = await prisma.report.create({
+        data: {
+            callId: call.id,
+        },
+    })
+    console.log("Report criado para o chamado:", report)
+    return { call, report }
+}
 
 const cancel = async (data: Call) => {
-  try {
-    const call = await prisma.call.findUnique({ where: { id: data.id } });
+    try {
+        const call = await prisma.call.findUnique({ where: { id: data.id } })
 
-    if (!call) {
-      throw new Error("Call not found");
+        if (!call) {
+            throw new Error("Call not found")
+        }
+
+        await prisma.call.delete({
+            where: { id: data.id },
+        })
+
+        return { message: "Call successfully deleted" }
+    } catch (error) {
+        console.error("Error in canceling call:", error)
+        throw error
     }
-
-    await prisma.call.delete({
-      where: { id: data.id },
-    });
-
-    return { message: "Call successfully deleted" };
-  } catch (error) {
-    console.error("Error in canceling call:", error);
-    throw error;
-  }
-};
+}
 
 // const update = async (data: Call & { id: number }) => {
 //   const call = await prisma.calendar.update({
@@ -94,26 +99,37 @@ const cancel = async (data: Call) => {
 // };
 
 const list = async () => {
-  return await prisma.call.findMany({
-    include: {
-      kit: true,
-      producer: true,
-      user: true,
-    },
-  });
-};
+    return await prisma.call.findMany({
+        include: {
+            kit: true,
+            producer: true,
+            user: true,
+        },
+    })
+}
+const listPending = async () => {
+    return await prisma.call.findMany({
+        where: { approved: false },
+        include: {
+            kit: true,
+            producer: true,
+            user: true,
+        },
+    })
+}
 
 const find = async (id: number) => {
-  const report = await prisma.report.findUnique({ where: { id } });
-  console.log({ report });
-  return report;
-};
+    const report = await prisma.report.findUnique({ where: { id } })
+    console.log({ report })
+    return report
+}
 
 export default {
-  create,
-  approve,
-  close,
-  cancel,
-  list,
-  find,
-};
+    create,
+    approve,
+    close,
+    cancel,
+    list,
+    listPending,
+    find,
+}

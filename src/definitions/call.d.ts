@@ -1,11 +1,16 @@
-import { Call, Report } from "@prisma/client";
+import { Call, Report, Stage } from "@prisma/client"
 
 declare interface OpenCall {
-  open: Date;
-  producerId: number;
-  userId: number;
+    open: Date
+    comments: string
+    approved: boolean
+    stages?: Stage[]
+
+    kitId?: number
+    producerId: number
+    userId: number
 }
 
 declare interface CloseCall {
-  finish: Date;
+    finish: Date
 }

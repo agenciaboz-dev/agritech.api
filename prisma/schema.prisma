@@ -191,21 +191,26 @@ model Calendar {
 model Call {
     id              Int           @id @default(autoincrement())
     open            DateTime?     @db.Date
+    init            DateTime?     @db.Date
     finish          DateTime?     @db.Date
+    approved        Boolean?      @default(false)
+    comments        String?        @default("")
 
     stages          Stage[]
 
     report          Report?
     
+
     kit             Kit?           @relation(fields: [kitId],references: [id])
     kitId           Int?         
 
-    producer        Producer      @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int           @unique       
+    producer        Producer?      @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int?              
 
-    user            User          @relation(fields: [userId],references: [id],onDelete: Cascade)
-    userId          Int           @unique
+    user            User?          @relation(fields: [userId],references: [id],onDelete: Cascade)
+    userId          Int?          
 }
+// sdjbfjhdsagfh
 
 model Stage {
     id              Int           @id @default(autoincrement())

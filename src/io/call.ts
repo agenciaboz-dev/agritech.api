@@ -101,6 +101,11 @@ const listCall = async (socket: Socket) => {
     const call = await databaseHandler.list()
     socket.emit("call:list:success", call)
 }
+const listCallPending = async (socket: Socket) => {
+    console.log("Lista de Chamados Pendentes")
+    const call = await databaseHandler.listPending()
+    socket.emit("call:listPending:success", call)
+}
 
 export default {
     newCall,
@@ -109,4 +114,5 @@ export default {
     closeCall,
     cancelCall,
     listCall,
+    listCallPending,
 }

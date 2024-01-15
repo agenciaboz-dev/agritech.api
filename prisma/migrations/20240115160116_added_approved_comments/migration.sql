@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Call` ADD COLUMN `approved` BOOLEAN NULL DEFAULT false,
+    ADD COLUMN `comments` VARCHAR(191) NULL DEFAULT '';
