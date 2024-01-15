@@ -49,6 +49,7 @@ const create = async (data: NewTillage) => {
                         x: location.x,
                         y: location.y,
                         tillageId: tillage.id,
+                        
                     },
                 })
             })
@@ -57,7 +58,7 @@ const create = async (data: NewTillage) => {
 
     console.log("Lavoura criada:", tillage)
 
-    return await prisma.tillage.findFirst({ where: { id: tillage.id }, include: inclusions.tillage })
+    return { tillage }
 }
 
 const update = async (data: NewTillage & { id: number }) => {
