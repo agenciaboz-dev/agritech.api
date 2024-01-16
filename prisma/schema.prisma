@@ -104,8 +104,11 @@ model Tillage{
     location        Coordinate[]
     gallery         Gallery[]
 
-    producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int?          
+
+    producer         Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId       Int?  
+
+    call            Call?
 
 }
 
@@ -184,8 +187,8 @@ model Calendar {
     employee        Employee?     @relation(fields: [employeeId],references: [id])
     employeeId      Int?          @unique
 
-    kit              Kit?         @relation(fields: [kitId],references: [id])
-    kitId            Int?         @unique
+    kit             Kit?         @relation(fields: [kitId],references: [id])
+    kitId           Int?         @unique
 }
 
 model Call {
@@ -200,6 +203,8 @@ model Call {
 
     report          Report?
     
+    tillage         Tillage?        @relation(fields: [tillageId],references: [id])
+    tillageId       Int?            @unique
 
     kit             Kit?           @relation(fields: [kitId],references: [id])
     kitId           Int?         
@@ -232,6 +237,7 @@ model Kit {
     image64         String?     
     name            String
     description     String
+    active          Boolean      @default(false)
     
     objects         Object[]
     employees       Employee[]  

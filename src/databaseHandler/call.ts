@@ -12,9 +12,10 @@ const create = async (data: OpenCall) => {
             open: new Date().toISOString(),
             approved: data.approved,
             comments: data.comments,
+            tillageId: data.tillageId,
             producerId: data.producerId,
             userId: data.userId,
-            kitId: data.kitId,
+            kitId: data.kitId || undefined,
         },
     })
     console.log({ call })
@@ -117,6 +118,16 @@ const listPending = async () => {
         },
     })
 }
+const listApproved = async () => {
+    return await prisma.call.findMany({
+        where: { approved: true },
+        include: {
+            kit: true,
+            producer: true,
+            user: true,
+        },
+    })
+}
 
 const find = async (id: number) => {
     const report = await prisma.report.findUnique({ where: { id } })
@@ -131,5 +142,6 @@ export default {
     cancel,
     list,
     listPending,
+    listApproved,
     find,
 }

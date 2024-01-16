@@ -164,6 +164,7 @@ export const handleSocket = (socket: Socket) => {
     socket.on("call:approve", (data: any) => call.approveCall(socket, data))
     socket.on("call:list", () => call.listCall(socket))
     socket.on("call:listPending", () => call.listCallPending(socket))
+    socket.on("call:listApproved", () => call.listCallApproved(socket))
     socket.on("call:cancel", (data: any) => call.cancelCall(socket, data))
     socket.on("call:close", (data: any) => call.closeCall(socket, data))
 

@@ -42,6 +42,7 @@ const create = async (data: NewKit) => {
             image64: data.image64,
             name: data.name,
             description: data.description,
+            active: data.active,
             employees: {
                 connect: data.employees?.map((employee) => ({ id: employee.id })),
             },

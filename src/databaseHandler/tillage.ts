@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const inclusions = {
-    tillage: { address: true, location: true, gallery: true },
+    tillage: { address: true, location: true, gallery: true, call: true },
     address: { use: true, tillage: true },
     location: { tillage: true },
     gallery: {},
@@ -24,6 +24,7 @@ const create = async (data: NewTillage) => {
             others: data.others,
             comments: data.comments,
             producerId: data.producerId,
+            call: data.call || {},
         },
     })
     console.log({ address: data.address })
@@ -49,7 +50,6 @@ const create = async (data: NewTillage) => {
                         x: location.x,
                         y: location.y,
                         tillageId: tillage.id,
-                        
                     },
                 })
             })
