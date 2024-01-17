@@ -163,15 +163,15 @@ const newUser = async (data: NewUser) => {
             },
         })
 
-        await prisma.bank.create({
-            data: {
-                account: data.employee.bank_data.account,
-                agency: data.employee.bank_data.agency,
-                name: data.employee.bank_data.name,
-                type: data.employee.bank_data.type,
-                employeeId: employee.id,
-            },
-        })
+        // await prisma.bank.create({
+        //     data: {
+        //         account: data.employee.bank_data.account,
+        //         agency: data.employee.bank_data.agency,
+        //         name: data.employee.bank_data.name,
+        //         type: data.employee.bank_data.type,
+        //         employeeId: employee.id,
+        //     },
+        // })
         console.log("Funcionário criado:", data.employee)
     } else if (data.producer) {
         // console.log({ "Recebendo no Back:": data })
