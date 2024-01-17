@@ -41,7 +41,7 @@ const updateKit = async (socket: Socket, data: any) => {
 }
 
 const listKit = async (socket: Socket) => {
-    console.log("Lista de kits")
+    // console.log("Lista de kits")
     const kit = await databaseHandler.list()
     socket.emit("kit:list:success", kit)
 }

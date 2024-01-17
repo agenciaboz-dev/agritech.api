@@ -38,7 +38,7 @@ const updateTillage = async (socket: Socket, data: any) => {
 }
 
 const listTillage = async (socket: Socket) => {
-    console.log("Lista de tillages")
+    // console.log("Lista de tillages")
     const tillage = await databaseHandler.list()
     socket.emit("tillage:list:success", tillage)
 }

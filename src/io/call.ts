@@ -97,17 +97,17 @@ const cancelCall = async (socket: Socket, data: Call) => {
 }
 
 const listCall = async (socket: Socket) => {
-    console.log("Lista de Chamados")
+    // console.log("Lista de Chamados")
     const call = await databaseHandler.list()
     socket.emit("call:list:success", call)
 }
 const listCallPending = async (socket: Socket) => {
-    console.log("Lista de Chamados Pendentes")
+    // console.log("Lista de Chamados Pendentes")
     const call = await databaseHandler.listPending()
     socket.emit("call:listPending:success", call)
 }
 const listCallApproved = async (socket: Socket) => {
-    console.log("Lista de Chamados Aprovados")
+    // console.log("Lista de Chamados Aprovados")
     const call = await databaseHandler.listApproved()
     socket.emit("call:listApproved:success", call)
 }

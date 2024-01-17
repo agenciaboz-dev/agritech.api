@@ -1,3 +1,4 @@
+import { OpenCall } from "../definitions/call"
 import { NewTillage } from "../definitions/tillage"
 import { PrismaClient } from "@prisma/client"
 
@@ -8,6 +9,7 @@ const inclusions = {
     address: { use: true, tillage: true },
     location: { tillage: true },
     gallery: {},
+    call: { stages: true, report: true },
 }
 const create = async (data: NewTillage) => {
     console.log("Iniciando a criação da Lavoura...")
@@ -24,7 +26,7 @@ const create = async (data: NewTillage) => {
             others: data.others,
             comments: data.comments,
             producerId: data.producerId,
-            call: data.call || {},
+            call: data.call,
         },
     })
     console.log({ address: data.address })

@@ -16,3 +16,4 @@ declare interface OpenCall {
 declare interface CloseCall {
     finish: Date
 }
+

@@ -21,7 +21,7 @@ declare interface NewTillage {
     }
     location?: Coordinate[]
     gallery?: Gallery[]
-    call: Call
+    call?: Call
     producerId?: number
 }
 

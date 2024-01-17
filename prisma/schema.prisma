@@ -97,7 +97,7 @@ model Tillage{
     technician      String?
     pilot           String?
     others          String?
-    comments        String?
+    comments        String?      @db.Text
 
     address         Address?
 
@@ -197,7 +197,7 @@ model Call {
     init            DateTime?     @db.Date
     finish          DateTime?     @db.Date
     approved        Boolean?      @default(false)
-    comments        String?        @default("")
+    comments        String?       @db.Text @default("")
 
     stages          Stage[]
 
@@ -224,7 +224,7 @@ model Stage {
     start           DateTime      @db.Time()
     finish          DateTime      @db.Time()
     duration        DateTime      @db.Time()
-    comments        String?
+    comments        String?       @db.Text
 
     callId          Int
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
@@ -306,7 +306,7 @@ model Material{
     removed         String
     applied         String
     returned        String
-    comments        String
+    comments        String        @db.Text
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     reportId        Int           @unique
@@ -317,7 +317,7 @@ model TechReport{
     date            DateTime      @db.Date
     init            DateTime      @db.Time()
     finish          DateTime      @db.Time()
-    comments        String
+    comments        String        @db.Text
 
     flight          Flight[]
 
