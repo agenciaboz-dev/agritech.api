@@ -8,6 +8,7 @@ import calendar from "./calendar";
 import call from "./call";
 import report from "./report";
 import chat from "./chat";
+import bank from "./bank";
 
 export default {
   user,
@@ -20,4 +21,5 @@ export default {
   call,
   report,
   chat,
+  bank,
 };
