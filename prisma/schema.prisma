@@ -215,7 +215,7 @@ model Call {
     user            User?          @relation(fields: [userId],references: [id],onDelete: Cascade)
     userId          Int?          
 }
-// sdjbfjhdsagfh
+
 
 model Stage {
     id              Int           @id @default(autoincrement())

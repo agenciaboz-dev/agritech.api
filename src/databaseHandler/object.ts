@@ -25,6 +25,7 @@ const update = async (data: NewObject & { id: number }) => {
       name: data.name,
       description: data.description,
       quantity: data.quantity,
+      kitId: data.kitId,
     },
   });
   console.log("Coordinate Update: ", data);
