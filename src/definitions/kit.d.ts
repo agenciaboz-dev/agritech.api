@@ -1,19 +1,20 @@
-import { Kit, Object, Employee, Calls, Calendar } from "@prisma/client";
+import { Kit, Object, Employee, Calls, Calendar } from "@prisma/client"
 
 declare interface NewKit {
-  image: string;
-  image64: string;
-  name: string;
-  description: string;
+    image: string
+    image64: string
+    name: string
+    description: string
 
-  objects?: Object[];
-  employees?: Employee[];
-  calls?: Call[];
-  // Maybe change the calendar
-  calendar?: Calendar;
+    active: boolean
+    objects?: Object[]
+    employees?: Employee[]
+    calls?: Call[]
+    // Maybe change the calendar
+    calendar?: Calendar
 }
 
 declare interface ManageKitMembers {
-  kitId: number;
-  employeeId: number;
+    kitId: number
+    employeeId: number
 }
