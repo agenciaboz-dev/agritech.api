@@ -1,5 +1,5 @@
 import { NewKit, ManageKitMembers } from "../definitions/kit";
-import { Employee, PrismaClient } from "@prisma/client";
+import { Kit, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -98,6 +98,19 @@ const list = async () => {
   });
 };
 
+const activate = async (data: Kit) => {
+  const kit = await prisma.kit.update({
+    where: { id: data.id },
+    data: {
+      name: data.name,
+      active: data.active,
+    },
+  });
+  console.log("Kit update: ", data);
+
+  return kit;
+};
+
 const add = async (data: ManageKitMembers) => {
   const kit = await prisma.kit.update({
     where: { id: data.kitId },
@@ -135,6 +148,7 @@ export default {
   create,
   update,
   list,
+  activate,
   add,
   remove,
 };

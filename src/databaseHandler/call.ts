@@ -33,6 +33,7 @@ const approve = async (data: Call) => {
         where: { id: data.id },
         data: {
           approved: data.kitId ? true : false,
+          status: "INPROGRESS",
           kitId: data.kitId,
         },
       });
@@ -52,6 +53,7 @@ const close = async (data: Call) => {
     where: { id: data.id },
     data: {
       finish: new Date().toISOString(),
+      status: "CLOSED",
     },
   });
   console.log({ call });
@@ -68,35 +70,25 @@ const close = async (data: Call) => {
 };
 
 const cancel = async (data: Call) => {
-  try {
-    const call = await prisma.call.findUnique({ where: { id: data.id } });
+  console.log("Iniciando o cancelamento do chamado...");
+  const call = await prisma.call.update({
+    where: { id: data.id },
+    data: {
+      status: "CANCELED",
+    },
+  });
+  console.log({ call });
 
-    if (!call) {
-      throw new Error("Call not found");
-    }
+  console.log("Chamado Cancelado:", call);
 
-    await prisma.call.delete({
-      where: { id: data.id },
-    });
-
-    return { message: "Call successfully deleted" };
-  } catch (error) {
-    console.error("Error in canceling call:", error);
-    throw error;
-  }
+  const report = await prisma.report.create({
+    data: {
+      callId: call.id,
+    },
+  });
+  console.log("Report criado para o chamado:", report);
+  return { call, report };
 };
-
-// const update = async (data: Call & { id: number }) => {
-//   const call = await prisma.calendar.update({
-//     where: { id: data.id },
-//     data: {
-//       name: data.name,
-//     },
-//   });
-//   console.log("Coordinate Update: ", data);
-
-//   return calendar;
-// };
 
 const list = async () => {
   return await prisma.call.findMany({

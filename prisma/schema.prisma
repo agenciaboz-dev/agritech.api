@@ -191,6 +191,12 @@ model Calendar {
     kitId           Int?         @unique
 }
 
+enum CallStatus {
+    OPEN
+    INPROGRESS
+    CLOSED
+    CANCELED
+}
 model Call {
     id              Int           @id @default(autoincrement())
     open            DateTime?     @db.Date
@@ -198,6 +204,7 @@ model Call {
     finish          DateTime?     @db.Date
     approved        Boolean?      @default(false)
     comments        String?       @db.Text @default("")
+    status          CallStatus    @default(OPEN)
 
     stages          Stage[]
 
