@@ -106,7 +106,7 @@ const activate = async (data: Kit) => {
       active: data.active,
     },
   });
-  console.log("Kit update: ", data);
+  console.log("Kit activation: ", data);
 
   return kit;
 };
