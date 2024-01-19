@@ -165,7 +165,7 @@ export const handleSocket = (socket: Socket) => {
     kit.listKit(socket);
   });
 
-  socket.on("kit:activate", (data: Kit) => kit.activateKit(socket, data));
+  socket.on("kit:toggle", (data: Kit) => kit.activateKit(socket, data));
 
   socket.on("kit:add:employee", (manageKit: Kit) =>
     kit.addEmployeeKit(socket, manageKit)

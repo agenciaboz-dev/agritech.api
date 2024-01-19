@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler/kit";
+import { Kit } from "@prisma/client";
 
 const newKit = async (socket: Socket, data: any) => {
   console.log("Kit recebido:", data);
@@ -46,23 +47,23 @@ const listKit = async (socket: Socket) => {
   socket.emit("kit:list:success", kit);
 };
 
-const activateKit = async (socket: Socket, data: any) => {
+const activateKit = async (socket: Socket, data: Kit) => {
   console.log("Kit pra ativar/desativar:", data);
 
   try {
-    const kit = await databaseHandler.update(data);
+    const kit = await databaseHandler.toggle(data.id);
 
     if (kit) {
-      socket.emit("kit:ativation:success", kit);
+      socket.emit("kit:toggle:success", kit);
       // socket.broadcast.emit("user:update", user)
     } else {
-      socket.emit("kit:ativation:failed");
+      socket.emit("kit:toggle:failed");
       console.log("Erro de dados do Kit ou id não encontrado");
     }
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Id não encontrado";
-    socket.emit("kit:ativation:failed", { error: message });
+    socket.emit("kit:toggle:failed", { error: message });
     console.log(message);
   }
 };

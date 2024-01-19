@@ -111,7 +111,7 @@ const list = async () => {
 //   return kit;
 // };
 
-const activate = async (id: number) => {
+const toggle = async (id: number) => {
   const kit = await prisma.kit.findUnique({
     where: { id },
     select: {
@@ -164,7 +164,7 @@ export default {
   create,
   update,
   list,
-  activate,
+  toggle,
   add,
   remove,
 };
