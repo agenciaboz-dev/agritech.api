@@ -1,37 +1,37 @@
-import { NewEmployeeCalendar, NewKitCalendar } from "../definitions/calendar";
+import { CalendarHandler } from "../definitions/calendar";
 import { Calendar, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const createEmp = async (data: NewEmployeeCalendar) => {
-  console.log("Iniciando a criação do calendario do Empregado...");
-  const calendar = await prisma.calendar.create({
-    data: {
-      name: data.name,
-      employeeId: data.employeeId,
-    },
-  });
-  console.log({ calendar });
+// const createEmp = async (data: NewEmployeeCalendar) => {
+//   console.log("Iniciando a criação do calendario do Empregado...");
+//   const calendar = await prisma.calendar.create({
+//     data: {
+//       name: data.name,
+//       employeeId: data.employeeId,
+//     },
+//   });
+//   console.log({ calendar });
 
-  console.log("Calendario do Empregado Criado:", calendar);
-  return calendar;
-};
+//   console.log("Calendario do Empregado Criado:", calendar);
+//   return calendar;
+// };
 
-const createKit = async (data: NewKitCalendar) => {
-  console.log("Iniciando a criação do calendario do Empregado...");
-  const calendar = await prisma.calendar.create({
-    data: {
-      name: data.name,
-      kitId: data.kitId,
-    },
-  });
-  console.log({ calendar });
+// const createKit = async (data: NewKitCalendar) => {
+//   console.log("Iniciando a criação do calendario do Empregado...");
+//   const calendar = await prisma.calendar.create({
+//     data: {
+//       name: data.name,
+//       kitId: data.kitId,
+//     },
+//   });
+//   console.log({ calendar });
 
-  console.log("Calendario do Empregado Criado:", calendar);
-  return calendar;
-};
+//   console.log("Calendario do Empregado Criado:", calendar);
+//   return calendar;
+// };
 
-const update = async (data: Calendar & { id: number }) => {
+const update = async (data: Calendar) => {
   const calendar = await prisma.calendar.update({
     where: { id: data.id },
     data: {
@@ -53,8 +53,8 @@ const list = async () => {
 };
 
 export default {
-  createEmp,
-  createKit,
+  // createEmp,
+  // createKit,
   update,
   list,
 };

@@ -1,7 +1,8 @@
 import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler/bank";
+import { NewBank } from "../definitions/bank";
 
-const newBank = async (socket: Socket, data: any) => {
+const newBank = async (socket: Socket, data: NewBank) => {
   console.log("Novos dados bancarios:", data);
 
   try {
@@ -19,7 +20,7 @@ const newBank = async (socket: Socket, data: any) => {
   }
 };
 
-const updateBank = async (socket: Socket, data: any) => {
+const updateBank = async (socket: Socket, data: NewBank) => {
   console.log("Dados bancarios atualizados:", data);
 
   try {

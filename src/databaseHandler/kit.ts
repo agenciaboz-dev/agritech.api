@@ -37,6 +37,7 @@ const inclusions = {
     objects: true,
     employees: true,
     calls: true,
+    calendar: true,
   },
 };
 const create = async (data: NewKit) => {
@@ -70,14 +71,22 @@ const create = async (data: NewKit) => {
     );
   }
 
+  const calendar = await prisma.calendar.create({
+    data: {
+      name: `Calendário do Kit ${kit.name}`,
+      kitId: kit.id,
+    },
+  });
+
   console.log("Kit criado:", kit);
+  console.log("Calendario do Kit criado:", calendar);
   return await prisma.kit.findFirst({
     where: { id: kit.id },
     include: inclusions.kit,
   });
 };
 
-const update = async (data: NewKit & { id: number }) => {
+const update = async (data: Kit) => {
   const kit = await prisma.kit.update({
     where: { id: data.id },
     data: {

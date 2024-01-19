@@ -189,13 +189,13 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // CALENDAR OPS
-  socket.on("employee:calendar:create", (newEmpCalendar: Calendar) =>
-    calendar.newCalendarEmp(socket, newEmpCalendar)
-  );
+  // socket.on("employee:calendar:create", (newEmpCalendar: Calendar) =>
+  //   calendar.newCalendarEmp(socket, newEmpCalendar)
+  // );
 
-  socket.on("kit:calendar:create", (newKitCalendar: Calendar) =>
-    calendar.newCalendarKit(socket, newKitCalendar)
-  );
+  // socket.on("kit:calendar:create", (newKitCalendar: Calendar) =>
+  //   calendar.newCalendarKit(socket, newKitCalendar)
+  // );
 
   socket.on("calendar:update", (updateCalendar: Calendar) =>
     calendar.updateCalendar(socket, updateCalendar)

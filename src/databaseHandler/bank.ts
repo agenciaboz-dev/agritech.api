@@ -20,7 +20,7 @@ const create = async (data: NewBank) => {
   return { bank };
 };
 
-const update = async (data: NewBank & { id: number }) => {
+const update = async (data: NewBank) => {
   const bank = await prisma.bank.update({
     where: { employeeId: data.employeeId },
     data: {

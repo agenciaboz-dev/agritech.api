@@ -1,5 +1,5 @@
 import { NewGallery } from "../definitions/gallery";
-import { PrismaClient } from "@prisma/client";
+import { Gallery, PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -17,7 +17,7 @@ const create = async (data: NewGallery) => {
   return { gallery };
 };
 
-const update = async (data: NewGallery & { id: number }) => {
+const update = async (data: Gallery) => {
   const gallery = await prisma.gallery.update({
     where: { tillageId: data.tillageId },
     data: {

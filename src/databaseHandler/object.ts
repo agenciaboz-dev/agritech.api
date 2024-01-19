@@ -1,4 +1,5 @@
 import { NewObject } from "../definitions/object";
+import { Object } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -18,7 +19,7 @@ const create = async (data: NewObject) => {
   return object;
 };
 
-const update = async (data: NewObject & { id: number }) => {
+const update = async (data: Object) => {
   const object = await prisma.object.update({
     where: { id: data.id },
     data: {
