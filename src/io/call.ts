@@ -3,7 +3,7 @@ import databaseHandler from "../databaseHandler/call";
 import { Call } from "@prisma/client";
 import { OpenCall } from "../definitions/call";
 
-const newCall = async (socket: Socket, data: OpenCall) => {
+const newCall = async (socket: Socket, data: any) => {
   console.log("Novo Chamado:", data);
 
   try {
@@ -29,6 +29,7 @@ const approveCall = async (socket: Socket, data: Call) => {
 
     if (call) {
       socket.emit("call:approve:success", call);
+      socket.emit("stage:creation:success", call.newStage);
     } else {
       socket.emit("call:approve:failed");
     }
@@ -48,12 +49,9 @@ const closeCall = async (socket: Socket, data: Call) => {
 
     if (call) {
       socket.emit("call:close:success", call);
-      console.log("call:close:success emitted");
       socket.emit("report:creation:success", call.report);
-      console.log("report:creation:success emitted");
     } else {
       socket.emit("call:close:failed");
-      console.log("call:close:failed emitted");
     }
   } catch (error) {
     console.error("Error in closeCall:", error);

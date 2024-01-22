@@ -31,7 +31,9 @@ import {
   Call,
   Chat,
   Bank,
+  Stage,
 } from "@prisma/client";
+import stage from "./stage";
 
 let io: SocketIoServer | null = null;
 
@@ -101,20 +103,13 @@ export const handleSocket = (socket: Socket) => {
 
   //USER OPS
   socket.on("user:logout", (data) => user.logout(socket, clients, data));
-
   socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser));
-
   socket.on("user:reject", (id) => user.reject(socket, id));
-
   socket.on("user:approve", (id) => user.approve(socket, id));
-
   socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data));
-
   socket.on("user:find", (userId: number) => user.findUser(socket, { userId }));
-
   socket.on("users:list", () => user.listUsersApproved(socket));
   // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
-
   socket.on("user:update", (updateUser: User, userId: number) =>
     user.updateUser(socket, updateUser)
   );
@@ -229,6 +224,13 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // STAGE OPS
+  socket.on("stage:update:1", (stageUpdate: Stage) =>
+    stage.updateStageOne(socket, stageUpdate)
+  );
+
+  socket.on("stage:update:2", (stageUpdate: Stage) =>
+    stage.updateStageTwo(socket, stageUpdate)
+  );
 
   // REPORT OPS
 

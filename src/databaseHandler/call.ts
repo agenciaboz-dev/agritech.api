@@ -34,10 +34,20 @@ const approve = async (data: Call) => {
         data: {
           approved: data.kitId ? true : false,
           status: "INPROGRESS",
+          stage: "STAGE1",
           kitId: data.kitId,
         },
       });
-      return updatedCall;
+
+      const newStage = await prisma.stage.create({
+        data: {
+          name: "STAGE1",
+          callId: call.id,
+        },
+      });
+      console.log("Stage 1 Criado:", newStage);
+
+      return { updatedCall, newStage };
     } else {
       throw new Error("Call not found or kit already assigned");
     }

@@ -9,6 +9,7 @@ import call from "./call";
 import report from "./report";
 import chat from "./chat";
 import bank from "./bank";
+import stage from "./stage";
 
 export default {
   user,
@@ -22,4 +23,5 @@ export default {
   report,
   chat,
   bank,
+  stage,
 };

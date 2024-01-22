@@ -197,6 +197,14 @@ enum CallStatus {
     CLOSED
     CANCELED
 }
+
+enum CallStages {
+    STAGE0
+    STAGE1
+    STAGE2
+    STAGE3
+    STAGE4
+}
 model Call {
     id              Int           @id @default(autoincrement())
     open            DateTime?     @db.Date
@@ -206,8 +214,9 @@ model Call {
     comments        String?       @db.Text @default("")
     status          CallStatus    @default(OPEN)
 
+    stage           CallStages    @default(STAGE0)
     stages          Stage[]
-
+    
     report          Report?
     
     tillage         Tillage?        @relation(fields: [tillageId],references: [id])
@@ -226,11 +235,11 @@ model Call {
 
 model Stage {
     id              Int           @id @default(autoincrement())
-    name            String
-    date            DateTime      @db.Date
-    start           DateTime      @db.Time()
-    finish          DateTime      @db.Time()
-    duration        DateTime      @db.Time()
+    name            String?
+    date            DateTime?      @db.Date
+    start           DateTime?      @db.Time()
+    finish          DateTime?      @db.Time()
+    duration        String?
     comments        String?       @db.Text
 
     callId          Int

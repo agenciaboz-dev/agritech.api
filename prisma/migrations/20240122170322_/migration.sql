@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE `Call` ADD COLUMN `stage` ENUM('STAGE0', 'STAGE1', 'STAGE2', 'STAGE3', 'STAGE4') NOT NULL DEFAULT 'STAGE0';
+
+-- AlterTable
+ALTER TABLE `Stage` MODIFY `name` VARCHAR(191) NULL,
+    MODIFY `date` DATE NULL,
+    MODIFY `start` TIME NULL,
+    MODIFY `finish` TIME NULL,
+    MODIFY `duration` VARCHAR(191) NULL;

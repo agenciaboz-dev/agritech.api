@@ -3,7 +3,7 @@ import databaseHandler from "../databaseHandler/gallery";
 import { NewGallery } from "../definitions/gallery";
 import { Gallery } from "@prisma/client";
 
-const newGallery = async (socket: Socket, data: NewGallery) => {
+const newGallery = async (socket: Socket, data: any) => {
   console.log("Nova Galeria:", data);
 
   try {
