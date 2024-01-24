@@ -128,6 +128,7 @@ const list = async () => {
             producer: true,
             user: true,
             stages: true,
+            tillage: true,
         },
     })
 }
@@ -138,6 +139,7 @@ const listPending = async () => {
             kit: true,
             producer: true,
             user: true,
+            tillage: true,
         },
     })
 }
@@ -149,6 +151,7 @@ const listApproved = async () => {
             producer: true,
             user: true,
             stages: true,
+            tillage: true,
         },
     })
 }
