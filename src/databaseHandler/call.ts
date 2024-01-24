@@ -56,6 +56,7 @@ const approve = async (data: Call) => {
           status: "INPROGRESS",
           stage: "STAGE1",
           kitId: data.kitId,
+          init: new Date().toISOString(),
         },
       });
 
