@@ -58,6 +58,7 @@ const approve = async (data: Call) => {
             const updatedCall = await prisma.call.update({
                 where: { id: data.id },
                 data: {
+                    init: new Date().toISOString(),
                     approved: data.kitId ? true : false,
                     status: "INPROGRESS",
                     stage: "STAGE1",
