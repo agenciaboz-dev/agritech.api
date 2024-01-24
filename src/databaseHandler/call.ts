@@ -29,7 +29,7 @@ const approve = async (data: Call) => {
     const call = await prisma.call.findUnique({ where: { id: data.id } });
 
     if (call) {
-      const updatedCall = await prisma.call.update({
+      const call = await prisma.call.update({
         where: { id: data.id },
         data: {
           approved: data.kitId ? true : false,
@@ -39,15 +39,15 @@ const approve = async (data: Call) => {
         },
       });
 
-      const newStage = await prisma.stage.create({
+      const stage = await prisma.stage.create({
         data: {
           name: "STAGE1",
           callId: call.id,
         },
       });
-      console.log("Stage 1 Criado:", newStage);
+      console.log("Stage 1 Criado:", stage);
 
-      return { updatedCall, newStage };
+      return { call, stage };
     } else {
       throw new Error("Call not found or kit already assigned");
     }
@@ -126,6 +126,7 @@ const listApproved = async () => {
       kit: true,
       producer: true,
       user: true,
+      stages: true,
     },
   });
 };

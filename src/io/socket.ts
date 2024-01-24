@@ -224,11 +224,11 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // STAGE OPS
-  socket.on("stage:update:1", (stageUpdate: Stage) =>
+  socket.on("stage:update:one", (stageUpdate: Stage) =>
     stage.updateStageOne(socket, stageUpdate)
   );
 
-  socket.on("stage:update:2", (stageUpdate: Stage) =>
+  socket.on("stage:update:two", (stageUpdate: Stage) =>
     stage.updateStageTwo(socket, stageUpdate)
   );
 

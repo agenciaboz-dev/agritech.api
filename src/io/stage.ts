@@ -2,6 +2,7 @@ import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler/stage";
 import { NewStage } from "../definitions/stage";
 import { Stage } from "@prisma/client";
+import call from "./call";
 
 // Cria o Stage 1
 const newStage = async (socket: Socket, data: NewStage) => {
@@ -24,11 +25,12 @@ const newStage = async (socket: Socket, data: NewStage) => {
 // Atualiza o Stage 1 e Cria o Stage 2
 const updateStageOne = async (socket: Socket, data: Stage) => {
   try {
-    const stage1 = await databaseHandler.updateOne(data);
+    const stage = await databaseHandler.updateOne(data);
 
-    if (stage1) {
-      socket.emit("stage:update:success", stage1);
-      socket.emit("stage:creation:success", stage1.stage2);
+    if (stage) {
+      socket.emit("stage:update:success", stage.stage1);
+      socket.emit("stage:creation:success", stage.stage2);
+      socket.emit("call:update:success", stage.updatedCall);
     } else {
       socket.emit("stage:update:failed");
     }
@@ -40,11 +42,12 @@ const updateStageOne = async (socket: Socket, data: Stage) => {
 // Atualiza o Stage 2 e Cria o Stage 3
 const updateStageTwo = async (socket: Socket, data: Stage) => {
   try {
-    const stage2 = await databaseHandler.updateTwo(data);
+    const stage = await databaseHandler.updateTwo(data);
 
-    if (stage2) {
-      socket.emit("stage:update:success", stage2);
-      socket.emit("stage:creation:success", stage2.stage3);
+    if (stage) {
+      socket.emit("stage:update:success", stage.stage2);
+      socket.emit("stage:creation:success", stage.stage3);
+      socket.emit("call:update:success", stage.updatedCall);
     } else {
       socket.emit("stage:update:failed");
     }

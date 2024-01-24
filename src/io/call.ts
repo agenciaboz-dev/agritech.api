@@ -28,8 +28,8 @@ const approveCall = async (socket: Socket, data: Call) => {
     const call = await databaseHandler.approve(data);
 
     if (call) {
-      socket.emit("call:approve:success", call);
-      socket.emit("stage:creation:success", call.newStage);
+      socket.emit("call:approve:success", call.call);
+      socket.emit("stage:creation:success", call.stage);
     } else {
       socket.emit("call:approve:failed");
     }
