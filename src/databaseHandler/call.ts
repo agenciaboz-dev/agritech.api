@@ -5,6 +5,26 @@ import { OpenCall } from "../definitions/call";
 
 const prisma = new PrismaClient();
 
+const inclusions = {
+  call: {
+    stages: true,
+    tillage: {
+      include: {
+        address: true,
+        location: true,
+        gallery: true,
+        producer: true,
+      },
+    },
+    report: true,
+    kit: true,
+    producer: {
+      include: { tillage: true },
+    },
+    user: true,
+  },
+};
+
 const create = async (data: OpenCall) => {
   console.log("Iniciando a criação do chamado...");
   const call = await prisma.call.create({
@@ -106,6 +126,8 @@ const list = async () => {
       kit: true,
       producer: true,
       user: true,
+      stages: true,
+      tillage: true,
     },
   });
 };
@@ -116,6 +138,7 @@ const listPending = async () => {
       kit: true,
       producer: true,
       user: true,
+      tillage: true,
     },
   });
 };
