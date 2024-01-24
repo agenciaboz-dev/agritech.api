@@ -24,7 +24,7 @@ const create = async (data: NewStage) => {
 }
 
 const updateOne = async (data: Stage) => {
-    console.log("Initiating Stage update...")
+    console.log("Initiating Stage1 update...")
 
     // Update the stage as before
     const stage1 = await prisma.stage.update({
@@ -51,6 +51,9 @@ const updateOne = async (data: Stage) => {
         data: {
             stage: "STAGE2",
         },
+        include: {
+            stages: true,
+        },
     })
 
     console.log("Stage 1 updated:", stage1)
@@ -62,7 +65,7 @@ const updateOne = async (data: Stage) => {
 }
 
 const updateTwo = async (data: Stage) => {
-    console.log("Initiating Stage update...")
+    console.log("Initiating Stage2 update...")
     const stage2 = await prisma.stage.update({
         where: { id: data.id },
         data: {
@@ -94,6 +97,32 @@ const updateTwo = async (data: Stage) => {
     console.log("Call Stage Status Updated")
 
     return { stage2, stage3, updatedCall }
+}
+const updateThree = async (data: Stage) => {
+    console.log("Initiating Stage3 update...")
+    const stage3 = await prisma.stage.update({
+        where: { id: data.id },
+        data: {
+            date: data.date,
+            start: data.start,
+            finish: data.finish,
+            duration: data.duration,
+            comments: data.comments,
+        },
+    })
+
+    const updatedCall = await prisma.call.update({
+        where: { id: stage3.callId },
+        data: {
+            stage: "STAGE3",
+        },
+    })
+
+    console.log("Stage 3 updated:", stage3)
+    console.log("Call updated:", updatedCall)
+    console.log("Call Stage Status Updated")
+
+    return { stage3, updatedCall }
 }
 
 // const approve = async (data: Call) => {
@@ -161,6 +190,7 @@ export default {
     create,
     updateOne,
     updateTwo,
+    updateThree,
     //   approve,
     //   close,
     //   list,

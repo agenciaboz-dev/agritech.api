@@ -56,9 +56,25 @@ const updateStageTwo = async (socket: Socket, data: Stage) => {
         socket.emit("stage:updateTwo:failed", { error: error })
     }
 }
+const updateStageThree = async (socket: Socket, data: Stage) => {
+    try {
+        const stage = await databaseHandler.updateThree(data)
+
+        if (stage) {
+            socket.emit("stage:updateThree:success", stage.stage3)
+            socket.emit("call:updateThree:success", stage.updatedCall)
+        } else {
+            socket.emit("stage:updateThree:failed")
+        }
+    } catch (error) {
+        console.log(error)
+        socket.emit("stage:updateThree:failed", { error: error })
+    }
+}
 
 export default {
     newStage,
     updateStageOne,
     updateStageTwo,
+    updateStageThree,
 }
