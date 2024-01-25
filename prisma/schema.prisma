@@ -317,7 +317,8 @@ model Treatment {
 model Product{ 
     id              Int             @id @default(autoincrement())
     name            String          
-    dosage          Float           
+    dosage          Float     
+    unit            String      
 
     treatment       Treatment        @relation(fields: [treatmentId],references: [id],onDelete: Cascade)
     treatmentId     Int           
