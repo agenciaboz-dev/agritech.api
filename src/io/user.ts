@@ -147,8 +147,7 @@ const findUser = async (socket: Socket, data: { userId: number }) => {
 };
 
 const updateUser = async (socket: Socket, data: any) => {
-  console.log("Usuário atualizado:", data);
-
+console.log(data);
   try {
     const updatedUser = await prisma.update(data);
 

@@ -307,7 +307,7 @@ model Operation {
 model Treatment {
     id              Int           @id @default(autoincrement())
 
-    products        Product[]  
+    products        Product[]
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     reportId        Int           @unique
