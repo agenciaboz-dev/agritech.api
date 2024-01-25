@@ -124,11 +124,12 @@ const cancel = async (data: Call) => {
 const list = async () => {
     return await prisma.call.findMany({
         include: {
-            kit: true,
-            producer: true,
+            kit: { include: { employees: true, calls: true, objects: true } },
+            producer: { include: { user: true } },
             user: true,
             stages: true,
             tillage: true,
+            report: true,
         },
     })
 }
@@ -137,7 +138,7 @@ const listPending = async () => {
         where: { approved: false },
         include: {
             kit: true,
-            producer: true,
+            producer: { include: { user: true } },
             user: true,
             tillage: true,
         },
@@ -147,10 +148,11 @@ const listApproved = async () => {
     return await prisma.call.findMany({
         where: { approved: true },
         include: {
-            kit: true,
-            producer: true,
+            kit: { include: { employees: { include: { user: true } }, calls: true, objects: true } },
+            producer: { include: { user: true } },
             user: true,
             stages: true,
+            report: true,
         },
     })
 }
