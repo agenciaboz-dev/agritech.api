@@ -83,6 +83,8 @@ model Producer{
     tillage         Tillage[]    
     call            Call[]
 
+    hectarePrice    Float?
+
 
 }
 
@@ -218,6 +220,7 @@ model Call {
     stages          Stage[]
     
     report          Report?
+    totalPrice      Float?
     
     tillage         Tillage?        @relation(fields: [tillageId],references: [id])
     tillageId       Int?            @unique
@@ -303,12 +306,21 @@ model Operation {
 }
 model Treatment {
     id              Int           @id @default(autoincrement())
-    product         String
-    dosage          String
+
+    products        Product[]  
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     reportId        Int           @unique
 
+}
+
+model Product{ 
+    id              Int             @id @default(autoincrement())
+    name            String          
+    dosage          Float           
+
+    treatment       Treatment        @relation(fields: [treatmentId],references: [id],onDelete: Cascade)
+    treatmentId     Int           
 }
 
 model Material{

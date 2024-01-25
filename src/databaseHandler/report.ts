@@ -4,10 +4,11 @@ import { Report, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: Report) => {
-  console.log("Iniciando a criação do chamado...");
+  console.log("Iniciando a criação do relatório...");
   const report = await prisma.report.create({
     data: {
       callId: data.callId,
+
     },
   });
   console.log({ report });
