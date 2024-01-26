@@ -17,6 +17,23 @@ const newCall = async (socket: Socket, data: any) => {
     }
   } catch (error) {
     console.log(error);
+    socket.emit("call:creation:failed", { error: error });
+  }
+};
+
+const updateCall = async (socket: Socket, data: any) => {
+  console.log("Atualizar Chamado:", data);
+
+  try {
+    const call = await databaseHandler.update(data);
+
+    if (call) {
+      socket.emit("call:update:success", call);
+    } else {
+      socket.emit("call:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
     socket.emit("call:update:failed", { error: error });
   }
 };
@@ -95,7 +112,7 @@ const listCallApproved = async (socket: Socket) => {
 
 export default {
   newCall,
-  //   updateCoordinate,
+  updateCall,
   approveCall,
   closeCall,
   cancelCall,

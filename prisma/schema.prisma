@@ -296,7 +296,7 @@ model Operation {
     id              Int           @id @default(autoincrement())
     service         String
     culture         String
-    areaMap         String
+    areaMap         Int
     equipment       String
     model           String
 
