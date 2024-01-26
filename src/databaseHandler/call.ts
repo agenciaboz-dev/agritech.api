@@ -38,10 +38,18 @@ const create = async (data: OpenCall) => {
       kitId: data.kitId || undefined,
     },
   });
-  console.log({ call });
 
-  console.log("Chamado aberto:", call);
-  return call;
+  const producer = await prisma.producer.update({
+    where: { id: data.producerId },
+    data: {
+      hectarePrice: data.hectarePrice,
+    },
+  });
+
+  console.log({ call, producer });
+
+  console.log("Chamado aberto:", call, producer);
+  return { call, producer };
 };
 
 const update = async (data: Call) => {
@@ -69,7 +77,7 @@ const update = async (data: Call) => {
   return call;
 };
 
-const approve = async (data: Call) => {
+const approve = async (data: OpenCall) => {
   try {
     const call = await prisma.call.findUnique({ where: { id: data.id } });
 
@@ -85,6 +93,13 @@ const approve = async (data: Call) => {
         },
       });
 
+      const producer = await prisma.producer.update({
+        where: { id: data.producerId },
+        data: {
+          hectarePrice: data.hectarePrice,
+        },
+      });
+
       const stage = await prisma.stage.create({
         data: {
           name: "STAGE1",
@@ -93,7 +108,7 @@ const approve = async (data: Call) => {
       });
       console.log("Stage 1 Criado:", stage);
 
-      return { call, stage };
+      return { call, stage, producer };
     } else {
       throw new Error("Call not found or kit already assigned");
     }

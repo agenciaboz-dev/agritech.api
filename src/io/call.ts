@@ -38,7 +38,7 @@ const updateCall = async (socket: Socket, data: any) => {
   }
 };
 
-const approveCall = async (socket: Socket, data: Call) => {
+const approveCall = async (socket: Socket, data: OpenCall) => {
   console.log("Chamado Aprovado:", data);
 
   try {
