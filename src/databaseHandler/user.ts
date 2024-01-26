@@ -190,6 +190,7 @@ const newUser = async (data: NewUser) => {
       data: {
         cnpj: data.producer.cnpj,
         contract: data.producer.contract,
+        hectarePrice: data.producer.hectarePrice,
         employeeId: data.producer.employeeId,
         tillage: data.producer.tillage,
         userid: user.id,
