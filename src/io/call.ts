@@ -66,7 +66,6 @@ const closeCall = async (socket: Socket, data: Call) => {
 
     if (call) {
       socket.emit("call:close:success", call);
-      socket.emit("report:creation:success", call.report);
     } else {
       socket.emit("call:close:failed");
     }
