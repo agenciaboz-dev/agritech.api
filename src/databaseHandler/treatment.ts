@@ -13,32 +13,33 @@ const create = async (data: NewTreatment) => {
   });
   console.log({ treatment });
 
-  console.log("Objecto criado:", treatment);
+  console.log("Treatment Created:", treatment);
   return treatment;
 };
 
-// const update = async (data: Treatment) => {
-//   const treatment = await prisma.treatment.update({
-//     where: { id: data.id },
-//     data: {
-//       products: data.products,
-//     },
-//   });
-//   console.log("Coordinate Update: ", data);
+const update = async (data: NewTreatment) => {
+  const treatment = await prisma.treatment.update({
+    where: { id: data.id },
+    data: {
+      reportId: data.reportId,
+    },
+  });
+  console.log("Objecto actualizado: ", data);
 
-//   return treatment;
-// };
+  return treatment;
+};
 
-// const list = async () => {
-//   return await prisma.treatment.findMany({
-//     include: {
-//       kit: true,
-//     },
-//   });
-// };
+const find = async (id: number) => {
+  return await prisma.treatment.findUnique({ where: { id } });
+};
+
+const list = async () => {
+  return await prisma.treatment.findMany({});
+};
 
 export default {
   create,
-  //   update,
-  //   list,
+  update,
+  find,
+  list,
 };
