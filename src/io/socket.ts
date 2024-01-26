@@ -238,6 +238,12 @@ export const handleSocket = (socket: Socket) => {
   socket.on("stage:update:one", (stageUpdate: Stage) =>
     stage.updateStageOne(socket, stageUpdate)
   );
+  socket.on("stage:update:two", (stageUpdate: Stage) =>
+    stage.updateStageTwo(socket, stageUpdate)
+  );
+  socket.on("stage:update:three", (stageUpdate: Stage) =>
+    stage.updateStageThree(socket, stageUpdate)
+  );
 
   // OPERATION OPS
   socket.on("operation:create", (data: any) =>
