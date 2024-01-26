@@ -2,9 +2,10 @@ import { TechReport } from "@prisma/client";
 
 declare interface NewTechReport {
   id: number;
-  date: Date;
-  init: Date;
-  finish: Date;
+  date: string;
+  init: string;
+  finish: string;
   comments: string;
+  flights: Flight[];
   reportId: number;
 }

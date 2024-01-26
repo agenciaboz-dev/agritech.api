@@ -1,8 +1,9 @@
 import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler/report";
 import { Report } from "@prisma/client";
+import { NewReport } from "../definitions/report";
 
-const newReport = async (socket: Socket, data: Report) => {
+const newReport = async (socket: Socket, data: NewReport) => {
   console.log("New Report:", data);
 
   try {

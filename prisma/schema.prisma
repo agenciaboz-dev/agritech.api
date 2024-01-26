@@ -288,7 +288,7 @@ model Report {
     producer        Producer?
     operation       Operation?
     treatment       Treatment?
-    material        Material?
+    material        Material[]
     techReport      TechReport?
 
 }
@@ -338,7 +338,7 @@ model Material{
     comments        String        @db.Text
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int           @unique
+    reportId        Int           
 }
 
 model TechReport{

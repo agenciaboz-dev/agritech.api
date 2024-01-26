@@ -2,7 +2,7 @@ import { Operation } from "@prisma/client";
 
 declare interface NewOperation {
   culture: string;
-  areaMap: string;
+  areaMap: number;
   equipment: string;
   model: string;
   service: string;

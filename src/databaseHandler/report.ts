@@ -1,13 +1,15 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
 import { Report, PrismaClient } from "@prisma/client";
+import { NewReport } from "../definitions/report";
 
 const prisma = new PrismaClient();
 
-const create = async (data: Report) => {
+const create = async (data: NewReport) => {
   console.log("Iniciando a criação do relatório...");
   const report = await prisma.report.create({
     data: {
       callId: data.callId,
+      producerId: data.producerId,
     },
   });
   console.log({ report });

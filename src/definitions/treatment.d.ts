@@ -1,7 +1,7 @@
-import { Stage } from "@prisma/client";
+import { Product, Stage } from "@prisma/client";
 
 declare interface NewTreatment {
   id: number;
-  products: number[];
+  products: Product[];
   reportId: number;
 }
