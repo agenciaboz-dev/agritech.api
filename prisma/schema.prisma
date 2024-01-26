@@ -326,15 +326,15 @@ model Product{
 
 model Material{
     id              Int           @id @default(autoincrement())
-    talhao          Int
+    talhao          String
     area            Float
-    product         Int
+    product         String
     dosage          Float
     classification  String
     total           Float
-    removed         String
-    applied         String
-    returned        String
+    removed         Float
+    applied         Float
+    returned        Float
     comments        String        @db.Text
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
