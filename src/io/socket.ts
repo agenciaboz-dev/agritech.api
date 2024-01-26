@@ -36,6 +36,8 @@ import {
   Report,
 } from "@prisma/client";
 import stage from "./stage";
+import operation from "./operation";
+import material from "./material";
 
 let io: SocketIoServer | null = null;
 
@@ -233,8 +235,36 @@ export const handleSocket = (socket: Socket) => {
     stage.updateStageOne(socket, stageUpdate)
   );
 
+  // OPERATION OPS
+  socket.on("operation:create", (data: any) =>
+    operation.newOperation(socket, data)
+  );
+  socket.on("operation:update", (data: any) =>
+    operation.updateOperation(socket, data)
+  );
+  socket.on("operation:list", () => operation.listOperation(socket));
+
+  socket.on("operation:find", (operationId: number) =>
+    operation.findOperation(socket, { operationId })
+  );
+
+  // MATERIAL OPS
+  socket.on("material:create", (data: any) =>
+    material.newMaterial(socket, data)
+  );
+
+  socket.on("material:update", (data: any) =>
+    material.updateMaterial(socket, data)
+  );
+
+  socket.on("material:find", (materialId: number) =>
+    material.findMaterial(socket, { materialId })
+  );
+
+  socket.on("material:list", () => material.listMaterial(socket));
+
   // REPORT OPS
-  socket.on("report:find", (reportId: number) =>
-    report.findReport(socket, { reportId })
+  socket.on("report:find", (materialId: number) =>
+    material.findMaterial(socket, { materialId })
   );
 };
