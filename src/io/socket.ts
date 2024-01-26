@@ -38,6 +38,10 @@ import {
 import stage from "./stage";
 import operation from "./operation";
 import material from "./material";
+import flight from "./flight";
+import product from "./product";
+import treatment from "./treatment";
+import techReport from "./techReport";
 
 let io: SocketIoServer | null = null;
 
@@ -263,8 +267,61 @@ export const handleSocket = (socket: Socket) => {
 
   socket.on("material:list", () => material.listMaterial(socket));
 
-  // REPORT OPS
-  socket.on("report:find", (materialId: number) =>
-    material.findMaterial(socket, { materialId })
+  // FLIGHT OPS
+  socket.on("flight:create", (data: any) => flight.newFlight(socket, data));
+  socket.on("flight:update", (data: any) => flight.updateFlight(socket, data));
+  socket.on("flight:list", () => flight.listFlight(socket));
+  socket.on("flight:find", (flightId: number) =>
+    flight.findFlight(socket, { flightId })
   );
+
+  // PRODUCT OPS
+  socket.on("product:create", (data: any) => product.newProduct(socket, data));
+  socket.on("product:update", (data: any) =>
+    product.updateProduct(socket, data)
+  );
+  socket.on("product:list", () => product.listProduct(socket));
+  socket.on("product:find", (productId: number) =>
+    product.findProduct(socket, { productId })
+  );
+
+  // TREATMENT OPS
+  socket.on("treatment:create", (data: any) =>
+    treatment.newTreatment(socket, data)
+  );
+  socket.on("treatment:update", (data: any) =>
+    treatment.updateTreatment(socket, data)
+  );
+  socket.on("treatment:list", () => treatment.listTreatment(socket));
+  socket.on("treatment:find", (treatmentId: number) =>
+    treatment.findTreatment(socket, { treatmentId })
+  );
+
+  // TECHREPORT OPS
+
+  socket.on("techReport:create", (data: any) =>
+    techReport.newTechReport(socket, data)
+  );
+
+  socket.on("techReport:update", (data: any) =>
+    techReport.updateTechReport(socket, data)
+  );
+
+  socket.on("techReport:find", (techReportId: number) =>
+    techReport.findTechReport(socket, techReportId)
+  );
+
+  socket.on("techReport:list", () => techReport.listTechReport(socket));
+
+  // REPORT OPS
+
+  socket.on("report:create", (data: any) => report.newReport(socket, data));
+
+  socket.on("report:update", (data: any) => report.updateReport(socket, data));
+
+  socket.on("report:find", (reportId: number) =>
+    report.findReport(socket, { reportId })
+  );
+
+  socket.on("report:list", () => report.listReport(socket));
 };

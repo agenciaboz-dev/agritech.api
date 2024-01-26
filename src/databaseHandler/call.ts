@@ -131,13 +131,7 @@ const close = async (data: Call) => {
 
   console.log("Chamado fechado:", call);
 
-  const report = await prisma.report.create({
-    data: {
-      callId: call.id,
-    },
-  });
-  console.log("Report criado para o chamado:", report);
-  return { call, report };
+  return { call };
 };
 
 const cancel = async (data: Call) => {
