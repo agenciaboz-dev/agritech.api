@@ -10,6 +10,29 @@ const create = async (data: NewReport) => {
     const report = await prisma.report.create({
         data: {
             callId: data.callId,
+            operation: {
+                create: {
+                    service: data.operation.service,
+                    culture: data.operation.culture,
+                    areaMap: data.operation.areaMap,
+                    equipment: data.operation.equipment,
+                    model: data.operation.model,
+                },
+            },
+            material: {
+                create: data.material.map((material) => ({
+                    talhao: material.talhao,
+                    area: material.area,
+                    product: material.product,
+                    dosage: material.dosage,
+                    classification: material.classification,
+                    total: material.total,
+                    removed: material.removed,
+                    applied: material.applied,
+                    returned: material.returned,
+                    comments: material.comments,
+                })),
+            },
         },
     })
 
@@ -24,40 +47,7 @@ const create = async (data: NewReport) => {
     //   },
     // });
 
-    const operation = await prisma.operation.create({
-        data: {
-            service: data.operation.service,
-            culture: data.operation.culture,
-            areaMap: data.operation.areaMap,
-            equipment: data.operation.equipment,
-            model: data.operation.model,
-            reportId: data.operation.reportId,
-        },
-    })
-
-    if (data.material) {
-        const materialsList = await Promise.all(
-            data.material.map(async (material) => {
-                return await prisma.material.create({
-                    data: {
-                        talhao: material.talhao,
-                        area: material.area,
-                        product: material.product,
-                        dosage: material.dosage,
-                        classification: material.classification,
-                        total: material.total,
-                        removed: material.removed,
-                        applied: material.applied,
-                        returned: material.returned,
-                        comments: material.comments,
-                        reportId: material.reportId,
-                    },
-                })
-            })
-        )
-    }
-
-    console.log({ report, operation })
+    console.log({ report })
     console.log("Report Criado aberto:", report)
     return report
 }
