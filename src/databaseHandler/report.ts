@@ -15,11 +15,46 @@ const create = async (data: Report) => {
   return report;
 };
 
+const update = async (data: Report) => {
+  console.log("Initiating Report Update...");
+  const report = await prisma.report.update({
+    where: { id: data.id },
+    data: {
+      callId: data.callId,
+    },
+  });
+  console.log("Report updated:", report);
+  return report;
+};
+
 const find = async (id: number) => {
-  return await prisma.report.findUnique({ where: { id } });
+  return await prisma.report.findUnique({
+    where: { id },
+    include: {
+      producer: true,
+      operation: true,
+      treatment: true,
+      material: true,
+      techReport: true,
+    },
+  });
+};
+
+const list = async () => {
+  return await prisma.report.findMany({
+    include: {
+      producer: true,
+      operation: true,
+      treatment: true,
+      material: true,
+      techReport: true,
+    },
+  });
 };
 
 export default {
   create,
+  update,
   find,
+  list,
 };
