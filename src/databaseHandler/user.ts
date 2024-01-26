@@ -143,7 +143,6 @@ const newUser = async (data: NewUser) => {
     },
     include: inclusions.user,
   });
-  console.log({ address: data.address });
 
   const address = await prisma.address.create({
     data: {
@@ -158,6 +157,7 @@ const newUser = async (data: NewUser) => {
     },
   });
   console.log("Usuário criado:", user);
+  console.log({ address: data.address });
 
   if (data.employee) {
     const employee = await prisma.employee.create({
@@ -202,7 +202,6 @@ const newUser = async (data: NewUser) => {
     where: { id: user.id },
     include: inclusions.user,
   });
-  // return { user, address }
 };
 
 const update = async (data: NewUser & { id: number }) => {
