@@ -255,6 +255,7 @@ const update = async (data: NewUser & { id: number }) => {
       where: { userid: data.id },
       data: {
         cnpj: data.producer.cnpj,
+        hectarePrice: data.producer.hectarePrice,
         userid: data.id,
       },
     });
