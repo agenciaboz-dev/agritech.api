@@ -34,8 +34,9 @@ const create = async (data: NewReport) => {
                 })),
             },
         },
-        include: { material: true, operation: true, call: { include: { producer: { include: { user: true } } } } },
+        include: { material: true, operation: true },
     })
+
 
     console.log({ report })
     console.log("Report Criado aberto:", report)
