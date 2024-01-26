@@ -34,18 +34,9 @@ const create = async (data: NewReport) => {
                 })),
             },
         },
+        include: { material: true, operation: true },
     })
 
-    // const producer = await prisma.producer.create({
-    //   data: {
-    //     cnpj: data.producer.cnpj,
-    //     contract: data.producer.contract,
-    //     userid: data.producer.userid,
-    //     employeeId: data.producer.employeeId,
-    //     reportId: data.producer.reportId,
-    //     hectarePrice: data.producer.hectarePrice,
-    //   },
-    // });
 
     console.log({ report })
     console.log("Report Criado aberto:", report)
