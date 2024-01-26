@@ -19,6 +19,23 @@ const newMaterial = async (socket: Socket, data: Material) => {
   }
 };
 
+const updateMaterial = async (socket: Socket, data: Material) => {
+  console.log("Update Report:", data);
+
+  try {
+    const material = await databaseHandler.update(data);
+
+    if (material) {
+      socket.emit("material:update:success", material);
+    } else {
+      socket.emit("material:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("material:update:failed", { error: error });
+  }
+};
+
 const findMaterial = async (socket: Socket, data: { materialId: number }) => {
   const materialId = data.materialId;
   try {
@@ -39,7 +56,19 @@ const findMaterial = async (socket: Socket, data: { materialId: number }) => {
   }
 };
 
+const listMaterial = async (socket: Socket) => {
+  try {
+    const materials = await databaseHandler.list();
+    socket.emit("material:list:success", materials);
+  } catch (error) {
+    console.error(`Error fetching reports. Error: ${error}`);
+    socket.emit("material:list:error", { error: error });
+  }
+};
+
 export default {
   newMaterial,
+  updateMaterial,
   findMaterial,
+  listMaterial,
 };
