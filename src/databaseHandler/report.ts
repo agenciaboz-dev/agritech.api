@@ -68,7 +68,6 @@ const find = async (id: number) => {
     return await prisma.report.findUnique({
         where: { id },
         include: {
-            producer: true,
             operation: true,
             treatment: true,
             material: true,
@@ -80,7 +79,6 @@ const find = async (id: number) => {
 const list = async () => {
     return await prisma.report.findMany({
         include: {
-            producer: true,
             operation: true,
             treatment: true,
             material: true,
