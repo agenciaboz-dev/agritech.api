@@ -77,8 +77,6 @@ model Producer{
     employee        Employee?    @relation(fields: [employeeId],references: [id])
     employeeId      Int?         
 
-    report          Report?      @relation(fields: [reportId],references: [id])
-    reportId        Int?         @unique
 
     tillage         Tillage[]    
     call            Call[]
@@ -285,7 +283,6 @@ model Report {
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int           @unique
 
-    producer        Producer?
     operation       Operation?
     treatment       Treatment?
     material        Material[]

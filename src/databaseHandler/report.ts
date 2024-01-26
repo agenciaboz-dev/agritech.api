@@ -10,13 +10,6 @@ const create = async (data: NewReport) => {
     const report = await prisma.report.create({
         data: {
             callId: data.callId,
-            producer: {
-                connect: {
-                    cnpj: data.producer.cnpj,
-                    // call: data.producer.call,
-                    contract: data.producer.contract,
-                },
-            },
         },
     })
 
