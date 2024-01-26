@@ -25,24 +25,38 @@ const create = async (data: NewFlight) => {
   return { flight };
 };
 
-// const update = async (data: Gallery) => {
-//   const gallery = await prisma.gallery.update({
-//     where: { tillageId: data.tillageId },
-//     data: {
-//       image: data.image,
-//     },
-//   });
-//   console.log("Image Update: ", data);
+const update = async (data: NewFlight) => {
+  const flight = await prisma.flight.update({
+    where: { id: data.id },
+    data: {
+      temperature: data.temperature,
+      humidity: data.humidity,
+      wind_velocity: data.wind_velocity,
+      height: data.height,
+      faixa: data.faixa,
+      flight_velocity: data.flight_velocity,
+      tank_volume: data.tank_volume,
+      rate: data.rate,
+      performance: data.performance,
+      techReportId: data.techReportId,
+    },
+  });
+  console.log("Flight atualizada: ", data);
 
-//   return { gallery };
-// };
+  return { flight };
+};
 
-// const list = async () => {
-//   return await prisma.gallery.findMany({});
-// };
+const find = async (id: number) => {
+  return await prisma.flight.findUnique({ where: { id } });
+};
+
+const list = async () => {
+  return await prisma.flight.findMany({});
+};
 
 export default {
   create,
-  //   update,
-  //   list,
+  update,
+  find,
+  list,
 };

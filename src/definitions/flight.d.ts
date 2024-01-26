@@ -1,6 +1,7 @@
 import { Flight } from "@prisma/client";
 
 declare interface NewFlight {
+  id: number;
   temperature: number;
   humidity: number;
   wind_velocity: number;
