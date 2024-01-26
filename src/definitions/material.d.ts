@@ -1,15 +1,15 @@
-import { Material } from "@prisma/client";
+import { Material } from "@prisma/client"
 
 declare interface NewMaterial {
-  talhao: number;
-  area: number;
-  product: number;
-  dosage: number;
-  classification: string;
-  total: number;
-  removed: string;
-  applied: string;
-  returned: string;
-  comments: string;
-  reportId: number;
+    talhao: string
+    area: number
+    product: string
+    dosage: number
+    classification: string
+    total: number
+    removed: number
+    applied: number
+    returned: number
+    comments: string
+    reportId: number
 }
