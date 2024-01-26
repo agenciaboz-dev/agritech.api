@@ -19,30 +19,56 @@ const newTechReport = async (socket: Socket, data: NewTechReport) => {
   }
 };
 
-// const updateCoordinate = async (socket: Socket, data: any) => {
-//     console.log("Coordenada atualizada:", data)
+const updateTechReport = async (socket: Socket, data: NewTechReport) => {
+  console.log("New Flight Data:", data);
 
-//     try {
-//         const coordinate = await databaseHandler.update(data)
+  try {
+    const techReport = await databaseHandler.update(data);
 
-//         if (coordinate) {
-//             socket.emit("coordinate:update:success", coordinate)
-//             // socket.broadcast.emit("user:update", user)
-//         } else {
-//             socket.emit("coordinate:update:failed")
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         socket.emit("coordinate:update:failed", { error: error })
-//     }
-// }
+    if (techReport) {
+      socket.emit("techReport:update:success", techReport);
+    } else {
+      socket.emit("techReport:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("techReport:update:failed", { error: error });
+  }
+};
 
-// const listCoordinate = async (socket: Socket) => {
-//   console.log("Lista de coordenadas");
-//   const coordinate = await databaseHandler.list();
-//   socket.emit("coordinate:list:success", coordinate);
-// };
+const findTechReport = async (socket: Socket, id: number) => {
+  try {
+    const techReport = await databaseHandler.find(id);
+
+    if (techReport) {
+      socket.emit("techReport:find:success", techReport);
+    } else {
+      socket.emit("techReport:find:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("techReport:find:failed", { error: error });
+  }
+};
+
+const listTechReport = async (socket: Socket) => {
+  try {
+    const techReport = await databaseHandler.list();
+
+    if (techReport) {
+      socket.emit("techReport:list:success", techReport);
+    } else {
+      socket.emit("techReport:list:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("techReport:list:failed", { error: error });
+  }
+};
 
 export default {
   newTechReport,
+  updateTechReport,
+  findTechReport,
+  listTechReport,
 };
