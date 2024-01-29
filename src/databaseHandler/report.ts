@@ -69,9 +69,9 @@ const create = async (data: NewReport) => {
         },
         include: {
             operation: true,
-            treatment: true,
+            treatment: { include: { products: true } },
             material: true,
-            techReport: true,
+            techReport: { include: { flight: true } },
         },
     })
     console.log(report)
