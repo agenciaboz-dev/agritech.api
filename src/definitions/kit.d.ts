@@ -5,7 +5,7 @@ declare interface NewKit {
     image64: string
     name: string
     description: string
-
+    hectareDay: number
     active: boolean
     objects?: Object[]
     employees?: Employee[]
