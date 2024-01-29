@@ -374,5 +374,5 @@ model Flight{
     performance     Float
 
     techReport      TechReport    @relation(fields: [techReportId],references: [id],onDelete: Cascade)
-    techReportId    Int           @unique
+    techReportId    Int           
 }

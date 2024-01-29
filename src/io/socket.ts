@@ -138,6 +138,10 @@ export const handleSocket = (socket: Socket) => {
     coordinate.newCoordinate(socket, newCoorinate)
   );
 
+  socket.on("coordinate:cep", (data: string) =>
+    cep.coordinateCep(socket, data)
+  );
+
   // socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
   //   coordinate.updateCoordinate(socket, updateCoordinate)
   // );
