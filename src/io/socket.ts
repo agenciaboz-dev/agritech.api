@@ -1,333 +1,250 @@
-import { Server as SocketIoServer } from "socket.io";
-import { Server as HttpServer } from "http";
-import { Server as HttpsServer } from "https";
+import { Server as SocketIoServer } from "socket.io"
+import { Server as HttpServer } from "http"
+import { Server as HttpsServer } from "https"
 
-import { Socket } from "socket.io";
-import cep from "./geolocalTest";
-import weather from "./weatherApi";
+import { Socket } from "socket.io"
+import cep from "./geolocalTest"
+import weather from "./weatherApi"
 
-import { Client, ClientBag } from "../definitions/client";
-import { LoginForm } from "../definitions/user";
+import { Client, ClientBag } from "../definitions/client"
+import { LoginForm } from "../definitions/user"
 
-import user from "./user";
-import tillage from "./tillage";
-import coordinate from "./coordinate";
-import kit from "./kit";
-import object from "./object";
-import gallery from "./gallery";
-import calendar from "./calendar";
-import call from "./call";
-import chat from "./chat";
-import bank from "./bank";
-import report from "./report";
+import user from "./user"
+import tillage from "./tillage"
+import coordinate from "./coordinate"
+import kit from "./kit"
+import object from "./object"
+import gallery from "./gallery"
+import calendar from "./calendar"
+import call from "./call"
+import chat from "./chat"
+import bank from "./bank"
+import report from "./report"
 
-import {
-  User,
-  Tillage,
-  Coordinate,
-  Gallery,
-  Kit,
-  Object,
-  Calendar,
-  Call,
-  Chat,
-  Bank,
-  Stage,
-  Report,
-} from "@prisma/client";
-import stage from "./stage";
-import operation from "./operation";
-import material from "./material";
-import flight from "./flight";
-import product from "./product";
-import treatment from "./treatment";
-import techReport from "./techReport";
+import { User, Tillage, Coordinate, Gallery, Kit, Object, Calendar, Call, Chat, Bank, Stage, Report } from "@prisma/client"
+import stage from "./stage"
+import operation from "./operation"
+import material from "./material"
+import flight from "./flight"
+import product from "./product"
+import treatment from "./treatment"
+import techReport from "./techReport"
 
-let io: SocketIoServer | null = null;
+let io: SocketIoServer | null = null
 
 export const initializeIoServer = (server: HttpServer | HttpsServer) => {
-  io = new SocketIoServer(server, {
-    cors: { origin: "*" },
-    maxHttpBufferSize: 1e8,
-  });
-};
+    io = new SocketIoServer(server, {
+        cors: { origin: "*" },
+        maxHttpBufferSize: 1e8,
+    })
+}
 
 export const getIoInstance = () => {
-  if (!io) {
-    throw new Error(
-      "Socket.IO has not been initialized. Please call initializeIoServer first."
-    );
-  }
-  return io;
-};
+    if (!io) {
+        throw new Error("Socket.IO has not been initialized. Please call initializeIoServer first.")
+    }
+    return io
+}
 
-export let clientList: Client[] = [];
+export let clientList: Client[] = []
 
-const get = (socket: Socket) =>
-  clientList.find((client) => client.socket == socket);
-const find = (id: number) => clientList.find((client) => client.user.id == id);
-const getUser = (client: Client) => client.user;
-const list = () => clientList.map((client) => client.user);
+const get = (socket: Socket) => clientList.find((client) => client.socket == socket)
+const find = (id: number) => clientList.find((client) => client.user.id == id)
+const getUser = (client: Client) => client.user
+const list = () => clientList.map((client) => client.user)
 
 const remove = (client: Client | undefined) => {
-  if (!client) return;
-  clientList = clientList.filter((item) => item.socket != client.socket);
-};
+    if (!client) return
+    clientList = clientList.filter((item) => item.socket != client.socket)
+}
 
 const add = (client: Client) => {
-  const exists = find(client.user.id);
-  if (exists) remove(client);
+    const exists = find(client.user.id)
+    if (exists) remove(client)
 
-  clientList.push(client);
-};
+    clientList.push(client)
+}
 
 const update = (client: Client, user: User) =>
-  (clientList = [
-    ...clientList.filter((item) => item.socket != client.socket),
-    { ...client, user },
-  ]);
+    (clientList = [...clientList.filter((item) => item.socket != client.socket), { ...client, user }])
 
 export const handleSocket = (socket: Socket) => {
-  const io = getIoInstance();
+    const io = getIoInstance()
 
-  const clients: ClientBag = {
-    get,
-    find,
-    getUser,
-    list,
-    add,
-    remove,
-    update,
-  };
-  console.log(`new connection:${socket.id}`);
-
-  socket.on("disconnect", () => {
-    console.log(`disconnected: ${socket.id}`);
-    const client = clients.get(socket);
-    if (client) {
-      user.logout(socket, clients, client.user);
+    const clients: ClientBag = {
+        get,
+        find,
+        getUser,
+        list,
+        add,
+        remove,
+        update,
     }
-  });
+    console.log(`new connection:${socket.id}`)
 
-  //USER OPS
-  socket.on("user:logout", (data) => user.logout(socket, clients, data));
-  socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser));
-  socket.on("user:reject", (id) => user.reject(socket, id));
-  socket.on("user:approve", (id) => user.approve(socket, id));
-  socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data));
-  socket.on("user:find", (userId: number) => user.findUser(socket, { userId }));
-  socket.on("users:list", () => user.listUsersApproved(socket));
-  // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
-  socket.on("user:update", (updateUser: User, userId: number) =>
-    user.updateUser(socket, updateUser)
-  );
-  socket.on("user:pendingApproval", () => user.listPendingApproval(socket));
+    socket.on("disconnect", () => {
+        console.log(`disconnected: ${socket.id}`)
+        const client = clients.get(socket)
+        if (client) {
+            user.logout(socket, clients, client.user)
+        }
+    })
 
-  // TILLAGE OPS
-  socket.on("tillage:create", (newTillage: Tillage) =>
-    tillage.newTillage(socket, newTillage)
-  );
-  socket.on("tillage:update", (updateTillage: Tillage) =>
-    tillage.updateTillage(socket, updateTillage)
-  );
+    //USER OPS
+    socket.on("user:logout", (data) => user.logout(socket, clients, data))
+    socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser))
+    socket.on("user:reject", (id) => user.reject(socket, id))
+    socket.on("user:approve", (id) => user.approve(socket, id))
+    socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
+    socket.on("user:find", (userId: number) => user.findUser(socket, { userId }))
+    socket.on("users:list", () => user.listUsersApproved(socket))
+    // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
+    socket.on("user:update", (updateUser: User, userId: number) => user.updateUser(socket, updateUser))
+    socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
 
-  socket.on("tillage:list", () => tillage.listTillage(socket));
+    // TILLAGE OPS
+    socket.on("tillage:create", (newTillage: Tillage) => tillage.newTillage(socket, newTillage))
+    socket.on("tillage:update", (updateTillage: Tillage) => tillage.updateTillage(socket, updateTillage))
 
-  // COORDINATE OPS
-  socket.on("coordinate:create", (newCoorinate: Coordinate) =>
-    coordinate.newCoordinate(socket, newCoorinate)
-  );
+    socket.on("tillage:list", () => tillage.listTillage(socket))
 
-  // socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
-  //   coordinate.updateCoordinate(socket, updateCoordinate)
-  // );
+    // COORDINATE OPS
+    socket.on("coordinate:create", (newCoorinate: Coordinate) => coordinate.newCoordinate(socket, newCoorinate))
 
-  socket.on("coordinate:list", () => {
-    coordinate.listCoordinate(socket);
-  });
+    socket.on("coordinate:cep", (data: string) => cep.coordinateCep(socket, data))
 
-  // GALLERY OPS
-  socket.on("gallery:create", (newGallery: Gallery) =>
-    gallery.newGallery(socket, newGallery)
-  );
+    // socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
+    //   coordinate.updateCoordinate(socket, updateCoordinate)
+    // );
 
-  socket.on("gallery:update", (updateGallery: Gallery) =>
-    gallery.updateGallery(socket, updateGallery)
-  );
+    socket.on("coordinate:list", () => {
+        coordinate.listCoordinate(socket)
+    })
 
-  socket.on("gallery:list", () => {
-    gallery.listGallery(socket);
-  });
+    // GALLERY OPS
+    socket.on("gallery:create", (newGallery: Gallery) => gallery.newGallery(socket, newGallery))
 
-  // KIT OPS
-  socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit));
+    socket.on("gallery:update", (updateGallery: Gallery) => gallery.updateGallery(socket, updateGallery))
 
-  socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit));
+    socket.on("gallery:list", () => {
+        gallery.listGallery(socket)
+    })
 
-  socket.on("kit:list", () => {
-    kit.listKit(socket);
-  });
+    // KIT OPS
+    socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit))
 
-  socket.on("kit:toggle", (data: Kit) => kit.activateKit(socket, data));
+    socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit))
 
-  socket.on("kit:add:employee", (manageKit: Kit) =>
-    kit.addEmployeeKit(socket, manageKit)
-  );
+    socket.on("kit:list", () => {
+        kit.listKit(socket)
+    })
 
-  socket.on("kit:remove:employee", (manageKit: Kit) =>
-    kit.removeEmployeeKit(socket, manageKit)
-  );
+    socket.on("kit:toggle", (data: Kit) => kit.activateKit(socket, data))
 
-  // OBJECT OPS
-  socket.on("object:create", (newObject: Object) =>
-    object.newObject(socket, newObject)
-  );
+    socket.on("kit:add:employee", (manageKit: Kit) => kit.addEmployeeKit(socket, manageKit))
 
-  socket.on("object:update", (updateObject: Object) =>
-    object.updateObject(socket, updateObject)
-  );
+    socket.on("kit:remove:employee", (manageKit: Kit) => kit.removeEmployeeKit(socket, manageKit))
 
-  socket.on("object:list", () => {
-    object.listObject(socket);
-  });
+    // OBJECT OPS
+    socket.on("object:create", (newObject: Object) => object.newObject(socket, newObject))
 
-  // CALENDAR OPS
-  // socket.on("employee:calendar:create", (newEmpCalendar: Calendar) =>
-  //   calendar.newCalendarEmp(socket, newEmpCalendar)
-  // );
+    socket.on("object:update", (updateObject: Object) => object.updateObject(socket, updateObject))
 
-  // socket.on("kit:calendar:create", (newKitCalendar: Calendar) =>
-  //   calendar.newCalendarKit(socket, newKitCalendar)
-  // );
+    socket.on("object:list", () => {
+        object.listObject(socket)
+    })
 
-  socket.on("calendar:update", (updateCalendar: Calendar) =>
-    calendar.updateCalendar(socket, updateCalendar)
-  );
+    // CALENDAR OPS
+    // socket.on("employee:calendar:create", (newEmpCalendar: Calendar) =>
+    //   calendar.newCalendarEmp(socket, newEmpCalendar)
+    // );
 
-  socket.on("calendar:list", () => {
-    calendar.listCalendar(socket);
-  });
+    // socket.on("kit:calendar:create", (newKitCalendar: Calendar) =>
+    //   calendar.newCalendarKit(socket, newKitCalendar)
+    // );
 
-  // CALL OPS
-  socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall));
-  socket.on("call:update", (updateCall: Call) =>
-    call.updateCall(socket, updateCall)
-  );
-  socket.on("call:approve", (data: any) => call.approveCall(socket, data));
-  socket.on("call:list", () => call.listCall(socket));
-  socket.on("call:listPending", () => call.listCallPending(socket));
-  socket.on("call:listApproved", () => call.listCallApproved(socket));
-  socket.on("call:cancel", (data: any) => call.cancelCall(socket, data));
-  socket.on("call:close", (data: any) => call.closeCall(socket, data));
+    socket.on("calendar:update", (updateCalendar: Calendar) => calendar.updateCalendar(socket, updateCalendar))
 
-  // CHAT OPS
-  socket.on("chat:new", (data1: any, data2: any) =>
-    chat.newChat(socket, data1, data2)
-  );
+    socket.on("calendar:list", () => {
+        calendar.listCalendar(socket)
+    })
 
-  // BANK OPS
-  socket.on("bank:create", (newBank: Bank) => bank.newBank(socket, newBank));
-  socket.on("bank:update", (updateBank: Bank) =>
-    bank.updateBank(socket, updateBank)
-  );
-  socket.on("bank:list", () => {
-    bank.listBank(socket);
-  });
+    // CALL OPS
+    socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall))
+    socket.on("call:update", (updateCall: Call) => call.updateCall(socket, updateCall))
+    socket.on("call:approve", (data: any) => call.approveCall(socket, data))
+    socket.on("call:list", () => call.listCall(socket))
+    socket.on("call:listPending", () => call.listCallPending(socket))
+    socket.on("call:listApproved", () => call.listCallApproved(socket))
+    socket.on("call:cancel", (data: any) => call.cancelCall(socket, data))
+    socket.on("call:close", (data: any) => call.closeCall(socket, data))
 
-  // STAGE OPS
-  socket.on("stage:update:one", (stageUpdate: Stage) =>
-    stage.updateStageOne(socket, stageUpdate)
-  );
-  socket.on("stage:update:two", (stageUpdate: Stage) =>
-    stage.updateStageTwo(socket, stageUpdate)
-  );
-  socket.on("stage:update:three", (stageUpdate: Stage) =>
-    stage.updateStageThree(socket, stageUpdate)
-  );
+    // CHAT OPS
+    socket.on("chat:new", (data1: any, data2: any) => chat.newChat(socket, data1, data2))
 
-  // OPERATION OPS
-  socket.on("operation:create", (data: any) =>
-    operation.newOperation(socket, data)
-  );
-  socket.on("operation:update", (data: any) =>
-    operation.updateOperation(socket, data)
-  );
-  socket.on("operation:list", () => operation.listOperation(socket));
+    // BANK OPS
+    socket.on("bank:create", (newBank: Bank) => bank.newBank(socket, newBank))
+    socket.on("bank:update", (updateBank: Bank) => bank.updateBank(socket, updateBank))
+    socket.on("bank:list", () => {
+        bank.listBank(socket)
+    })
 
-  socket.on("operation:find", (operationId: number) =>
-    operation.findOperation(socket, { operationId })
-  );
+    // STAGE OPS
+    socket.on("stage:update:one", (stageUpdate: Stage) => stage.updateStageOne(socket, stageUpdate))
+    socket.on("stage:update:two", (stageUpdate: Stage) => stage.updateStageTwo(socket, stageUpdate))
+    socket.on("stage:update:three", (stageUpdate: Stage) => stage.updateStageThree(socket, stageUpdate))
 
-  // MATERIAL OPS
-  socket.on("material:create", (data: any) =>
-    material.newMaterial(socket, data)
-  );
+    // OPERATION OPS
+    socket.on("operation:create", (data: any) => operation.newOperation(socket, data))
+    socket.on("operation:update", (data: any) => operation.updateOperation(socket, data))
+    socket.on("operation:list", () => operation.listOperation(socket))
 
-  socket.on("material:update", (data: any) =>
-    material.updateMaterial(socket, data)
-  );
+    socket.on("operation:find", (operationId: number) => operation.findOperation(socket, { operationId }))
 
-  socket.on("material:find", (materialId: number) =>
-    material.findMaterial(socket, { materialId })
-  );
+    // MATERIAL OPS
+    socket.on("material:create", (data: any) => material.newMaterial(socket, data))
 
-  socket.on("material:list", () => material.listMaterial(socket));
+    socket.on("material:update", (data: any) => material.updateMaterial(socket, data))
 
-  // FLIGHT OPS
-  socket.on("flight:create", (data: any) => flight.newFlight(socket, data));
-  socket.on("flight:update", (data: any) => flight.updateFlight(socket, data));
-  socket.on("flight:list", () => flight.listFlight(socket));
-  socket.on("flight:find", (flightId: number) =>
-    flight.findFlight(socket, { flightId })
-  );
+    socket.on("material:find", (materialId: number) => material.findMaterial(socket, { materialId }))
 
-  // PRODUCT OPS
-  socket.on("product:create", (data: any) => product.newProduct(socket, data));
-  socket.on("product:update", (data: any) =>
-    product.updateProduct(socket, data)
-  );
-  socket.on("product:list", () => product.listProduct(socket));
-  socket.on("product:find", (productId: number) =>
-    product.findProduct(socket, { productId })
-  );
+    socket.on("material:list", () => material.listMaterial(socket))
 
-  // TREATMENT OPS
-  socket.on("treatment:create", (data: any) =>
-    treatment.newTreatment(socket, data)
-  );
-  socket.on("treatment:update", (data: any) =>
-    treatment.updateTreatment(socket, data)
-  );
-  socket.on("treatment:list", () => treatment.listTreatment(socket));
-  socket.on("treatment:find", (treatmentId: number) =>
-    treatment.findTreatment(socket, { treatmentId })
-  );
+    // FLIGHT OPS
+    socket.on("flight:create", (data: any) => flight.newFlight(socket, data))
+    socket.on("flight:update", (data: any) => flight.updateFlight(socket, data))
+    socket.on("flight:list", () => flight.listFlight(socket))
+    socket.on("flight:find", (flightId: number) => flight.findFlight(socket, { flightId }))
 
-  // TECHREPORT OPS
+    // PRODUCT OPS
+    socket.on("product:create", (data: any) => product.newProduct(socket, data))
+    socket.on("product:update", (data: any) => product.updateProduct(socket, data))
+    socket.on("product:list", () => product.listProduct(socket))
+    socket.on("product:find", (productId: number) => product.findProduct(socket, { productId }))
 
-  socket.on("techReport:create", (data: any) =>
-    techReport.newTechReport(socket, data)
-  );
+    // TREATMENT OPS
+    socket.on("treatment:create", (data: any) => treatment.newTreatment(socket, data))
+    socket.on("treatment:update", (data: any) => treatment.updateTreatment(socket, data))
+    socket.on("treatment:list", () => treatment.listTreatment(socket))
+    socket.on("treatment:find", (treatmentId: number) => treatment.findTreatment(socket, { treatmentId }))
 
-  socket.on("techReport:update", (data: any) =>
-    techReport.updateTechReport(socket, data)
-  );
+    // TECHREPORT OPS
 
-  socket.on("techReport:find", (techReportId: number) =>
-    techReport.findTechReport(socket, techReportId)
-  );
+    socket.on("techReport:create", (data: any) => techReport.newTechReport(socket, data))
 
-  socket.on("techReport:list", () => techReport.listTechReport(socket));
+    socket.on("techReport:update", (data: any) => techReport.updateTechReport(socket, data))
 
-  // REPORT OPS
+    socket.on("techReport:find", (techReportId: number) => techReport.findTechReport(socket, techReportId))
 
-  socket.on("report:create", (data: any) => report.newReport(socket, data));
+    socket.on("techReport:list", () => techReport.listTechReport(socket))
 
-  socket.on("report:update", (data: any) => report.updateReport(socket, data));
+    // REPORT OPS
 
-  socket.on("report:find", (reportId: number) =>
-    report.findReport(socket, { reportId })
-  );
+    socket.on("report:create", (data: any) => report.newReport(socket, data))
 
-  socket.on("report:list", () => report.listReport(socket));
-};
+    socket.on("report:update", (data: any) => report.updateReport(socket, data))
+
+    socket.on("report:find", (reportId: number) => report.findReport(socket, { reportId }))
+
+    socket.on("report:list", () => report.listReport(socket))
+}

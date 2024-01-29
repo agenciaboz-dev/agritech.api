@@ -1,6 +1,6 @@
 import axios from "axios"
 import { Socket } from "socket.io"
-const coordinate = async (socket: Socket, data: any) => {
+const coordinateCep = async (socket: Socket, data: any) => {
     try {
         const cep = data.data
         const response = await axios.get(`https://www.cepaberto.com/api/v3/cep?cep=${cep}`, {
@@ -19,4 +19,4 @@ const coordinate = async (socket: Socket, data: any) => {
     }
 }
 
-export default { coordinate }
+export default { coordinateCep }
