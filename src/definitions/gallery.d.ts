@@ -1,6 +1,11 @@
 import { Gallery } from "@prisma/client";
 
 declare interface NewGallery {
-  image: string;
+  images?: Image[];
   tillageId: number;
+}
+
+declare interface Image {
+  file: ArrayBuffer;
+  name: string;
 }

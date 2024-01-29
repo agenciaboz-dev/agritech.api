@@ -59,3 +59,8 @@ declare interface LoginForm {
   login: string;
   password: string;
 }
+
+declare interface Image {
+  file: ArrayBuffer;
+  name: string;
+}

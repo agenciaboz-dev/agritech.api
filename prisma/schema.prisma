@@ -123,12 +123,21 @@ model Coordinate{
 
 model Gallery{
     id              Int           @id @default(autoincrement())
-    image           String?       @db.Text    //array
+    images          GalleryImage[]
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int           @unique
     
 }
+
+model GalleryImage {
+
+    id              Int           @id @default(autoincrement())
+    url             String
+    galleryId       Int
+    gallery         Gallery       @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+}
+
 model Employee{
     id              Int           @id @default(autoincrement())
     rg              String        @unique

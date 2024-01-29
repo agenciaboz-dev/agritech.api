@@ -151,13 +151,13 @@ export const handleSocket = (socket: Socket) => {
     gallery.newGallery(socket, newGallery)
   );
 
-  socket.on("gallery:update", (updateGallery: Gallery) =>
-    gallery.updateGallery(socket, updateGallery)
-  );
+  // socket.on("gallery:update", (updateGallery: Gallery) =>
+  //   gallery.updateGallery(socket, updateGallery)
+  // );
 
-  socket.on("gallery:list", () => {
-    gallery.listGallery(socket);
-  });
+  // socket.on("gallery:list", () => {
+  //   gallery.listGallery(socket);
+  // });
 
   // KIT OPS
   socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit));
