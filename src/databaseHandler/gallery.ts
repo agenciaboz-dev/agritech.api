@@ -6,20 +6,20 @@ const prisma = new PrismaClient();
 
 const create = async (data: NewGallery) => {
   console.log("Iniciando a criação do galeria...");
-  let galleryImageCreateInputs = [];
+  let galleryArray = [];
 
   if (data.images) {
     for (const img of data.images) {
       saveImage(`gallery`, img.file, img.name);
       const imageUrl = `gallery/${img.name}`;
-      galleryImageCreateInputs.push({ url: imageUrl });
+      galleryArray.push({ url: imageUrl });
     }
   }
 
   const gallery = await prisma.gallery.create({
     data: {
       images: {
-        create: galleryImageCreateInputs, // Create GalleryImage records
+        create: galleryArray, // Create GalleryImage records
       },
       tillageId: data.tillageId,
     },
@@ -29,24 +29,50 @@ const create = async (data: NewGallery) => {
   return { gallery };
 };
 
-// const update = async (data: Gallery) => {
-//   const gallery = await prisma.gallery.update({
-//     where: { tillageId: data.tillageId },
-//     data: {
-//       images: data.image,
-//     },
-//   });
-//   console.log("Image Update: ", data);
+const update = async (data: NewGallery) => {
+  const existingGallery = await prisma.gallery.findUnique({
+    where: { tillageId: data.tillageId },
+    include: { images: true },
+  });
 
-//   return { gallery };
-// };
+  if (!existingGallery) {
+    throw new Error("Gallery not found");
+  }
 
-// const list = async () => {
-//   return await prisma.gallery.findMany({});
-// };
+  // Process new images and update existing ones
+  let updatedImages = [];
+  if (data.images) {
+    for (const img of data.images) {
+      saveImage(`gallery`, img.file, img.name);
+      const imageUrl = `gallery/${img.name}`;
+      updatedImages.push({ url: imageUrl });
+    }
+  }
+
+  // Prepare the update data
+  const updateData = {
+    // other fields to update...
+    images: {
+      // Handle image updates here
+    },
+  };
+
+  const updatedGallery = await prisma.gallery.update({
+    where: { tillageId: data.tillageId },
+    data: updateData,
+  });
+
+  console.log("Gallery Updated: ", updatedGallery);
+
+  return { gallery: updatedGallery };
+};
+
+const list = async () => {
+  return await prisma.gallery.findMany({ include: { images: true } });
+};
 
 export default {
   create,
-  // update,
-  // list,
+  update,
+  list,
 };
