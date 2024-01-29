@@ -189,7 +189,7 @@ const listApproved = async () => {
                     objects: true,
                 },
             },
-            tillage: true,
+            tillage: { include: { address: true } },
             producer: { include: { user: true } },
             user: true,
             stages: true,
