@@ -287,8 +287,9 @@ model Object {
 
 model Report {
     id              Int           @id @default(autoincrement())
-
-    
+    areaTrabalhada  Float         @default(0)
+    date            String?       @default("")
+    hour            String?       @default("") 
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int           @unique
 

@@ -11,6 +11,10 @@ const create = async (data: NewReport) => {
     const report = await prisma.report.create({
         data: {
             callId: data.callId,
+            areaTrabalhada: data.areaTrabalhada,
+            date: String(new Date()),
+            hour: String(new Date()),
+
             operation: {
                 create: {
                     service: data.operation.service,
@@ -85,6 +89,7 @@ const update = async (data: Report) => {
         where: { id: data.id },
         data: {
             callId: data.callId,
+            areaTrabalhada: data.areaTrabalhada,
         },
     })
     console.log("Report updated:", report)
