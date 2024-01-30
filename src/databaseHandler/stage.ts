@@ -1,129 +1,180 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
-import { Stage, PrismaClient, Report, Call } from "@prisma/client"
-import { NewStage } from "../definitions/stage"
+import { Stage, PrismaClient, Report, Call } from "@prisma/client";
+import { NewStage } from "../definitions/stage";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const create = async (data: NewStage) => {
-    console.log("Initiating new Stage...")
-    const stage = await prisma.stage.create({
-        data: {
-            name: data.name,
-            date: data.date,
-            start: data.start,
-            finish: data.finish,
-            duration: data.duration,
-            comments: data.comments,
-            callId: data.callId,
-        },
-    })
-    console.log({ stage })
+  console.log("Initiating new Stage...");
 
-    console.log("Stage Created:", stage)
-    return stage
-}
+  // Check if a stage with the same status already exists for the given call
+  const existingStage = await prisma.stage.findFirst({
+    where: {
+      callId: data.callId,
+      name: data.name, // Assuming 'name' represents the status (STAGE0, STAGE1, etc.)
+    },
+  });
+
+  if (existingStage) {
+    throw new Error(
+      `A stage with status ${data.name} already exists for this call.`
+    );
+  }
+
+  // If no existing stage, proceed with creating the new stage
+  const stage = await prisma.stage.create({
+    data: {
+      name: data.name,
+      date: data.date,
+      start: data.start,
+      finish: data.finish,
+      duration: data.duration,
+      comments: data.comments,
+      callId: data.callId,
+    },
+  });
+
+  console.log("Stage Created:", stage);
+  return stage;
+};
 
 const updateOne = async (data: Stage) => {
-    console.log("Initiating Stage1 update...")
+  console.log("Initiating Stage1 update...");
+  const existingStage = await prisma.stage.findFirst({
+    where: {
+      callId: data.callId,
+      name: "STAGE2",
+    },
+  });
 
-    // Update the stage as before
-    const stage1 = await prisma.stage.update({
-        where: { id: data.id },
-        data: {
-            date: data.date,
-            start: data.start,
-            finish: data.finish,
-            duration: data.duration,
-            comments: data.comments,
-        },
-    })
+  if (existingStage) {
+    throw new Error(`A stage with status STAGE2 already exists for this call.`);
+  }
 
-    // Create the next stage as before
-    const stage2 = await prisma.stage.create({
-        data: {
-            name: "STAGE2",
-            callId: stage1.callId,
-        },
-    })
+  // Update the stage as before
+  const stage1 = await prisma.stage.update({
+    where: { id: data.id },
+    data: {
+      date: data.date,
+      start: data.start,
+      finish: data.finish,
+      duration: data.duration,
+      comments: data.comments,
+    },
+  });
 
-    const updatedCall = await prisma.call.update({
-        where: { id: stage1.callId },
-        data: {
-            stage: "STAGE2",
-        },
-        include: {
-            stages: true,
-        },
-    })
+  // Create the next stage as before
+  const stage2 = await prisma.stage.create({
+    data: {
+      name: "STAGE2",
+      callId: stage1.callId,
+    },
+  });
 
-    console.log("Stage 1 updated:", stage1)
-    console.log("Stage 2 created:", stage2)
-    console.log("Call updated:", updatedCall)
-    console.log("Call Stage Status Updated")
+  const updatedCall = await prisma.call.update({
+    where: { id: stage1.callId },
+    data: {
+      stage: "STAGE2",
+    },
+    include: {
+      stages: true,
+    },
+  });
 
-    return { stage1, stage2, updatedCall }
-}
+  console.log("Stage 1 updated:", stage1);
+  console.log("Stage 2 created:", stage2);
+  console.log("Call updated:", updatedCall);
+  console.log("Call Stage Status Updated");
+
+  return { stage1, stage2, updatedCall };
+};
 
 const updateTwo = async (data: Stage) => {
-    console.log("Initiating Stage2 update...")
-    const stage2 = await prisma.stage.update({
-        where: { id: data.id },
-        data: {
-            date: data.date,
-            start: data.start,
-            finish: data.finish,
-            duration: data.duration,
-            comments: data.comments,
-        },
-    })
+  console.log("Initiating Stage2 update...");
 
-    const stage3 = await prisma.stage.create({
-        data: {
-            name: "STAGE3",
-            callId: stage2.callId,
-        },
-    })
+  const existingStage = await prisma.stage.findFirst({
+    where: {
+      callId: data.callId,
+      name: "STAGE3",
+    },
+  });
 
-    const updatedCall = await prisma.call.update({
-        where: { id: stage2.callId },
-        data: {
-            stage: "STAGE3",
-        },
-    })
+  if (existingStage) {
+    throw new Error(`A stage with status STAGE3 already exists for this call.`);
+  }
+  const stage2 = await prisma.stage.update({
+    where: { id: data.id },
+    data: {
+      date: data.date,
+      start: data.start,
+      finish: data.finish,
+      duration: data.duration,
+      comments: data.comments,
+    },
+  });
 
-    console.log("Stage 2 updated:", stage2)
-    console.log("Stage 3 created:", stage3)
-    console.log("Call updated:", updatedCall)
-    console.log("Call Stage Status Updated")
+  const stage3 = await prisma.stage.create({
+    data: {
+      name: "STAGE3",
+      callId: stage2.callId,
+    },
+  });
 
-    return { stage2, stage3, updatedCall }
-}
+  const updatedCall = await prisma.call.update({
+    where: { id: stage2.callId },
+    data: {
+      stage: "STAGE3",
+    },
+  });
+
+  console.log("Stage 2 updated:", stage2);
+  console.log("Stage 3 created:", stage3);
+  console.log("Call updated:", updatedCall);
+  console.log("Call Stage Status Updated");
+
+  return { stage2, stage3, updatedCall };
+};
 const updateThree = async (data: Stage) => {
-    console.log("Initiating Stage3 update...")
+  console.log("Initiating Stage3 update...");
+
+  const existingStage = await prisma.stage.findUnique({
+    where: { id: data.id },
+    include: { call: true },
+  });
+
+  if (!existingStage) {
+    throw new Error("Stage not found");
+  }
+
+  // Check if the current status is not "STAGE4"
+  if (existingStage.call?.stage !== "STAGE4") {
     const stage3 = await prisma.stage.update({
-        where: { id: data.id },
-        data: {
-            date: data.date,
-            start: data.start,
-            finish: data.finish,
-            duration: data.duration,
-            comments: data.comments,
-        },
-    })
+      where: { id: data.id },
+      data: {
+        date: data.date,
+        start: data.start,
+        finish: data.finish,
+        duration: data.duration,
+        comments: data.comments,
+      },
+    });
 
     const updatedCall = await prisma.call.update({
-        where: { id: stage3.callId },
-        data: {
-            stage: "STAGE4",
-        },
-    })
+      where: { id: existingStage.callId },
+      data: {
+        stage: "STAGE4",
+      },
+    });
 
-    console.log("Stage 3 updated:", stage3)
-    console.log("Call updated:", updatedCall)
-    console.log("Call Stage Status Updated")
+    console.log("Stage 3 updated:", stage3);
+    console.log("Call updated:", updatedCall);
+    console.log("Call Stage Status Updated");
 
-    return { stage3, updatedCall }
-}
+    return { stage3, updatedCall };
+  } else {
+    throw new Error("Call is already at status STAGE4");
+  }
+};
 
 // const approve = async (data: Call) => {
 //   try {
@@ -187,12 +238,12 @@ const updateThree = async (data: Stage) => {
 // };
 
 export default {
-    create,
-    updateOne,
-    updateTwo,
-    updateThree,
-    //   approve,
-    //   close,
-    //   list,
-    //   find,
-}
+  create,
+  updateOne,
+  updateTwo,
+  updateThree,
+  //   approve,
+  //   close,
+  //   list,
+  //   find,
+};

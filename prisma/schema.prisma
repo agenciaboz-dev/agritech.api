@@ -81,7 +81,7 @@ model Producer{
     tillage         Tillage[]    
     call            Call[]
 
-    hectarePrice    Int?//temporario
+    hectarePrice    Float?
 
 
 }
@@ -227,7 +227,7 @@ model Call {
     stages          Stage[]
     
     report          Report?
-    totalPrice      Int?   //temporario
+    totalPrice      Float?   
     
     tillage         Tillage?        @relation(fields: [tillageId],references: [id])
     tillageId       Int?            @unique
@@ -302,7 +302,7 @@ model Operation {
     id              Int           @id @default(autoincrement())
     service         String
     culture         String
-    areaMap         Int
+    areaMap         Float
     equipment       String
     model           String
 
