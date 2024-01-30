@@ -1,7 +1,7 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
 import { Call, PrismaClient, Report } from "@prisma/client";
 import createReport from "./report";
-import { OpenCall } from "../definitions/call";
+import { OpenCall, AdminCall } from "../definitions/call";
 
 const prisma = new PrismaClient();
 
@@ -23,6 +23,71 @@ const inclusions = {
     },
     user: true,
   },
+};
+
+const adminCreate = async (data: AdminCall) => {
+  try {
+    console.log("Initiating the creation and update of the call...");
+
+    // Use a transaction to ensure atomicity
+    const result = await prisma.$transaction(async (prisma) => {
+      // Create the call
+      const call = await prisma.call.create({
+        data: {
+          open: new Date().toISOString(),
+          approved: data.approved,
+          comments: data.comments,
+          tillageId: data.tillageId,
+          producerId: data.producerId,
+          userId: data.userId,
+          kitId: data.kitId || undefined,
+        },
+      });
+
+      // Update the producer
+      const producer = await prisma.producer.update({
+        where: { id: data.producerId },
+        data: {
+          hectarePrice: data.hectarePrice,
+        },
+      });
+
+      // Create the stage
+      const stage = await prisma.stage.create({
+        data: {
+          name: "STAGE1",
+          callId: call.id,
+        },
+      });
+
+      // Update the call
+      const updatedCall = await prisma.call.update({
+        where: { id: call.id },
+        data: {
+          approved: data.kitId ? true : false,
+          status: "INPROGRESS",
+          stage: "STAGE1",
+          kitId: data.kitId,
+          init: new Date().toISOString(),
+        },
+      });
+
+      console.log("Call, Producer, Stage, and Updated Call created/updated:", {
+        call,
+        producer,
+        stage,
+        updatedCall,
+      });
+
+      return { call, producer, stage, updatedCall };
+    });
+
+    console.log("Transaction completed successfully.");
+    return result;
+  } catch (error) {
+    console.error("Error in creating and updating the call:", error);
+    throw error;
+  }
 };
 
 const create = async (data: OpenCall) => {
@@ -264,6 +329,7 @@ const find = async (id: number) => {
 };
 
 export default {
+  adminCreate,
   create,
   update,
   approve,

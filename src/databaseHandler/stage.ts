@@ -16,9 +16,7 @@ const create = async (data: NewStage) => {
   });
 
   if (existingStage) {
-    throw new Error(
-      `A stage with status ${data.name} already exists for this call.`
-    );
+    throw new Error(`A stage with status STAGE1 already exists for this call.`);
   }
 
   // If no existing stage, proceed with creating the new stage

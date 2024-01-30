@@ -213,6 +213,10 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // CALL OPS
+  socket.on("admin:call:create", (newCall: Call) =>
+    call.newAdminCall(socket, newCall)
+  );
+
   socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall));
   socket.on("call:update", (updateCall: Call) =>
     call.updateCall(socket, updateCall)
