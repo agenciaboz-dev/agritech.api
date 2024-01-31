@@ -12,8 +12,8 @@ const create = async (data: NewReport) => {
         data: {
             callId: data.callId,
             areaTrabalhada: data.areaTrabalhada,
-            date: String(new Date()),
-            hour: String(new Date()),
+            date: new Date().getTime().toString(),
+            hour: new Date().getTime().toString(),
 
             operation: {
                 create: {

@@ -351,9 +351,9 @@ model Material{
 
 model TechReport{
     id              Int           @id @default(autoincrement())
-    date            DateTime      @db.Date
-    init            DateTime      @db.Time()
-    finish          DateTime      @db.Time()
+    date            String        
+    init            String      
+    finish          String      
     comments        String        @db.Text
 
     flight          Flight[]
