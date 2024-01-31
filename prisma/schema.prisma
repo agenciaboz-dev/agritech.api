@@ -265,12 +265,7 @@ model Kit {
     name            String
     description     String
     active          Boolean      @default(false)
-<<<<<<< HEAD
-    hectareDay      Float        
-    
-=======
     hectareDay      Float
->>>>>>> 19c2685cd39137b2a589b512d70e9eea37150124
     objects         Object[]
     employees       Employee[]  
     calls           Call[]        
