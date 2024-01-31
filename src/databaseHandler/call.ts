@@ -34,13 +34,14 @@ const adminCreate = async (data: AdminCall) => {
             // Create the call
             const call = await prisma.call.create({
                 data: {
-                    open: new Date().toISOString(),
+                    open: new Date().getTime().toString(),
                     approved: data.approved,
                     comments: data.comments,
                     tillageId: data.tillageId,
                     producerId: data.producerId,
                     userId: data.userId,
                     kitId: data.kitId || undefined,
+                    forecast: data.forecast,
                 },
             })
 
@@ -68,7 +69,7 @@ const adminCreate = async (data: AdminCall) => {
                     status: "INPROGRESS",
                     stage: "STAGE1",
                     kitId: data.kitId,
-                    init: new Date().toISOString(),
+                    init: new Date().getTime().toString(),
                 },
             })
 
@@ -94,13 +95,14 @@ const create = async (data: OpenCall) => {
     console.log("Iniciando a criação do chamado...")
     const call = await prisma.call.create({
         data: {
-            open: new Date().toISOString(),
+            open: new Date().getTime().toString(),
             approved: data.approved,
             comments: data.comments,
             tillageId: data.tillageId,
             producerId: data.producerId,
             userId: data.userId,
             kitId: data.kitId || undefined,
+            forecast: data.forecast,
         },
     })
 
@@ -166,7 +168,7 @@ const approve = async (data: OpenCall) => {
                     status: "INPROGRESS",
                     stage: "STAGE1",
                     kitId: data.kitId,
-                    init: new Date().toISOString(),
+                    init: new Date().getTime().toString(),
                 },
             })
 
@@ -180,6 +182,7 @@ const approve = async (data: OpenCall) => {
             const stage = await prisma.stage.create({
                 data: {
                     name: "STAGE1",
+                    
                     callId: updatedCall.id,
                 },
             })
@@ -200,7 +203,7 @@ const close = async (data: Call) => {
     const call = await prisma.call.update({
         where: { id: data.id },
         data: {
-            finish: new Date().toISOString(),
+            finish: new Date().getTime().toString(),
             status: "CLOSED",
         },
     })

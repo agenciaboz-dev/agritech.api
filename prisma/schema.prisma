@@ -217,9 +217,9 @@ enum CallStages {
 model Call {
     id              Int           @id @default(autoincrement())
     forecast        String        @default("")
-    open            DateTime?     @db.Date
-    init            DateTime?     @db.Date
-    finish          DateTime?     @db.Date
+    open            String?       @default("")
+    init            String?       @default("")
+    finish          String?       @default("")
     approved        Boolean?      @default(false)
     comments        String?       @db.Text @default("")
     status          CallStatus    @default(OPEN)
@@ -247,9 +247,9 @@ model Call {
 model Stage {
     id              Int           @id @default(autoincrement())
     name            String?
-    date            DateTime?      @db.Date
-    start           DateTime?      @db.Time()
-    finish          DateTime?      @db.Time()
+    date            String?     
+    start           String?    
+    finish          String?     
     duration        String?
     comments        String?       @db.Text
 
