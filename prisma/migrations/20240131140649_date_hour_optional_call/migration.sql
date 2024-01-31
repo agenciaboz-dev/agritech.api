@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `Stage` MODIFY `date` VARCHAR(191) NULL,
+    MODIFY `start` VARCHAR(191) NULL,
+    MODIFY `finish` VARCHAR(191) NULL;

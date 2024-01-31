@@ -65,6 +65,7 @@ const updateOne = async (data: Stage) => {
   const stage2 = await prisma.stage.create({
     data: {
       name: "STAGE2",
+      
       callId: stage1.callId,
     },
   });
