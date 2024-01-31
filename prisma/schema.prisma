@@ -216,6 +216,7 @@ enum CallStages {
 }
 model Call {
     id              Int           @id @default(autoincrement())
+    forecast        String        @default("")
     open            DateTime?     @db.Date
     init            DateTime?     @db.Date
     finish          DateTime?     @db.Date
@@ -264,6 +265,7 @@ model Kit {
     name            String
     description     String
     active          Boolean      @default(false)
+    hectareDay      Float        
     
     objects         Object[]
     employees       Employee[]  
