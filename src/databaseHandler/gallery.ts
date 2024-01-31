@@ -5,70 +5,80 @@ import { saveImage } from "../saveImage";
 const prisma = new PrismaClient();
 
 const create = async (data: NewGallery) => {
-  console.log("Iniciando a criação do galeria...")
+  console.log(data);
+  try {
+    let urls: string[] = [];
 
-  const uploaded = data.images?.map((file) => {
-      saveImage(`gallery`, file.file, file.name)
-      return `gallery/${file.name}`
-  })
+    const uploaded = data.images?.map((file) => {
+      saveImage(`gallery`, file.file, file.name);
+      return `gallery/${file.name}`;
+    });
 
-  const gallery = await prisma.gallery.create({
+    if (uploaded) {
+      urls = [...uploaded];
+    }
+
+    data.urls?.map((url) => urls.push(url));
+    console.log({ urls });
+
+    const gallery = await prisma.gallery.create({
       data: {
-          images: {
-              create: uploaded?.map((item) => ({ url: item })),
-          },
-          tillageId: data.tillageId,
+        images: {
+          create: uploaded?.map((item) => ({ url: item })),
+        },
+        tillageId: data.tillageId,
       },
-  })
+    });
 
-  console.log("Galeria criada:", gallery);
-  return { gallery };
+    console.log("Gallery created:", gallery);
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-const update = async (data: NewGallery) => {
-  const existingGallery = await prisma.gallery.findUnique({
-    where: { tillageId: data.tillageId },
-    include: { images: true },
-  });
+const update = async (data: NewGallery, id: number) => {
+  console.log(data);
+  try {
+    let urls: string[] = [];
 
-  if (!existingGallery) {
-    throw new Error("Gallery not found");
-  }
+    const uploaded = data.images?.map((image) => {
+      saveImage(`gallery`, image.file, image.name);
+      return `gallery/${image.name}`;
+    });
 
-  // Process new images and update existing ones
-  let updatedImages = [];
-  if (data.images) {
-    for (const img of data.images) {
-      saveImage(`gallery`, img.file, img.name);
-      const imageUrl = `gallery/${img.name}`;
-      updatedImages.push({ url: imageUrl });
+    if (uploaded) {
+      urls = [...uploaded];
     }
+
+    data.urls?.map((url) => urls.push(url));
+    console.log({ urls });
+
+    const gallery = await prisma.gallery.update({
+      where: { id },
+      data: {
+        images: {
+          create: urls.map((url) => ({ url })),
+        },
+        tillageId: data.tillageId,
+      },
+    });
+
+    console.log("Gallery updated:", gallery);
+  } catch (error) {
+    console.log(error);
   }
-
-  // Prepare the update data
-  const updateData = {
-    // other fields to update...
-    images: {
-      // Handle image updates here
-    },
-  };
-
-  const updatedGallery = await prisma.gallery.update({
-    where: { tillageId: data.tillageId },
-    data: updateData,
-  });
-
-  console.log("Gallery Updated: ", updatedGallery);
-
-  return { gallery: updatedGallery };
 };
 
 const list = async () => {
   return await prisma.gallery.findMany({ include: { images: true } });
 };
 
+const remove = async (id: number) =>
+  await prisma.gallery.delete({ where: { id } });
+
 export default {
   create,
   update,
   list,
+  remove,
 };

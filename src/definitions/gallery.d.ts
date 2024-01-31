@@ -2,6 +2,7 @@ import { Gallery } from "@prisma/client";
 
 declare interface NewGallery {
   images?: Image[];
+  urls?: string[];
   tillageId: number;
 }
 

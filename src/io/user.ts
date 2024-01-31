@@ -147,22 +147,12 @@ const findUser = async (socket: Socket, data: { userId: number }) => {
 };
 
 const updateUser = async (socket: Socket, data: any) => {
-console.log(data);
+  console.log(data);
   try {
     const updatedUser = await prisma.update(data);
 
     if (updatedUser) {
-      if (data.image) {
-        saveImage(
-          `users/${updatedUser.user.id}/images`,
-          data.image,
-          data.filename
-        );
-        const updatedUserWithImage = await prisma.image(data);
-        socket.emit("user:update:success", updatedUserWithImage);
-      } else {
-        socket.emit("user:update:success", updatedUser);
-      }
+      socket.emit("user:update:success", updatedUser);
     } else {
       socket.emit("user:update:failed");
     }
@@ -182,5 +172,4 @@ export default {
   updateUser,
   listUsersApproved,
   listPendingApproval,
-  // istUser,
 };
