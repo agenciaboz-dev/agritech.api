@@ -49,6 +49,7 @@ const create = async (data: NewKit) => {
             name: data.name,
             description: data.description,
             hectareDay: data.hectareDay,
+
             employees: {
                 connect: data.employees?.map((employee) => ({ id: employee.id })),
             },

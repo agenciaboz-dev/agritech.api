@@ -226,7 +226,6 @@ const cancel = async (data: Call) => {
     const report = await prisma.report.create({
         data: {
             callId: call.id,
-            areaTrabalhada: 0,
         },
     })
     console.log("Report criado para o chamado:", report)
