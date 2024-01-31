@@ -8,4 +8,4 @@
 ALTER TABLE `Call` ADD COLUMN `forecast` VARCHAR(191) NOT NULL DEFAULT '';
 
 -- AlterTable
-ALTER TABLE `Kit` ADD COLUMN `hectareDay` DOUBLE NOT NULL;
+
