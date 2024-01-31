@@ -5,25 +5,21 @@ import { saveImage } from "../saveImage";
 const prisma = new PrismaClient();
 
 const create = async (data: NewGallery) => {
-  console.log("Iniciando a criação do galeria...");
-  let galleryArray = [];
+  console.log("Iniciando a criação do galeria...")
 
-  if (data.images) {
-    for (const img of data.images) {
-      saveImage(`gallery`, img.file, img.name);
-      const imageUrl = `gallery/${img.name}`;
-      galleryArray.push({ url: imageUrl });
-    }
-  }
+  const uploaded = data.images?.map((file) => {
+      saveImage(`gallery`, file.file, file.name)
+      return `gallery/${file.name}`
+  })
 
   const gallery = await prisma.gallery.create({
-    data: {
-      images: {
-        create: galleryArray, // Create GalleryImage records
+      data: {
+          images: {
+              create: uploaded?.map((item) => ({ url: item })),
+          },
+          tillageId: data.tillageId,
       },
-      tillageId: data.tillageId,
-    },
-  });
+  })
 
   console.log("Galeria criada:", gallery);
   return { gallery };
