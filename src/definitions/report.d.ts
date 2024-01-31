@@ -32,6 +32,9 @@ declare interface Treatment {
 declare interface NewReport {
     id: number
     callId: number
+    areaTrabalhada: number
+    date?: string
+    hour?: string
     operation: Operation
     treatment: Treatment
     material: Material[]

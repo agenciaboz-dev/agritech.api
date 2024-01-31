@@ -18,6 +18,24 @@ declare interface OpenCall {
   hectarePrice: number;
 }
 
+declare interface AdminCall {
+  id: number;
+  open: Date;
+  init: Date;
+  comments: string;
+  approved: boolean;
+  stages?: Stage[];
+
+  tillage: Tillage;
+  tillageId: number;
+  kit?: Kit;
+  kitId?: number;
+  producerId: number;
+  userId: number;
+
+  hectarePrice: number;
+}
+
 declare interface CloseCall {
   finish: Date;
 }

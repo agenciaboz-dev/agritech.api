@@ -21,32 +21,32 @@ const newGallery = async (socket: Socket, data: any) => {
   }
 };
 
-// const updateGallery = async (socket: Socket, data: Gallery) => {
-//   console.log("Galeria atualizada:", data);
+const updateGallery = async (socket: Socket, data: Gallery) => {
+  console.log("Galeria atualizada:", data);
 
-//   try {
-//     const gallery = await databaseHandler.update(data);
+  try {
+    const gallery = await databaseHandler.update(data);
 
-//     if (gallery) {
-//       socket.emit("gallery:update:success", gallery);
-//       // socket.broadcast.emit("user:update", user)
-//     } else {
-//       socket.emit("gallery:update:failed");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     socket.emit("gallery:update:failed", { error: error });
-//   }
-// };
+    if (gallery) {
+      socket.emit("gallery:update:success", gallery);
+      // socket.broadcast.emit("user:update", user)
+    } else {
+      socket.emit("gallery:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("gallery:update:failed", { error: error });
+  }
+};
 
-// const listGallery = async (socket: Socket) => {
-//   console.log("Lista de galerias");
-//   const gallery = await databaseHandler.list();
-//   socket.emit("gallery:list:success", gallery);
-// };
+const listGallery = async (socket: Socket) => {
+  console.log("Lista de galerias");
+  const gallery = await databaseHandler.list();
+  socket.emit("gallery:list:success", gallery);
+};
 
 export default {
   newGallery,
-  // updateGallery,
-  // listGallery,
+  updateGallery,
+  listGallery,
 };

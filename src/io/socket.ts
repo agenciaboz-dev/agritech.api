@@ -155,13 +155,13 @@ export const handleSocket = (socket: Socket) => {
     gallery.newGallery(socket, newGallery)
   );
 
-  // socket.on("gallery:update", (updateGallery: Gallery) =>
-  //   gallery.updateGallery(socket, updateGallery)
-  // );
+  socket.on("gallery:update", (updateGallery: Gallery) =>
+    gallery.updateGallery(socket, updateGallery)
+  );
 
-  // socket.on("gallery:list", () => {
-  //   gallery.listGallery(socket);
-  // });
+  socket.on("gallery:list", () => {
+    gallery.listGallery(socket);
+  });
 
   // KIT OPS
   socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit));
@@ -213,6 +213,10 @@ export const handleSocket = (socket: Socket) => {
   });
 
   // CALL OPS
+  socket.on("admin:call:create", (newCall: Call) =>
+    call.newAdminCall(socket, newCall)
+  );
+
   socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall));
   socket.on("call:update", (updateCall: Call) =>
     call.updateCall(socket, updateCall)

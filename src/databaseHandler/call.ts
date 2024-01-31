@@ -1,7 +1,7 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
 import { Call, PrismaClient, Report } from "@prisma/client"
 import createReport from "./report"
-import { OpenCall } from "../definitions/call"
+import { OpenCall, AdminCall } from "../definitions/call"
 
 const prisma = new PrismaClient()
 
@@ -23,6 +23,71 @@ const inclusions = {
         },
         user: true,
     },
+}
+
+const adminCreate = async (data: AdminCall) => {
+    try {
+        console.log("Initiating the creation and update of the call...")
+
+        // Use a transaction to ensure atomicity
+        const result = await prisma.$transaction(async (prisma) => {
+            // Create the call
+            const call = await prisma.call.create({
+                data: {
+                    open: new Date().toISOString(),
+                    approved: data.approved,
+                    comments: data.comments,
+                    tillageId: data.tillageId,
+                    producerId: data.producerId,
+                    userId: data.userId,
+                    kitId: data.kitId || undefined,
+                },
+            })
+
+            // Update the producer
+            const producer = await prisma.producer.update({
+                where: { id: data.producerId },
+                data: {
+                    hectarePrice: data.hectarePrice,
+                },
+            })
+
+            // Create the stage
+            const stage = await prisma.stage.create({
+                data: {
+                    name: "STAGE1",
+                    callId: call.id,
+                },
+            })
+
+            // Update the call
+            const updatedCall = await prisma.call.update({
+                where: { id: call.id },
+                data: {
+                    approved: data.kitId ? true : false,
+                    status: "INPROGRESS",
+                    stage: "STAGE1",
+                    kitId: data.kitId,
+                    init: new Date().toISOString(),
+                },
+            })
+
+            console.log("Call, Producer, Stage, and Updated Call created/updated:", {
+                call,
+                producer,
+                stage,
+                updatedCall,
+            })
+
+            return { call, producer, stage, updatedCall }
+        })
+
+        console.log("Transaction completed successfully.")
+        return result
+    } catch (error) {
+        console.error("Error in creating and updating the call:", error)
+        throw error
+    }
 }
 
 const create = async (data: OpenCall) => {
@@ -82,7 +147,19 @@ const approve = async (data: OpenCall) => {
         const call = await prisma.call.findUnique({ where: { id: data.id } })
 
         if (call) {
-            const call = await prisma.call.update({
+            const existingStage = await prisma.stage.findFirst({
+                where: {
+                    callId: data.id,
+                    name: "STAGE1",
+                },
+            })
+
+            if (existingStage) {
+                // Throw an error if a stage with the same name already exists for the call
+                throw new Error("A STAGE1 stage already exists for this call")
+            }
+
+            const updatedCall = await prisma.call.update({
                 where: { id: data.id },
                 data: {
                     approved: data.kitId ? true : false,
@@ -96,19 +173,19 @@ const approve = async (data: OpenCall) => {
             const producer = await prisma.producer.update({
                 where: { id: data.producerId },
                 data: {
-                    hectarePrice: data.hectarePrice,
+                    hectarePrice: data.hectarePrice ?? undefined,
                 },
             })
 
             const stage = await prisma.stage.create({
                 data: {
                     name: "STAGE1",
-                    callId: call.id,
+                    callId: updatedCall.id,
                 },
             })
             console.log("Stage 1 Criado:", stage)
 
-            return { call, stage, producer }
+            return { call: updatedCall, stage, producer }
         } else {
             throw new Error("Call not found or kit already assigned")
         }
@@ -149,6 +226,7 @@ const cancel = async (data: Call) => {
     const report = await prisma.report.create({
         data: {
             callId: call.id,
+            areaTrabalhada: 0,
         },
     })
     console.log("Report criado para o chamado:", report)
@@ -156,17 +234,57 @@ const cancel = async (data: Call) => {
 }
 
 const list = async () => {
-    return await prisma.call.findMany({
+    const calls = await prisma.call.findMany({
         include: {
             kit: { include: { employees: true, calls: true, objects: true } },
             producer: { include: { user: true } },
             user: true,
             stages: true,
             tillage: true,
-            report: true,
+            report: {
+                include: {
+                    operation: true,
+                },
+            },
         },
     })
+
+    // Process each call and update the totalPrice
+    const updatedCalls = await Promise.all(
+        calls.map(async (call) => {
+            const producerHectarePrice = call.producer?.hectarePrice || 0
+            const areaMap = call.report?.operation?.areaMap || 0
+
+            // Calculate the desired value for each call
+            const calculatedValue = producerHectarePrice * areaMap
+
+            // Update the totalPrice in the database
+            const updatedCall = await prisma.call.update({
+                where: { id: call.id },
+                data: {
+                    totalPrice: calculatedValue,
+                },
+                include: {
+                    kit: { include: { employees: true, calls: true, objects: true } },
+                    producer: { include: { user: true } },
+                    user: true,
+                    stages: true,
+                    tillage: true,
+                    report: {
+                        include: {
+                            operation: true,
+                        },
+                    },
+                },
+            })
+
+            return updatedCall
+        })
+    )
+
+    return updatedCalls
 }
+
 const listPending = async () => {
     return await prisma.call.findMany({
         where: { approved: false },
@@ -212,6 +330,7 @@ const find = async (id: number) => {
 }
 
 export default {
+    adminCreate,
     create,
     update,
     approve,

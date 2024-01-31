@@ -81,7 +81,7 @@ model Producer{
     tillage         Tillage[]    
     call            Call[]
 
-    hectarePrice    Int?//temporario
+    hectarePrice    Float?
 
 
 }
@@ -228,7 +228,7 @@ model Call {
     stages          Stage[]
     
     report          Report?
-    totalPrice      Int?   //temporario
+    totalPrice      Float?   
     
     tillage         Tillage?        @relation(fields: [tillageId],references: [id])
     tillageId       Int?            @unique
@@ -265,8 +265,12 @@ model Kit {
     name            String
     description     String
     active          Boolean      @default(false)
+<<<<<<< HEAD
     hectareDay      Float        
     
+=======
+    hectareDay      Float
+>>>>>>> 19c2685cd39137b2a589b512d70e9eea37150124
     objects         Object[]
     employees       Employee[]  
     calls           Call[]        
@@ -289,8 +293,9 @@ model Object {
 
 model Report {
     id              Int           @id @default(autoincrement())
-
-    
+    areaTrabalhada  Float         @default(0)
+    date            String?       @default("")
+    hour            String?       @default("") 
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int           @unique
 
@@ -304,7 +309,7 @@ model Operation {
     id              Int           @id @default(autoincrement())
     service         String
     culture         String
-    areaMap         Int
+    areaMap         Float
     equipment       String
     model           String
 

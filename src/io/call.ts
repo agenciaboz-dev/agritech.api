@@ -3,6 +3,24 @@ import databaseHandler from "../databaseHandler/call";
 import { Call } from "@prisma/client";
 import { OpenCall } from "../definitions/call";
 
+const newAdminCall = async (socket: Socket, data: any) => {
+  console.log("New Admin Call:", data);
+
+  try {
+    const call = await databaseHandler.adminCreate(data);
+
+    if (call) {
+      socket.emit("adminCall:creation:success", call);
+      // socket.broadcast.emit("user:update", user)
+    } else {
+      socket.emit("adminCall:creation:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("adminCall:creation:failed", { error: error });
+  }
+};
+
 const newCall = async (socket: Socket, data: any) => {
   console.log("Novo Chamado:", data);
 
@@ -111,6 +129,7 @@ const listCallApproved = async (socket: Socket) => {
 
 export default {
   newCall,
+  newAdminCall,
   updateCall,
   approveCall,
   closeCall,

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Report` MODIFY `date` VARCHAR(191) NULL DEFAULT '',
+    MODIFY `hour` VARCHAR(191) NULL DEFAULT '';
