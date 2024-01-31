@@ -7,14 +7,10 @@ const newGallery = async (socket: Socket, data: any) => {
   console.log("Nova Galeria:", data);
 
   try {
-    const gallery = await databaseHandler.create(data);
+      const gallery = await databaseHandler.create(data)
 
-    if (gallery) {
-      socket.emit("gallery:creation:success", gallery);
+      socket.emit("gallery:creation:success", gallery)
       // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("gallery:creation:failed");
-    }
   } catch (error) {
     console.log(error);
     socket.emit("gallery:creation:failed", { error: error });
