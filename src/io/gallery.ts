@@ -15,10 +15,10 @@ const newGallery = async (socket: Socket, data: any) => {
   }
 };
 
-const updateGallery = async (socket: Socket, data: NewGallery, id: number) => {
+const updateGallery = async (socket: Socket, data: NewGallery) => {
   console.log("Updated Gallery:", data);
   try {
-    const gallery = await databaseHandler.update(data, id);
+    const gallery = await databaseHandler.update(data);
 
     socket.emit("gallery:update:success", gallery);
   } catch (error) {

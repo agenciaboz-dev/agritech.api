@@ -8,7 +8,7 @@ declare interface NewUser {
   cpf: string;
   birth: string;
   phone: string;
-  image: string;
+  image: Image;
   image64: string;
   isAdmin: boolean;
   approved: boolean;

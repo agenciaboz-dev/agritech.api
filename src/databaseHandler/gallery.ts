@@ -1,6 +1,7 @@
 import { NewGallery } from "../definitions/gallery";
 import { Gallery, PrismaClient } from "@prisma/client";
 import { saveImage } from "../saveImage";
+import tillage from "./tillage";
 
 const prisma = new PrismaClient();
 
@@ -36,7 +37,7 @@ const create = async (data: NewGallery) => {
   }
 };
 
-const update = async (data: NewGallery, id: number) => {
+const update = async (data: NewGallery) => {
   console.log(data);
   try {
     let urls: string[] = [];
@@ -54,12 +55,11 @@ const update = async (data: NewGallery, id: number) => {
     console.log({ urls });
 
     const gallery = await prisma.gallery.update({
-      where: { id },
+      where: { tillageId: data.tillageId },
       data: {
         images: {
           create: urls.map((url) => ({ url })),
         },
-        tillageId: data.tillageId,
       },
     });
 

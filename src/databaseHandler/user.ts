@@ -1,6 +1,7 @@
 import { NewUser } from "../definitions/user";
 import { PrismaClient } from "@prisma/client";
 import normalize from "../normalize";
+import { saveImage } from "../saveImage";
 
 const prisma = new PrismaClient();
 
@@ -111,164 +112,188 @@ const findByUsername = async (username: string) =>
   });
 
 const newUser = async (data: NewUser) => {
-  const birth = data.birth
-    ? new Date(data.birth.split("/").reverse().join("/"))
-    : undefined;
+  console.log(data);
+  try {
+    const birth = data.birth
+      ? new Date(data.birth.split("/").reverse().join("/"))
+      : undefined;
 
-  console.log("Iniciando a criação do usuário...");
-  const user = await prisma.user.create({
-    data: {
-      birth: birth,
-      cpf: data.cpf.replace(/\D/g, ""),
-      email: normalize(data.email),
-      name: data.name,
-      password: data.password,
-      phone: data.phone?.replace(/\D/g, ""),
-      username: normalize(data.username),
-      isAdmin: data.isAdmin || false,
-      approved: data.approved, // <<<<< gambiarrei
-      rejected: null,
-      office: data.office,
-    },
-    include: inclusions.user,
-  });
+    let image: string | undefined;
 
-  const address = await prisma.address.create({
-    data: {
-      street: data.address.street,
-      number: data.address.number,
-      city: data.address.city,
-      cep: data.address.cep,
-      adjunct: data.address.adjunct || "",
-      district: data.address.district,
-      uf: data.address.uf,
-      userId: user.id,
-    },
-  });
-  console.log("Usuário criado:", user);
-  console.log({ address: data.address });
+    if (data.image.file) {
+      saveImage(`user/profile`, data.image.file, data.image.name);
+      image = `user/profile/${data.image.name}`;
+    }
 
-  if (data.employee) {
-    const employee = await prisma.employee.create({
+    console.log("Iniciando a criação do usuário...");
+    const user = await prisma.user.create({
       data: {
-        gender: data.employee.gender,
-        relationship: data.employee.relationship,
-        nationality: data.employee.nationality,
-        residence: data.employee.residence,
-        rg: data.employee.rg,
-        voter_card: data.employee.voter_card,
-        work_card: data.employee.work_card,
-        military: data.employee.military,
-        userid: user.id,
+        birth: birth,
+        cpf: data.cpf.replace(/\D/g, ""),
+        email: normalize(data.email),
+        name: data.name,
+        password: data.password,
+        phone: data.phone?.replace(/\D/g, ""),
+        username: normalize(data.username),
+        isAdmin: data.isAdmin || false,
+        approved: data.approved, // <<<<< gambiarrei
+        rejected: null,
+        office: data.office,
+
+        image: image,
       },
+      include: inclusions.user,
     });
 
-    // await prisma.bank.create({
-    //     data: {
-    //         account: data.employee.bank_data.account,
-    //         agency: data.employee.bank_data.agency,
-    //         name: data.employee.bank_data.name,
-    //         type: data.employee.bank_data.type,
-    //         employeeId: employee.id,
-    //     },
-    // })
-
-    console.log("Funcionário criado:", data.employee);
-  } else if (data.producer) {
-    // console.log({ "Recebendo no Back:": data })
-    const producer = await prisma.producer.create({
+    const address = await prisma.address.create({
       data: {
-        cnpj: data.producer.cnpj,
-        contract: data.producer.contract,
-        hectarePrice: data.producer.hectarePrice,
-        employeeId: data.producer.employeeId,
-        tillage: data.producer.tillage,
-        userid: user.id,
+        street: data.address.street,
+        number: data.address.number,
+        city: data.address.city,
+        cep: data.address.cep,
+        adjunct: data.address.adjunct || "",
+        district: data.address.district,
+        uf: data.address.uf,
+        userId: user.id,
       },
     });
-    console.log("Produtor criado:", data.producer);
+    console.log("Usuário criado:", user);
+    console.log({ address: data.address });
+
+    if (data.employee) {
+      const employee = await prisma.employee.create({
+        data: {
+          gender: data.employee.gender,
+          relationship: data.employee.relationship,
+          nationality: data.employee.nationality,
+          residence: data.employee.residence,
+          rg: data.employee.rg,
+          voter_card: data.employee.voter_card,
+          work_card: data.employee.work_card,
+          military: data.employee.military,
+          userid: user.id,
+        },
+      });
+
+      // await prisma.bank.create({
+      //     data: {
+      //         account: data.employee.bank_data.account,
+      //         agency: data.employee.bank_data.agency,
+      //         name: data.employee.bank_data.name,
+      //         type: data.employee.bank_data.type,
+      //         employeeId: employee.id,
+      //     },
+      // })
+
+      console.log("Funcionário criado:", data.employee);
+    } else if (data.producer) {
+      // console.log({ "Recebendo no Back:": data })
+      const producer = await prisma.producer.create({
+        data: {
+          cnpj: data.producer.cnpj,
+          contract: data.producer.contract,
+          hectarePrice: data.producer.hectarePrice,
+          employeeId: data.producer.employeeId,
+          tillage: data.producer.tillage,
+          userid: user.id,
+        },
+      });
+      console.log("Produtor criado:", data.producer);
+    }
+    return await prisma.user.findFirst({
+      where: { id: user.id },
+      include: inclusions.user,
+    });
+  } catch (error) {
+    console.log(error);
   }
-  return await prisma.user.findFirst({
-    where: { id: user.id },
-    include: inclusions.user,
-  });
 };
 
 const update = async (data: NewUser & { id: number }) => {
   const birth = data.birth.split("/").reverse().join("/");
+  try {
+    let image: string | undefined;
 
-  const address = await prisma.address.update({
-    where: { userId: data.id },
-    data: {
-      street: data.address.street,
-      number: data.address.number,
-      city: data.address.city,
-      cep: data.address.cep,
-      adjunct: data.address.adjunct,
-      district: data.address.district,
-      uf: data.address.uf,
-      userId: data.id,
-    },
-  });
-  console.log("addreess update: ", data.address);
+    if (data.image.file) {
+      saveImage(`user/profile`, data.image.file, data.image.name);
+      image = `user/profile/${data.image.name}`;
+    }
 
-  if (data.employee) {
-    const employee = await prisma.employee.update({
-      where: { userid: data.id },
+    const address = await prisma.address.update({
+      where: { userId: data.id },
       data: {
-        gender: data.employee.gender,
-        relationship: data.employee.relationship,
-        nationality: data.employee.nationality,
-        residence: data.employee.residence,
-        rg: data.employee.rg,
-        voter_card: data.employee.voter_card,
-        work_card: data.employee.work_card,
-        military: data.employee.military,
-        userid: data.id,
+        street: data.address.street,
+        number: data.address.number,
+        city: data.address.city,
+        cep: data.address.cep,
+        adjunct: data.address.adjunct,
+        district: data.address.district,
+        uf: data.address.uf,
+        userId: data.id,
       },
     });
-    // await prisma.bank.update({
-    //     where: { employeeId: employee.id },
-    //     data: {
-    //         account: data.employee.bank_data.account,
-    //         agency: data.employee.bank_data.agency,
-    //         name: data.employee.bank_data.name,
-    //         type: data.employee.bank_data.type,
-    //         employeeId: employee.id,
-    //     },
-    // })
+    console.log("addreess update: ", data.address);
 
-    console.log("Employee atualizado:", data.employee);
-  } else if (data.producer) {
-    await prisma.producer.update({
-      where: { userid: data.id },
+    if (data.employee) {
+      const employee = await prisma.employee.update({
+        where: { userid: data.id },
+        data: {
+          gender: data.employee.gender,
+          relationship: data.employee.relationship,
+          nationality: data.employee.nationality,
+          residence: data.employee.residence,
+          rg: data.employee.rg,
+          voter_card: data.employee.voter_card,
+          work_card: data.employee.work_card,
+          military: data.employee.military,
+          userid: data.id,
+        },
+      });
+      // await prisma.bank.update({
+      //     where: { employeeId: employee.id },
+      //     data: {
+      //         account: data.employee.bank_data.account,
+      //         agency: data.employee.bank_data.agency,
+      //         name: data.employee.bank_data.name,
+      //         type: data.employee.bank_data.type,
+      //         employeeId: employee.id,
+      //     },
+      // })
+
+      console.log("Employee atualizado:", data.employee);
+    } else if (data.producer) {
+      await prisma.producer.update({
+        where: { userid: data.id },
+        data: {
+          cnpj: data.producer.cnpj,
+          hectarePrice: data.producer.hectarePrice,
+          userid: data.id,
+        },
+      });
+      console.log("Produtor atualizado:", data.producer);
+    }
+
+    const user = await prisma.user.update({
+      where: { id: data.id },
       data: {
-        cnpj: data.producer.cnpj,
-        hectarePrice: data.producer.hectarePrice,
-        userid: data.id,
+        birth: new Date(birth),
+        cpf: data.cpf.replace(/\D/g, ""),
+        email: normalize(data.email),
+        name: data.name,
+        password: data.password,
+        phone: data.phone?.replace(/\D/g, ""),
+        image: image,
+        username: normalize(data.username),
+        isAdmin: data.isAdmin || false,
+        approved: data.isAdmin,
       },
+      include: inclusions.user,
     });
-    console.log("Produtor atualizado:", data.producer);
+
+    return { user };
+  } catch (error) {
+    console.log(error);
   }
-
-  const user = await prisma.user.update({
-    where: { id: data.id },
-    data: {
-      birth: new Date(birth),
-      cpf: data.cpf.replace(/\D/g, ""),
-      email: normalize(data.email),
-      name: data.name,
-      password: data.password,
-      phone: data.phone?.replace(/\D/g, ""),
-      image: data.image,
-      username: normalize(data.username),
-      isAdmin: data.isAdmin || false,
-      approved: data.isAdmin,
-    },
-    include: inclusions.user,
-  });
-
-  return { user };
 };
 
 export default {
