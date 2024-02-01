@@ -1,22 +1,23 @@
-import { NewCoordinate } from "../definitions/coordinate"
-import { PrismaClient } from "@prisma/client"
+import { NewCoordinate } from "../definitions/coordinate";
+import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 const create = async (data: NewCoordinate) => {
-    console.log("Iniciando a criação do coordenada...")
-    const coordinate = await prisma.coordinate.create({
-        data: {
-            x: data.x,
-            y: data.y,
-            tillageId: data.tillageId,
-        },
-    })
-    console.log({ coordinate })
+  console.log("Iniciando a criação do coordenada...");
+  const coordinate = await prisma.coordinate.create({
+    data: {
+      x: data.x,
+      y: data.y,
+      tillageId: data.tillageId,
+      talhaoId: data.talhaoId,
+    },
+  });
+  console.log({ coordinate });
 
-    console.log("Coordenada criada e associada ao terren:", coordinate)
-    return { coordinate }
-}
+  console.log("Coordenada criada e associada ao terren:", coordinate);
+  return { coordinate };
+};
 
 // const update = async (data: NewCoordinate & { id: number }) => {
 //   const coordinate = await prisma.coordinate.update({
@@ -32,15 +33,16 @@ const create = async (data: NewCoordinate) => {
 // };
 
 const list = async () => {
-    return await prisma.coordinate.findMany({
-        include: {
-            tillage: true,
-        },
-    })
-}
+  return await prisma.coordinate.findMany({
+    include: {
+      tillage: true,
+      talhao: true,
+    },
+  });
+};
 
 export default {
-    create,
-    // update,
-    list,
-}
+  create,
+  // update,
+  list,
+};

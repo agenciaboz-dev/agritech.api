@@ -4,4 +4,5 @@ declare interface NewCoordinate {
   x: string;
   y: string;
   tillageId: number;
+  talhaoId: number;
 }
