@@ -18,9 +18,9 @@ declare interface Product {
 }
 
 declare interface TechReport {
-    date: Date
-    init: Date
-    finish: Date
+    date: string
+    init: string
+    finish: string
     comments: string
     flight: Flight[]
 }

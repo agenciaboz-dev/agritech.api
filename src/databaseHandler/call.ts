@@ -182,7 +182,6 @@ const approve = async (data: OpenCall) => {
             const stage = await prisma.stage.create({
                 data: {
                     name: "STAGE1",
-                    
                     callId: updatedCall.id,
                 },
             })
@@ -255,10 +254,10 @@ const list = async () => {
     const updatedCalls = await Promise.all(
         calls.map(async (call) => {
             const producerHectarePrice = call.producer?.hectarePrice || 0
-            const areaMap = call.report?.operation?.areaMap || 0
+            const areaTrabalhada = call.report?.areaTrabalhada || 0
 
             // Calculate the desired value for each call
-            const calculatedValue = producerHectarePrice * areaMap
+            const calculatedValue = producerHectarePrice * areaTrabalhada
 
             // Update the totalPrice in the database
             const updatedCall = await prisma.call.update({
