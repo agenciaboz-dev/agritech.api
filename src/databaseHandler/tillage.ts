@@ -1,6 +1,7 @@
 import { OpenCall } from "../definitions/call";
 import { NewTillage } from "../definitions/tillage";
 import { PrismaClient } from "@prisma/client";
+import talhao from "./talhao";
 
 const prisma = new PrismaClient();
 
@@ -51,6 +52,7 @@ const create = async (data: NewTillage) => {
             x: location.x,
             y: location.y,
             tillageId: tillage.id,
+            talhaoId: location.talhaoId,
           },
         });
       })

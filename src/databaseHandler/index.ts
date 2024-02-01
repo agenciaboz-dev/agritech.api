@@ -10,6 +10,7 @@ import report from "./report";
 import chat from "./chat";
 import bank from "./bank";
 import stage from "./stage";
+import talhao from "./talhao";
 
 export default {
   user,
@@ -24,4 +25,5 @@ export default {
   chat,
   bank,
   stage,
+  talhao,
 };

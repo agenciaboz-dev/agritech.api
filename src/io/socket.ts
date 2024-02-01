@@ -20,6 +20,14 @@ import call from "./call";
 import chat from "./chat";
 import bank from "./bank";
 import report from "./report";
+import talhao from "./talhao";
+import stage from "./stage";
+import operation from "./operation";
+import material from "./material";
+import flight from "./flight";
+import product from "./product";
+import treatment from "./treatment";
+import techReport from "./techReport";
 
 import {
   User,
@@ -34,14 +42,8 @@ import {
   Bank,
   Stage,
   Report,
+  Talhao,
 } from "@prisma/client";
-import stage from "./stage";
-import operation from "./operation";
-import material from "./material";
-import flight from "./flight";
-import product from "./product";
-import treatment from "./treatment";
-import techReport from "./techReport";
 
 let io: SocketIoServer | null = null;
 
@@ -132,6 +134,21 @@ export const handleSocket = (socket: Socket) => {
   );
 
   socket.on("tillage:list", () => tillage.listTillage(socket));
+
+  // TALHAO OPS
+  socket.on("talhao:create", (newTalhao: Talhao) =>
+    talhao.newTalhao(socket, newTalhao)
+  );
+
+  socket.on("talhao:update", (updateTalhao: Talhao) =>
+    talhao.updateTalhao(socket, updateTalhao)
+  );
+
+  socket.on("talhao:find", (talhaoId: number) =>
+    talhao.findTalhao(socket, talhaoId)
+  );
+
+  socket.on("talhao:list", () => talhao.listTalhao(socket));
 
   // COORDINATE OPS
   socket.on("coordinate:create", (newCoorinate: Coordinate) =>
