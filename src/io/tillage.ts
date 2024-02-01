@@ -15,7 +15,7 @@ const newTillage = async (socket: Socket, data: any) => {
     }
   } catch (error) {
     console.log(error);
-    socket.emit("tillage:update:failed", { error: error });
+    socket.emit("tillage:creation:failed", { error: error });
   }
 };
 

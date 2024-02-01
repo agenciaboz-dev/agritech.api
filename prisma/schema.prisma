@@ -103,6 +103,7 @@ model Tillage{
 
     location        Coordinate[]
     gallery         Gallery[]
+    talhao          Talhao[]
 
 
     producer         Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
@@ -114,6 +115,10 @@ model Talhao {
     id              Int           @id @default(autoincrement())
     name            String
     area            String
+
+    tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int           @unique
+
     location        Coordinate[]
     gallery         Gallery[]
     calls           Call[]

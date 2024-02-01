@@ -125,7 +125,7 @@ const newUser = async (data: NewUser) => {
 
     let image: string | undefined;
 
-    if (data.image.file) {
+    if (data.image?.file) {
       saveImage(`user/profile`, data.image.file, data.image.name);
       image = `user/profile/${data.image.name}`;
     }
