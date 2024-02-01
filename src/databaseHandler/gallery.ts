@@ -28,6 +28,7 @@ const create = async (data: NewGallery) => {
           create: uploaded?.map((item) => ({ url: item })),
         },
         tillageId: data.tillageId,
+        talhaoId: data.talhaoId,
       },
     });
 
@@ -55,7 +56,7 @@ const update = async (data: NewGallery) => {
     console.log({ urls });
 
     const gallery = await prisma.gallery.update({
-      where: { tillageId: data.tillageId },
+      where: { id: data.id },
       data: {
         images: {
           create: urls.map((url) => ({ url })),
