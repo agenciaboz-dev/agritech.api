@@ -33,7 +33,12 @@ const inclusions = {
   producer: {
     tillage: { include: { address: true, location: true, gallery: true } },
   },
-  tillage: { address: true, location: true, gallery: true },
+  tillage: {
+    address: true,
+    location: true,
+    gallery: true,
+    talhao: { include: { name: true, area: true, location: true } },
+  },
   address: { use: true, tillage: true },
   bank: { employee: true },
   professional: { employee: true },
