@@ -129,11 +129,11 @@ model Coordinate{
     x               String      
     y               String
 
-    talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
-    talhaoId        Int
+    talhao          Talhao?        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
+    talhaoId        Int?
 
-    tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int          
+    tillage         Tillage?       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int?          
 }
 
 model Gallery{

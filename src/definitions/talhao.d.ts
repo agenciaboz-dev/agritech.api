@@ -4,6 +4,7 @@ declare interface NewTalhao {
   id: number;
   name: string;
   area: string;
+  tillageId: number;
   location: Coordinate[];
   gallery: Gallery[];
   calls: Call[];

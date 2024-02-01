@@ -3,6 +3,6 @@ import { Coordinate } from "@prisma/client";
 declare interface NewCoordinate {
   x: string;
   y: string;
-  tillageId: number;
-  talhaoId: number;
+  tillageId: number | null;
+  talhaoId?: number | null;
 }

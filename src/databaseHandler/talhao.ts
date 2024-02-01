@@ -9,6 +9,7 @@ const create = async (data: NewTalhao) => {
     data: {
       name: data.name,
       area: data.area,
+      tillageId: data.tillageId,
     },
   });
   console.log({ talhao });

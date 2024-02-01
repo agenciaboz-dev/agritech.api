@@ -52,7 +52,6 @@ const create = async (data: NewTillage) => {
             x: location.x,
             y: location.y,
             tillageId: tillage.id,
-            talhaoId: location.talhaoId,
           },
         });
       })
