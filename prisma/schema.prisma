@@ -108,14 +108,24 @@ model Tillage{
     producer         Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId       Int?  
 
-    call            Call?
+}
 
+model Talhao {
+    id              Int           @id @default(autoincrement())
+    name            String
+    area            String
+    location        Coordinate[]
+    gallery         Gallery[]
+    calls           Call[]
 }
 
 model Coordinate{
     id              Int           @id @default(autoincrement())
     x               String      
     y               String
+
+    talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
+    talhaoId        Int
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int          
@@ -124,6 +134,9 @@ model Coordinate{
 model Gallery{
     id              Int           @id @default(autoincrement())
     images          GalleryImage[]
+
+    talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
+    talhaoId        Int           
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int           @unique
@@ -222,16 +235,17 @@ model Call {
     finish          String?       @default("")
     approved        Boolean?      @default(false)
     comments        String?       @db.Text @default("")
+    totalPrice      Float?
+
     status          CallStatus    @default(OPEN)
 
     stage           CallStages    @default(STAGE0)
     stages          Stage[]
     
     report          Report?
-    totalPrice      Float?   
     
-    tillage         Tillage?        @relation(fields: [tillageId],references: [id])
-    tillageId       Int?            @unique
+    talhao          Talhao?         @relation(fields: [talhaoId],references: [id])
+    talhaoId        Int?
 
     kit             Kit?           @relation(fields: [kitId],references: [id])
     kitId           Int?         
