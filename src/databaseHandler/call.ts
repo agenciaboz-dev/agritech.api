@@ -241,7 +241,7 @@ const list = async () => {
       producer: { include: { user: true } },
       user: true,
       stages: true,
-      tillage: true,
+      talhao: true,
 
       report: {
         include: {
@@ -271,7 +271,7 @@ const list = async () => {
           producer: { include: { user: true } },
           user: true,
           stages: true,
-          tillage: true,
+          talhao: true,
           report: {
             include: {
               operation: true,
@@ -294,7 +294,7 @@ const listPending = async () => {
       kit: true,
       producer: { include: { user: true } },
       user: true,
-      tillage: true,
+      talhao: true,
     },
   });
 };
@@ -309,7 +309,7 @@ const listApproved = async () => {
           objects: true,
         },
       },
-      tillage: { include: { address: true } },
+      talhao: { include: { location: true } },
       producer: { include: { user: true } },
       user: true,
       stages: true,
