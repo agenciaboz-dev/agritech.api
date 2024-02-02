@@ -1,52 +1,52 @@
-import { PrismaClient } from "@prisma/client";
-import { NewTalhao } from "../definitions/talhao";
+import { PrismaClient } from "@prisma/client"
+import { NewTalhao } from "../definitions/talhao"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const create = async (data: NewTalhao) => {
-  console.log("Initiating Talhao Creation...");
-  const talhao = await prisma.talhao.create({
-    data: {
-      name: data.name,
-      area: data.area,
-      tillageId: data.tillageId,
-    },
-  });
-  console.log({ talhao });
+    console.log("Initiating Talhao Creation...")
+    const talhao = await prisma.talhao.create({
+        data: {
+            name: data.name,
+            area: Number(data.area),
+            tillageId: data.tillageId,
+        },
+    })
+    console.log({ talhao })
 
-  console.log("Talhao Created:", talhao);
-  return { talhao };
-};
+    console.log("Talhao Created:", talhao)
+    return { talhao }
+}
 
 const update = async (data: NewTalhao) => {
-  const talhao = await prisma.talhao.update({
-    where: { id: data.id },
-    data: {
-      name: data.name,
-      area: data.area,
-    },
-  });
-  console.log("Talhao Updated: ", data);
+    const talhao = await prisma.talhao.update({
+        where: { id: data.id },
+        data: {
+            name: data.name,
+            area: data.area,
+        },
+    })
+    console.log("Talhao Updated: ", data)
 
-  return { talhao };
-};
+    return { talhao }
+}
 
 const find = async (id: number) => {
-  return await prisma.talhao.findUnique({
-    where: { id },
-    include: { location: true, gallery: true, calls: true },
-  });
-};
+    return await prisma.talhao.findUnique({
+        where: { id },
+        include: { location: true, gallery: true, calls: true },
+    })
+}
 
 const list = async () => {
-  return await prisma.talhao.findMany({
-    include: { location: true, gallery: true, calls: true },
-  });
-};
+    return await prisma.talhao.findMany({
+        include: { location: true, gallery: true, calls: true },
+    })
+}
 
 export default {
-  create,
-  update,
-  find,
-  list,
-};
+    create,
+    update,
+    find,
+    list,
+}

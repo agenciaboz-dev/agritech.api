@@ -18,7 +18,7 @@ const create = async (data: NewTillage) => {
     const tillage = await prisma.tillage.create({
         data: {
             name: data.name,
-            area: data.area,
+            area: Number(data.area),
             owner: data.owner,
             ceo: data.ceo,
             manager: data.manager,
