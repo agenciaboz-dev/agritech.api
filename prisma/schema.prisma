@@ -31,7 +31,6 @@ model User{
     birth           DateTime?    @db.Date
     phone           String?
     image           String?      @db.Text
-    image64         String?  
     username        String       @unique
     email           String       @unique
     password        String  
@@ -279,8 +278,7 @@ model Stage {
 
 model Kit {
     id              Int           @id @default(autoincrement())
-    image           String?       @db.Text
-    image64         String?     
+    image           String?       @db.Text 
     name            String
     description     String
     active          Boolean      @default(false)
