@@ -294,7 +294,7 @@ model Object {
     id              Int           @id @default(autoincrement())
     name            String
     description     String
-    quantity        Int
+    quantity        Int?
 
     kit             Kit?          @relation(fields: [kitId],references: [id],onDelete: Cascade)
     kitId           Int?          
@@ -308,6 +308,8 @@ model Report {
     areaTrabalhada  Float         @default(0)
     date            String?       @default("")
     hour            String?       @default("") 
+    close           String?       @default("") 
+
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int
 

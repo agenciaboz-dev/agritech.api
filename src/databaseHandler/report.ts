@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 
 const create = async (data: NewReport) => {
   console.log("Iniciando a criação do relatório...");
+
   const report = await prisma.report.create({
     data: {
       call: { connect: { id: data.callId } },

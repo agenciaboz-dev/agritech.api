@@ -243,7 +243,7 @@ const list = async () => {
       stages: true,
       talhao: true,
 
-      report: {
+      reports: {
         include: {
           operation: true,
         },
@@ -255,10 +255,14 @@ const list = async () => {
   const updatedCalls = await Promise.all(
     calls.map(async (call) => {
       const producerHectarePrice = call.producer?.hectarePrice || 0;
-      const areaTrabalhada = call.report?.areaTrabalhada || 0;
+
+      // Calculate the total areaTrabalhada from all reports
+      const totalAreaTrabalhada = call.reports.reduce((total, report) => {
+        return total + (report.areaTrabalhada || 0);
+      }, 0);
 
       // Calculate the desired value for each call
-      const calculatedValue = producerHectarePrice * areaTrabalhada;
+      const calculatedValue = producerHectarePrice * totalAreaTrabalhada;
 
       // Update the totalPrice in the database
       const updatedCall = await prisma.call.update({
@@ -272,7 +276,7 @@ const list = async () => {
           user: true,
           stages: true,
           talhao: true,
-          report: {
+          reports: {
             include: {
               operation: true,
             },
@@ -313,7 +317,7 @@ const listApproved = async () => {
       producer: { include: { user: true } },
       user: true,
       stages: true,
-      report: {
+      reports: {
         include: {
           operation: true,
           treatment: { include: { products: true } },
