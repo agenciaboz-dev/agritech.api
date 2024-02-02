@@ -89,7 +89,7 @@ model Producer{
 model Tillage{
     id              Int          @id @default(autoincrement())
     name            String      
-    area            String      
+    area            Float      
     owner           String
     ceo             String
     manager         String?
@@ -114,10 +114,10 @@ model Tillage{
 model Talhao {
     id              Int           @id @default(autoincrement())
     name            String
-    area            String
+    area            Float
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int           @unique
+    tillageId       Int           
 
     location        Coordinate[]
     gallery         Gallery[]
