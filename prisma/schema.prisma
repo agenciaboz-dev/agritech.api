@@ -246,8 +246,7 @@ model Call {
     stage           CallStages    @default(STAGE0)
     stages          Stage[]
     
-    report          Report?        @relation(fields: [reportId],references: [id],onDelete: Cascade)
-    reportId        Int?   
+    reports             Report[]
     
     talhao          Talhao?         @relation(fields: [talhaoId],references: [id])
     talhaoId        Int?
@@ -309,7 +308,8 @@ model Report {
     areaTrabalhada  Float         @default(0)
     date            String?       @default("")
     hour            String?       @default("") 
-    call            Call[]
+    call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
+    callId          Int
 
     operation       Operation?
     treatment       Treatment?
