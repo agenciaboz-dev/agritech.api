@@ -102,12 +102,18 @@ const create = async (data: NewKit) => {
   });
 };
 
-const update = async (data: Kit) => {
+const update = async (data: NewKit) => {
+  let image: string | undefined;
+
+  if (data.image?.file) {
+    saveImage(`kit`, data.image.file, data.image.name);
+    image = `kit/${data.image.name}`;
+  }
+
   const kit = await prisma.kit.update({
     where: { id: data.id },
     data: {
-      image: data.image,
-      image64: data.image64,
+      image: image,
       name: data.name,
       description: data.description,
       active: data.active,

@@ -1,6 +1,7 @@
 import { Kit, Object, Employee, Calls, Calendar } from "@prisma/client";
 
 declare interface NewKit {
+  id: number;
   image: Image;
   name: string;
   description: string;
