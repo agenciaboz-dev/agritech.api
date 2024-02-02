@@ -159,9 +159,9 @@ export const handleSocket = (socket: Socket) => {
     cep.coordinateCep(socket, data)
   );
 
-  // socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
-  //   coordinate.updateCoordinate(socket, updateCoordinate)
-  // );
+  socket.on("coordinate:update", (updateCoordinate: Coordinate) =>
+    coordinate.updateCoordinate(socket, updateCoordinate)
+  );
 
   socket.on("coordinate:list", () => {
     coordinate.listCoordinate(socket);

@@ -219,7 +219,7 @@ const update = async (data: NewUser & { id: number }) => {
   try {
     let image: string | undefined;
 
-    if (data.image.file) {
+    if (data.image?.file) {
       saveImage(`user/profile`, data.image.file, data.image.name);
       image = `user/profile/${data.image.name}`;
     }

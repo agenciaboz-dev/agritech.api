@@ -20,23 +20,23 @@ const newCoordinate = async (socket: Socket, data: NewCoordinate) => {
   }
 };
 
-// const updateCoordinate = async (socket: Socket, data: any) => {
-//     console.log("Coordenada atualizada:", data)
+const updateCoordinate = async (socket: Socket, data: any) => {
+  console.log("Coordenada atualizada:", data);
 
-//     try {
-//         const coordinate = await databaseHandler.update(data)
+  try {
+    const coordinate = await databaseHandler.update(data);
 
-//         if (coordinate) {
-//             socket.emit("coordinate:update:success", coordinate)
-//             // socket.broadcast.emit("user:update", user)
-//         } else {
-//             socket.emit("coordinate:update:failed")
-//         }
-//     } catch (error) {
-//         console.log(error)
-//         socket.emit("coordinate:update:failed", { error: error })
-//     }
-// }
+    if (coordinate) {
+      socket.emit("coordinate:update:success", coordinate);
+      // socket.broadcast.emit("user:update", user)
+    } else {
+      socket.emit("coordinate:update:failed");
+    }
+  } catch (error) {
+    console.log(error);
+    socket.emit("coordinate:update:failed", { error: error });
+  }
+};
 
 const listCoordinate = async (socket: Socket) => {
   console.log("Lista de coordenadas");
@@ -46,6 +46,6 @@ const listCoordinate = async (socket: Socket) => {
 
 export default {
   newCoordinate,
-  // updateCoordinate,
+  updateCoordinate,
   listCoordinate,
 };

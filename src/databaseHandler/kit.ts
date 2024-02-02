@@ -1,5 +1,6 @@
 import { NewKit, ManageKitMembers } from "../definitions/kit";
 import { Kit, PrismaClient } from "@prisma/client";
+import { saveImage } from "../saveImage";
 
 const prisma = new PrismaClient();
 
@@ -48,10 +49,17 @@ const inclusions = {
 };
 const create = async (data: NewKit) => {
   console.log("Iniciando a criação do kit...");
+
+  let image: string | undefined;
+
+  if (data.image?.file) {
+    saveImage(`kit`, data.image.file, data.image.name);
+    image = `kit/${data.image.name}`;
+  }
+
   const kit = await prisma.kit.create({
     data: {
-      image: data.image,
-      image64: data.image64,
+      image: image,
       name: data.name,
       description: data.description,
       hectareDay: data.hectareDay,
