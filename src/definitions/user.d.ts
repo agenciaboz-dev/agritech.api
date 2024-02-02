@@ -9,7 +9,6 @@ declare interface NewUser {
   birth: string;
   phone: string;
   image: Image;
-  image64: string;
   isAdmin: boolean;
   approved: boolean;
   rejected: string;

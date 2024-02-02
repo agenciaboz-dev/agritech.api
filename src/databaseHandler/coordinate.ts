@@ -1,5 +1,6 @@
 import { NewCoordinate } from "../definitions/coordinate";
-import { PrismaClient } from "@prisma/client";
+import { Coordinate, PrismaClient } from "@prisma/client";
+import coordinate from "../io/coordinate";
 
 const prisma = new PrismaClient();
 
@@ -19,18 +20,18 @@ const create = async (data: NewCoordinate) => {
   return { coordinate };
 };
 
-// const update = async (data: NewCoordinate & { id: number }) => {
-//   const coordinate = await prisma.coordinate.update({
-//     where: { tillageId: data.tillageId },
-//     data: {
-//       x: data.x,
-//       y: data.y,
-//     },
-//   });
-//   console.log("Coordinate Update: ", data);
+const update = async (data: NewCoordinate) => {
+  const coordinate = await prisma.coordinate.update({
+    where: { id: data.id },
+    data: {
+      x: data.x,
+      y: data.y,
+    },
+  });
+  console.log("Coordinate Update: ", data);
 
-//   return { coordinate };
-// };
+  return { coordinate };
+};
 
 const list = async () => {
   return await prisma.coordinate.findMany({
@@ -43,6 +44,6 @@ const list = async () => {
 
 export default {
   create,
-  // update,
+  update,
   list,
 };
