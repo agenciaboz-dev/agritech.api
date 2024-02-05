@@ -239,7 +239,7 @@ model Call {
     init            String?       @default("")
     finish          String?       @default("")
     approved        Boolean?      @default(false)
-    comments        String?       @db.Text @default("")
+    comments        String?       @db.Text
     totalPrice      Float?
 
     status          CallStatus    @default(OPEN)
