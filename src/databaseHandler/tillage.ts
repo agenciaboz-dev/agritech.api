@@ -6,7 +6,7 @@ import talhao from "./talhao"
 const prisma = new PrismaClient()
 
 const inclusions = {
-    tillage: { address: true, location: true, gallery: true, call: true, talhao: true },
+    tillage: { address: true, location: true, gallery: true, call: true, talhao: { include: { calls: true } } },
     address: { use: true, tillage: true },
     location: { tillage: true },
     gallery: {},
@@ -105,7 +105,7 @@ const list = async () => {
             location: true,
             gallery: true,
             producer: true,
-            talhao: true,
+            talhao: { include: { calls: true } },
         },
     })
 }

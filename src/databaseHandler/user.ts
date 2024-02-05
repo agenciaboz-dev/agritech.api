@@ -9,7 +9,7 @@ const inclusions = {
     user: {
         producer: {
             include: {
-                tillage: { include: { address: true, location: true, gallery: true, talhao: true } },
+                tillage: { include: { address: true, location: true, gallery: true, talhao: { include: { calls: true } } } },
             },
         },
         employee: {
@@ -37,7 +37,7 @@ const inclusions = {
         address: true,
         location: true,
         gallery: true,
-        talhao: { include: { name: true, area: true, location: true } },
+        talhao: { include: { name: true, area: true, location: true, calls: true } },
     },
     address: { use: true, tillage: true },
     bank: { employee: true },
