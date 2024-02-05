@@ -115,8 +115,8 @@ model Talhao {
     name            String
     area            Float
 
-    tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int           
+    tillage         Tillage?       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillageId       Int?      
 
     location        Coordinate[]
     gallery         Gallery[]
