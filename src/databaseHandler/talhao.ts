@@ -40,7 +40,7 @@ const find = async (id: number) => {
 
 const list = async () => {
     return await prisma.talhao.findMany({
-        include: { location: true, gallery: true, calls: true },
+        include: { location: true, gallery: true, calls: { include: { reports: true, kit: true, stages: true } } },
     })
 }
 

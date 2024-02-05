@@ -105,7 +105,14 @@ const list = async () => {
             location: true,
             gallery: true,
             producer: true,
-            talhao: { include: { calls: true } },
+            talhao: {
+                include: {
+                    gallery: true,
+                    location: true,
+                    tillage: true,
+                    calls: { include: { reports: true, stages: true, kit: true, producer: true } },
+                },
+            },
         },
     })
 }
