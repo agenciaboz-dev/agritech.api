@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE `Call` MODIFY `comments` TEXT NULL DEFAULT '';
+ALTER TABLE `Call` MODIFY `comments` TEXT NULL;
 
 -- AlterTable
 ALTER TABLE `Material` MODIFY `comments` TEXT NOT NULL;
