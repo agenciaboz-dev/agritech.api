@@ -169,6 +169,10 @@ export const handleSocket = (socket: Socket) => {
     coordinate.updateCoordinate(socket, updateCoordinate)
   );
 
+  socket.on("coordinate:find", (id: number) =>
+    coordinate.findCoordinate(socket, id)
+  );
+
   socket.on("coordinate:list", () => {
     coordinate.listCoordinate(socket);
   });

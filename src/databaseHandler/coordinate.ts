@@ -5,7 +5,7 @@ import coordinate from "../io/coordinate";
 const prisma = new PrismaClient();
 
 const create = async (data: NewCoordinate) => {
-  console.log("Iniciando a criação do coordenada...");
+  console.log(data);
   const coordinate = await prisma.coordinate.create({
     data: {
       x: data.x,
@@ -15,12 +15,11 @@ const create = async (data: NewCoordinate) => {
     },
   });
   console.log({ coordinate });
-
-  console.log("Coordenada criada e associada ao terren:", coordinate);
   return { coordinate };
 };
 
 const update = async (data: NewCoordinate) => {
+  console.log(data);
   const coordinate = await prisma.coordinate.update({
     where: { id: data.id },
     data: {
@@ -28,9 +27,12 @@ const update = async (data: NewCoordinate) => {
       y: data.y,
     },
   });
-  console.log("Coordinate Update: ", data);
-
+  console.log(coordinate);
   return { coordinate };
+};
+
+const find = async (id: number) => {
+  return await prisma.coordinate.findUnique({ where: { id } });
 };
 
 const list = async () => {
@@ -45,5 +47,6 @@ const list = async () => {
 export default {
   create,
   update,
+  find,
   list,
 };
