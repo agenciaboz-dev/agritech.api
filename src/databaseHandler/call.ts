@@ -27,64 +27,58 @@ const inclusions = {
 
 const adminCreate = async (data: AdminCall) => {
   try {
-    console.log("Initiating the creation and update of the call...");
+    console.log(data);
 
-    // Use a transaction to ensure atomicity
-    const result = await prisma.$transaction(async (prisma) => {
-      // Create the call
-      const call = await prisma.call.create({
-        data: {
-          open: new Date().getTime().toString(),
-          approved: data.approved,
-          comments: data.comments,
-          talhaoId: data.talhaoId,
-          producerId: data.producerId,
-          userId: data.userId,
-          kitId: data.kitId || undefined,
-          forecast: data.forecast,
-        },
-      });
-
-      // Update the producer
-      const producer = await prisma.producer.update({
-        where: { id: data.producerId },
-        data: {
-          hectarePrice: data.hectarePrice,
-        },
-      });
-
-      // Create the stage
-      const stage = await prisma.stage.create({
-        data: {
-          name: "STAGE1",
-          callId: call.id,
-        },
-      });
-
-      // Update the call
-      const updatedCall = await prisma.call.update({
-        where: { id: call.id },
-        data: {
-          approved: data.kitId ? true : false,
-          status: "INPROGRESS",
-          stage: "STAGE1",
-          kitId: data.kitId,
-          init: new Date().getTime().toString(),
-        },
-      });
-
-      console.log("Call, Producer, Stage, and Updated Call created/updated:", {
-        call,
-        producer,
-        stage,
-        updatedCall,
-      });
-
-      return { call, producer, stage, updatedCall };
+    // Create the call
+    const call = await prisma.call.create({
+      data: {
+        open: new Date().getTime().toString(),
+        approved: data.approved,
+        comments: data.comments,
+        talhaoId: data.talhaoId,
+        producerId: data.producerId,
+        userId: data.userId,
+        kitId: data.kitId || undefined,
+        forecast: data.forecast,
+      },
     });
 
-    console.log("Transaction completed successfully.");
-    return result;
+    // Update the producer
+    const producer = await prisma.producer.update({
+      where: { id: data.producerId },
+      data: {
+        hectarePrice: data.hectarePrice,
+      },
+    });
+
+    // Create the stage
+    const stage = await prisma.stage.create({
+      data: {
+        name: "STAGE1",
+        callId: call.id,
+      },
+    });
+
+    // Update the call
+    const updatedCall = await prisma.call.update({
+      where: { id: call.id },
+      data: {
+        approved: data.kitId ? true : false,
+        status: "INPROGRESS",
+        stage: "STAGE1",
+        kitId: data.kitId,
+        init: new Date().getTime().toString(),
+      },
+    });
+
+    console.log("Call, Producer, Stage, and Updated Call created/updated:", {
+      call,
+      producer,
+      stage,
+      updatedCall,
+    });
+
+    return { call, producer, stage, updatedCall };
   } catch (error) {
     console.error("Error in creating and updating the call:", error);
     throw error;
@@ -92,7 +86,7 @@ const adminCreate = async (data: AdminCall) => {
 };
 
 const create = async (data: OpenCall) => {
-  console.log("Iniciando a criação do chamado...");
+  console.log(data);
   const call = await prisma.call.create({
     data: {
       open: new Date().getTime().toString(),
@@ -114,13 +108,11 @@ const create = async (data: OpenCall) => {
   });
 
   console.log({ call, producer });
-
-  console.log("Chamado aberto:", call, producer);
   return { call, producer };
 };
 
 const update = async (data: Call) => {
-  console.log("Iniciando a atualização do chamado...");
+  console.log(data);
   const call = await prisma.call.update({
     where: { id: data.id },
     data: {
@@ -135,12 +127,10 @@ const update = async (data: Call) => {
       producerId: data.producerId,
       userId: data.userId,
       kitId: data.kitId,
-      totalPrice: data.totalPrice, // Remove the extra semicolon here
+      totalPrice: data.totalPrice,
     },
   });
   console.log({ call });
-
-  console.log("Chamado atualizado:", call);
   return call;
 };
 
@@ -157,8 +147,7 @@ const approve = async (data: OpenCall) => {
       });
 
       if (existingStage) {
-        // Throw an error if a stage with the same name already exists for the call
-        throw new Error("A STAGE1 stage already exists for this call");
+        throw new Error("A STAGE1 status stage already exists for this call");
       }
 
       const updatedCall = await prisma.call.update({
@@ -185,7 +174,7 @@ const approve = async (data: OpenCall) => {
           callId: updatedCall.id,
         },
       });
-      console.log("Stage 1 Criado:", stage);
+      console.log(stage);
 
       return { call: updatedCall, stage, producer };
     } else {
@@ -198,7 +187,7 @@ const approve = async (data: OpenCall) => {
 };
 
 const close = async (data: Call) => {
-  console.log("Iniciando a fechamento do chamado...");
+  console.log(data);
   const call = await prisma.call.update({
     where: { id: data.id },
     data: {
@@ -207,14 +196,11 @@ const close = async (data: Call) => {
     },
   });
   console.log({ call });
-
-  console.log("Chamado fechado:", call);
-
   return { call };
 };
 
 const cancel = async (data: Call) => {
-  console.log("Iniciando o cancelamento do chamado...");
+  console.log(data);
   const call = await prisma.call.update({
     where: { id: data.id },
     data: {
@@ -222,8 +208,6 @@ const cancel = async (data: Call) => {
     },
   });
   console.log({ call });
-
-  console.log("Chamado Cancelado:", call);
 
   const report = await prisma.report.create({
     data: {
