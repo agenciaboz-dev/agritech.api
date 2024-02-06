@@ -124,6 +124,12 @@ export const handleSocket = (socket: Socket) => {
     user.updateUser(socket, updateUser)
   );
   socket.on("user:pendingApproval", () => user.listPendingApproval(socket));
+  socket.on("user:toggle:admin", (data: User) =>
+    user.toggleAdmin(socket, data)
+  );
+  socket.on("user:toggle:manager", (data: User) =>
+    user.toggleManager(socket, data)
+  );
 
   // TILLAGE OPS
   socket.on("tillage:create", (newTillage: Tillage) =>
