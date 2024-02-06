@@ -3,17 +3,11 @@ import databaseHandler from "../databaseHandler/coordinate";
 import { NewCoordinate } from "../definitions/coordinate";
 
 const newCoordinate = async (socket: Socket, data: NewCoordinate) => {
-  console.log("Nova Coordenada:", data);
+  console.log(data);
 
   try {
     const coordinate = await databaseHandler.create(data);
-
-    if (coordinate) {
-      socket.emit("coordinate:creation:success", coordinate);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("coordinate:creation:failed");
-    }
+    socket.emit("coordinate:creation:success", coordinate);
   } catch (error) {
     console.log(error);
     socket.emit("coordinate:update:failed", { error: error });
@@ -21,20 +15,26 @@ const newCoordinate = async (socket: Socket, data: NewCoordinate) => {
 };
 
 const updateCoordinate = async (socket: Socket, data: any) => {
-  console.log("Coordenada atualizada:", data);
+  console.log(data);
 
   try {
     const coordinate = await databaseHandler.update(data);
-
-    if (coordinate) {
-      socket.emit("coordinate:update:success", coordinate);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("coordinate:update:failed");
-    }
+    socket.emit("coordinate:update:success", coordinate);
   } catch (error) {
     console.log(error);
     socket.emit("coordinate:update:failed", { error: error });
+  }
+};
+
+const findCoordinate = async (socket: Socket, id: number) => {
+  console.log(id);
+
+  try {
+    const coordinate = await databaseHandler.find(id);
+    socket.emit("coordinate:find:success", coordinate);
+  } catch (error) {
+    console.log(error);
+    socket.emit("coordinate:find:failed", { error: error });
   }
 };
 
@@ -48,4 +48,5 @@ export default {
   newCoordinate,
   updateCoordinate,
   listCoordinate,
+  findCoordinate,
 };
