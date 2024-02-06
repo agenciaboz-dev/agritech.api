@@ -4,7 +4,7 @@ import { NewProduct } from "../definitions/product";
 const prisma = new PrismaClient();
 
 const create = async (data: NewProduct) => {
-  console.log("Initiating Product Creation...");
+  console.log(data);
   const product = await prisma.product.create({
     data: {
       name: data.name,
@@ -14,8 +14,6 @@ const create = async (data: NewProduct) => {
     },
   });
   console.log({ product });
-
-  console.log("Product Created:", product);
   return { product };
 };
 
@@ -29,8 +27,7 @@ const update = async (data: NewProduct) => {
       treatmentId: data.treatmentId,
     },
   });
-  console.log("Product Updated: ", data);
-
+  console.log(product);
   return { product };
 };
 
