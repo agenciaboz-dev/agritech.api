@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `call` MODIFY `comments` TEXT NULL;
+ALTER TABLE `Call` MODIFY `comments` TEXT NULL;
