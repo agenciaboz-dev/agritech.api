@@ -300,7 +300,13 @@ const listPending = async () => {
             kit: true,
             producer: { include: { user: true } },
             user: true,
-            talhao: true,
+            talhao: {
+                include: {
+                    location: true,
+                    gallery: true,
+                    tillage: { include: { address: true, gallery: true, location: true } },
+                },
+            },
         },
     })
 }
@@ -316,7 +322,7 @@ const listApproved = async () => {
                 },
             },
             talhao: { include: { location: true, tillage: true } },
-            
+
             producer: { include: { user: true } },
             user: true,
             stages: true,
