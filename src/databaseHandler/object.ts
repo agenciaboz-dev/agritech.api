@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: NewObject) => {
-  console.log("Iniciando a criação do objeto...");
+  console.log(data);
   const object = await prisma.object.create({
     data: {
       name: data.name,
@@ -14,8 +14,6 @@ const create = async (data: NewObject) => {
     },
   });
   console.log({ object });
-
-  console.log("Objecto criado:", object);
   return object;
 };
 
@@ -29,7 +27,7 @@ const update = async (data: Object) => {
       kitId: data.kitId,
     },
   });
-  console.log("Coordinate Update: ", data);
+  console.log(data);
 
   return object;
 };
