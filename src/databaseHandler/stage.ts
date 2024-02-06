@@ -165,6 +165,9 @@ const updateThree = async (data: Stage) => {
             data: {
                 stage: "STAGE4",
             },
+            include: {
+                stages: true,
+            },
         })
 
         console.log("Stage 3 updated:", stage3)
