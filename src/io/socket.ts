@@ -265,6 +265,8 @@ export const handleSocket = (socket: Socket) => {
     bank.listBank(socket);
   });
 
+  socket.on("bank:find", (bankId: number) => bank.findBank(socket, bankId));
+
   // STAGE OPS
   socket.on("stage:update:one", (stageUpdate: Stage) =>
     stage.updateStageOne(socket, stageUpdate)

@@ -3,43 +3,39 @@ import databaseHandler from "../databaseHandler/bank";
 import { NewBank } from "../definitions/bank";
 
 const newBank = async (socket: Socket, data: NewBank) => {
-  console.log("Novos dados bancarios:", data);
-
+  console.log(data);
   try {
     const bank = await databaseHandler.create(data);
-
-    if (bank) {
-      socket.emit("bank:creation:success", bank);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("bank:creation:failed");
-    }
+    socket.emit("bank:creation:success", bank);
   } catch (error) {
     console.log(error);
-    socket.emit("gallery:creation:failed", { error: error });
+    socket.emit("bank:creation:failed", { error: error });
   }
 };
 
 const updateBank = async (socket: Socket, data: NewBank) => {
-  console.log("Dados bancarios atualizados:", data);
-
+  console.log(data);
   try {
     const bank = await databaseHandler.update(data);
-
-    if (bank) {
-      socket.emit("bank:update:success", bank);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("bank:update:failed");
-    }
+    socket.emit("bank:update:success", bank);
   } catch (error) {
     console.log(error);
     socket.emit("bank:update:failed", { error: error });
   }
 };
 
+const findBank = async (socket: Socket, id: number) => {
+  console.log(id);
+  try {
+    const bank = await databaseHandler.find(id);
+    socket.emit("bank:find:success", bank);
+  } catch (error) {
+    console.log(error);
+    socket.emit("bank:find:failed", { error: error });
+  }
+};
+
 const listBank = async (socket: Socket) => {
-  console.log("Lista de dados bancarios");
   const bank = await databaseHandler.list();
   socket.emit("bank:list:success", bank);
 };
@@ -47,5 +43,6 @@ const listBank = async (socket: Socket) => {
 export default {
   newBank,
   updateBank,
+  findBank,
   listBank,
 };
