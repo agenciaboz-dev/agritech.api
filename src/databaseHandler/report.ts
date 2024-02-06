@@ -7,7 +7,7 @@ import flight from "./flight";
 const prisma = new PrismaClient();
 
 const create = async (data: NewReport) => {
-  console.log("Iniciando a criação do relatório...");
+  console.log(data);
 
   const report = await prisma.report.create({
     data: {
@@ -86,14 +86,14 @@ const create = async (data: NewReport) => {
 };
 
 const update = async (data: Report) => {
-  console.log("Initiating Report Update...");
+  console.log(data);
   const report = await prisma.report.update({
     where: { id: data.id },
     data: {
       areaTrabalhada: data.areaTrabalhada,
     },
   });
-  console.log("Report updated:", report);
+  console.log(report);
   return report;
 };
 
