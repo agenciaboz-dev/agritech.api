@@ -291,8 +291,8 @@ export const handleSocket = (socket: Socket) => {
   );
   socket.on("operation:list", () => operation.listOperation(socket));
 
-  socket.on("operation:find", (operationId: number) =>
-    operation.findOperation(socket, { operationId })
+  socket.on("operation:find", (id: number) =>
+    operation.findOperation(socket, id)
   );
 
   // MATERIAL OPS
@@ -304,9 +304,7 @@ export const handleSocket = (socket: Socket) => {
     material.updateMaterial(socket, data)
   );
 
-  socket.on("material:find", (materialId: number) =>
-    material.findMaterial(socket, { materialId })
-  );
+  socket.on("material:find", (id: number) => material.findMaterial(socket, id));
 
   socket.on("material:list", () => material.listMaterial(socket));
 
