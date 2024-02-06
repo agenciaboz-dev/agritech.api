@@ -9,6 +9,9 @@ path="~/${api}/"
 echo 'compiling server files locally'
 yarn build
 
+echo 'deleting server files'
+ssh ${user}@agencyboz "source ~/.nvm/nvm.sh; cd ${path}; rm -rf dist node_modules prisma"
+
 echo 'Uploading build to server'
 scp -r dist ${user}@agencyboz:${path}/
 
