@@ -3,16 +3,11 @@ import databaseHandler from "../databaseHandler/techReport";
 import { NewTechReport } from "../definitions/techReport";
 
 const newTechReport = async (socket: Socket, data: NewTechReport) => {
-  console.log("New Flight Data:", data);
+  console.log(data);
 
   try {
     const techReport = await databaseHandler.create(data);
-
-    if (techReport) {
-      socket.emit("techReport:creation:success", techReport);
-    } else {
-      socket.emit("techReport:creation:failed");
-    }
+    socket.emit("techReport:creation:success", techReport);
   } catch (error) {
     console.log(error);
     socket.emit("techReport:update:failed", { error: error });
@@ -20,16 +15,11 @@ const newTechReport = async (socket: Socket, data: NewTechReport) => {
 };
 
 const updateTechReport = async (socket: Socket, data: NewTechReport) => {
-  console.log("New Flight Data:", data);
+  console.log(data);
 
   try {
     const techReport = await databaseHandler.update(data);
-
-    if (techReport) {
-      socket.emit("techReport:update:success", techReport);
-    } else {
-      socket.emit("techReport:update:failed");
-    }
+    socket.emit("techReport:update:success", techReport);
   } catch (error) {
     console.log(error);
     socket.emit("techReport:update:failed", { error: error });
@@ -39,12 +29,7 @@ const updateTechReport = async (socket: Socket, data: NewTechReport) => {
 const findTechReport = async (socket: Socket, id: number) => {
   try {
     const techReport = await databaseHandler.find(id);
-
-    if (techReport) {
-      socket.emit("techReport:find:success", techReport);
-    } else {
-      socket.emit("techReport:find:failed");
-    }
+    socket.emit("techReport:find:success", techReport);
   } catch (error) {
     console.log(error);
     socket.emit("techReport:find:failed", { error: error });
@@ -54,12 +39,7 @@ const findTechReport = async (socket: Socket, id: number) => {
 const listTechReport = async (socket: Socket) => {
   try {
     const techReport = await databaseHandler.list();
-
-    if (techReport) {
-      socket.emit("techReport:list:success", techReport);
-    } else {
-      socket.emit("techReport:list:failed");
-    }
+    socket.emit("techReport:list:success", techReport);
   } catch (error) {
     console.log(error);
     socket.emit("techReport:list:failed", { error: error });

@@ -330,8 +330,8 @@ export const handleSocket = (socket: Socket) => {
     treatment.updateTreatment(socket, data)
   );
   socket.on("treatment:list", () => treatment.listTreatment(socket));
-  socket.on("treatment:find", (treatmentId: number) =>
-    treatment.findTreatment(socket, { treatmentId })
+  socket.on("treatment:find", (id: number) =>
+    treatment.findTreatment(socket, id)
   );
 
   // TECHREPORT OPS
@@ -356,9 +356,7 @@ export const handleSocket = (socket: Socket) => {
 
   socket.on("report:update", (data: any) => report.updateReport(socket, data));
 
-  socket.on("report:find", (reportId: number) =>
-    report.findReport(socket, { reportId })
-  );
+  socket.on("report:find", (id: number) => report.findReport(socket, id));
 
   socket.on("report:list", () => report.listReport(socket));
 };
