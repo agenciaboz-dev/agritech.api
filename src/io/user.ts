@@ -162,6 +162,46 @@ const updateUser = async (socket: Socket, data: any) => {
   }
 };
 
+const toggleAdmin = async (socket: Socket, data: User) => {
+  console.log("Toggle Admin Status:", data);
+
+  try {
+    const user = await prisma.toggleAdmin(data.id);
+
+    if (user) {
+      socket.emit("user:admin:toggle:success", user);
+    } else {
+      socket.emit("user:admin:toggle:failed");
+      console.log("Erro de dados do Kit ou id não encontrado");
+    }
+  } catch (error: any) {
+    let message = error;
+    if (error.code === "P2025") message = "Id não encontrado";
+    socket.emit("user:admin:toggle:failed", { error: message });
+    console.log(message);
+  }
+};
+
+const toggleManager = async (socket: Socket, data: User) => {
+  console.log("Toggle Admin Status:", data);
+
+  try {
+    const user = await prisma.toggleManager(data.id);
+
+    if (user) {
+      socket.emit("user:manager:toggle:success", user);
+    } else {
+      socket.emit("user:manager:toggle:failed");
+      console.log("Erro de dados do Kit ou id não encontrado");
+    }
+  } catch (error: any) {
+    let message = error;
+    if (error.code === "P2025") message = "Id não encontrado";
+    socket.emit("user:manager:toggle:failed", { error: message });
+    console.log(message);
+  }
+};
+
 export default {
   logout,
   newUser,
@@ -172,4 +212,6 @@ export default {
   updateUser,
   listUsersApproved,
   listPendingApproval,
+  toggleAdmin,
+  toggleManager,
 };
