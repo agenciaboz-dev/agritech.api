@@ -1,18 +1,14 @@
 import { Socket } from "socket.io";
 import databaseHandler from "../databaseHandler/operation";
 import { Operation } from "@prisma/client";
+import operation from "../databaseHandler/operation";
 
 const newOperation = async (socket: Socket, data: Operation) => {
-  console.log("New Report:", data);
+  console.log(data);
 
   try {
     const operation = await databaseHandler.create(data);
-
-    if (operation) {
-      socket.emit("operation:creation:success", operation);
-    } else {
-      socket.emit("operation:creation:failed");
-    }
+    socket.emit("operation:creation:success", operation);
   } catch (error) {
     console.log(error);
     socket.emit("operation:creation:failed", { error: error });
@@ -20,16 +16,12 @@ const newOperation = async (socket: Socket, data: Operation) => {
 };
 
 const updateOperation = async (socket: Socket, data: Operation) => {
-  console.log("Update Report:", data);
+  console.log(data);
 
   try {
-    const operation = await databaseHandler.update(data.id, data);
+    const operation = await databaseHandler.update(data);
 
-    if (operation) {
-      socket.emit("operation:update:success", operation);
-    } else {
-      socket.emit("operation:update:failed");
-    }
+    socket.emit("operation:update:success", operation);
   } catch (error) {
     console.log(error);
     socket.emit("operation:update:failed", { error: error });
@@ -46,19 +38,15 @@ const listOperation = async (socket: Socket) => {
   }
 };
 
-const findOperation = async (socket: Socket, data: { operationId: number }) => {
-  const operationId = data.operationId;
+const findOperation = async (socket: Socket, id: number) => {
   try {
-    const operation = await databaseHandler.find(operationId);
+    const operation = await databaseHandler.find(id);
     console.log(operation);
-    if (operation) {
-      socket.emit("operation:find:success", operation);
-    } else {
-      socket.emit("operation:find:failed", { error: "Relatório não encontrado." });
-    }
+
+    socket.emit("operation:find:success", operation);
   } catch (error) {
     console.error(
-      `Error fetching report for ID: ${operationId}. Error: ${error}`
+      `Error fetching report for ID: ${operation}. Error: ${error}`
     );
     socket.emit("operation:find:error", { error: error });
   }
