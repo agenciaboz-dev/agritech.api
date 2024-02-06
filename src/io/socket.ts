@@ -314,9 +314,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("flight:create", (data: any) => flight.newFlight(socket, data));
   socket.on("flight:update", (data: any) => flight.updateFlight(socket, data));
   socket.on("flight:list", () => flight.listFlight(socket));
-  socket.on("flight:find", (flightId: number) =>
-    flight.findFlight(socket, { flightId })
-  );
+  socket.on("flight:find", (id: number) => flight.findFlight(socket, id));
 
   // PRODUCT OPS
   socket.on("product:create", (data: any) => product.newProduct(socket, data));

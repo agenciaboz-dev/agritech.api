@@ -4,7 +4,7 @@ import { Gallery, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: NewFlight) => {
-  console.log("Iniciando a criação do flight report...");
+  console.log(data);
   const flight = await prisma.flight.create({
     data: {
       temperature: data.temperature,
@@ -20,8 +20,6 @@ const create = async (data: NewFlight) => {
     },
   });
   console.log({ flight });
-
-  console.log("Galeria criada:", flight);
   return { flight };
 };
 
@@ -41,8 +39,7 @@ const update = async (data: NewFlight) => {
       techReportId: data.techReportId,
     },
   });
-  console.log("Flight atualizada: ", data);
-
+  console.log({ flight });
   return { flight };
 };
 
