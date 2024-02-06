@@ -139,7 +139,7 @@ const newUser = async (data: NewUser) => {
       image = `user/profile/${data.image.name}`;
     }
 
-    console.log("Iniciando a criação do usuário...");
+    console.log(data);
     const user = await prisma.user.create({
       data: {
         birth: birth,
@@ -171,8 +171,7 @@ const newUser = async (data: NewUser) => {
         userId: user.id,
       },
     });
-    console.log("Usuário criado:", user);
-    console.log({ address: data.address });
+    console.log(user, address);
 
     if (data.employee) {
       const employee = await prisma.employee.create({
@@ -189,19 +188,8 @@ const newUser = async (data: NewUser) => {
         },
       });
 
-      // await prisma.bank.create({
-      //     data: {
-      //         account: data.employee.bank_data.account,
-      //         agency: data.employee.bank_data.agency,
-      //         name: data.employee.bank_data.name,
-      //         type: data.employee.bank_data.type,
-      //         employeeId: employee.id,
-      //     },
-      // })
-
-      console.log("Funcionário criado:", data.employee);
+      console.log(employee);
     } else if (data.producer) {
-      // console.log({ "Recebendo no Back:": data })
       const producer = await prisma.producer.create({
         data: {
           cnpj: data.producer.cnpj,
@@ -212,7 +200,7 @@ const newUser = async (data: NewUser) => {
           userid: user.id,
         },
       });
-      console.log("Produtor criado:", data.producer);
+      console.log(producer);
     }
     return await prisma.user.findFirst({
       where: { id: user.id },
@@ -246,7 +234,7 @@ const update = async (data: NewUser & { id: number }) => {
         userId: data.id,
       },
     });
-    console.log("addreess update: ", data.address);
+    console.log(address);
 
     if (data.employee) {
       const employee = await prisma.employee.update({
@@ -263,20 +251,10 @@ const update = async (data: NewUser & { id: number }) => {
           userid: data.id,
         },
       });
-      // await prisma.bank.update({
-      //     where: { employeeId: employee.id },
-      //     data: {
-      //         account: data.employee.bank_data.account,
-      //         agency: data.employee.bank_data.agency,
-      //         name: data.employee.bank_data.name,
-      //         type: data.employee.bank_data.type,
-      //         employeeId: employee.id,
-      //     },
-      // })
 
-      console.log("Employee atualizado:", data.employee);
+      console.log(employee);
     } else if (data.producer) {
-      await prisma.producer.update({
+      const producer = await prisma.producer.update({
         where: { userid: data.id },
         data: {
           cnpj: data.producer.cnpj,
@@ -284,7 +262,7 @@ const update = async (data: NewUser & { id: number }) => {
           userid: data.id,
         },
       });
-      console.log("Produtor atualizado:", data.producer);
+      console.log(producer);
     }
 
     const user = await prisma.user.update({

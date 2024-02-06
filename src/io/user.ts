@@ -20,12 +20,15 @@ const logout = async (socket: Socket, clients: ClientBag, user: User) => {
 };
 
 const handleLogin = async (socket: Socket, data: LoginForm) => {
-  const user = await prisma.login(data);
-
-  if (user) {
-    socket.emit("user:login:success", user);
-  } else {
-    socket.emit("user:login:failed", { error: "Credenciais inválidas." });
+  try {
+    const user = await prisma.login(data);
+    if (user) {
+      socket.emit("user:login:success", user);
+    } else {
+      socket.emit("user:login:failed", { error: "Invalid login credentials" });
+    }
+  } catch (error: any) {
+    socket.emit("user:login:failed", { error: error.message });
   }
 };
 
@@ -76,15 +79,9 @@ const newUser = async (socket: Socket, userNew: any) => {
 const approve = async (socket: Socket, id: number) => {
   try {
     const user = await prisma.approve(id);
-    if (user) {
-      socket.emit("application:status:approved", user);
-    } else {
-      socket.emit("application:aproval:error", {
-        error: "Approval Error",
-      });
-    }
-    // Notify the user that their application is approved
+    socket.emit("application:status:approved", user);
   } catch (error: any) {
+    socket.emit("application:approval:error", { error: error.message });
     console.log(error);
   }
 };
@@ -92,25 +89,17 @@ const approve = async (socket: Socket, id: number) => {
 const reject = async (socket: Socket, id: number) => {
   try {
     const user = await prisma.reject(id);
-    if (user) {
-      socket.emit("application:status:rejected", user);
-    } else {
-      socket.emit("application:rejection:error", {
-        error: "Erro Rejected",
-      });
-    }
+    socket.emit("application:status:rejected", user);
   } catch (error: any) {
+    socket.emit("application:rejection:error", { error: error.message });
     console.log(error);
   }
 };
 
 const listPendingApproval = async (socket: Socket) => {
-  // console.log("List of users pending approval")
   try {
     const users = await prisma.pendingList();
-    if (users) {
-      socket.emit("user:pendingApprovalList:success", users);
-    }
+    socket.emit("user:pendingApprovalList:success", users);
   } catch (error) {
     console.error(`Error fetching users pending admin approval`);
     socket.emit("user:pendingApprovalList:error", { error });
@@ -118,30 +107,21 @@ const listPendingApproval = async (socket: Socket) => {
 };
 
 const listUsersApproved = async (socket: Socket) => {
-  // console.log("Lista de aprovados")
   try {
     const users = await prisma.approvedList();
-    if (users) {
-      socket.emit("users:list:success", users);
-    }
+    socket.emit("users:list:success", users);
   } catch (error) {
     console.error("Erro para acessar lista de usuários");
     socket.emit("users:list:error", { error });
   }
 };
 
-const findUser = async (socket: Socket, data: { userId: number }) => {
-  const userId = data.userId;
+const findUser = async (socket: Socket, id: number) => {
   try {
-    const userDetails = await prisma.findById(userId);
-    console.log(userDetails);
-    if (userDetails) {
-      socket.emit("user:find:success", userDetails);
-    } else {
-      socket.emit("user:find:failed", { error: "Usuário não encontrado." });
-    }
+    const user = await prisma.findById(id);
+    socket.emit("user:find:success", user);
   } catch (error) {
-    console.error(`Error fetching user for ID: ${userId}. Error: ${error}`);
+    console.error(`Error fetching user for ID: ${id}. Error: ${error}`);
     socket.emit("user:find:error", { error: error });
   }
 };
@@ -150,12 +130,7 @@ const updateUser = async (socket: Socket, data: any) => {
   console.log(data);
   try {
     const updatedUser = await prisma.update(data);
-
-    if (updatedUser) {
-      socket.emit("user:update:success", updatedUser);
-    } else {
-      socket.emit("user:update:failed");
-    }
+    socket.emit("user:update:success", updatedUser);
   } catch (error) {
     console.log(error);
     socket.emit("user:update:failed", { error: error });
@@ -163,17 +138,9 @@ const updateUser = async (socket: Socket, data: any) => {
 };
 
 const toggleAdmin = async (socket: Socket, data: User) => {
-  console.log("Toggle Admin Status:", data);
-
   try {
     const user = await prisma.toggleAdmin(data.id);
-
-    if (user) {
-      socket.emit("user:admin:toggle:success", user);
-    } else {
-      socket.emit("user:admin:toggle:failed");
-      console.log("Erro de dados do Kit ou id não encontrado");
-    }
+    socket.emit("user:admin:toggle:success", user);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Id não encontrado";
@@ -183,17 +150,9 @@ const toggleAdmin = async (socket: Socket, data: User) => {
 };
 
 const toggleManager = async (socket: Socket, data: User) => {
-  console.log("Toggle Admin Status:", data);
-
   try {
     const user = await prisma.toggleManager(data.id);
-
-    if (user) {
-      socket.emit("user:manager:toggle:success", user);
-    } else {
-      socket.emit("user:manager:toggle:failed");
-      console.log("Erro de dados do Kit ou id não encontrado");
-    }
+    socket.emit("user:manager:toggle:success", user);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Id não encontrado";

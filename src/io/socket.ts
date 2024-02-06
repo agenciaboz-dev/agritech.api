@@ -117,7 +117,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:reject", (id) => user.reject(socket, id));
   socket.on("user:approve", (id) => user.approve(socket, id));
   socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data));
-  socket.on("user:find", (userId: number) => user.findUser(socket, { userId }));
+  socket.on("user:find", (id: number) => user.findUser(socket, id));
   socket.on("users:list", () => user.listUsersApproved(socket));
   // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
   socket.on("user:update", (updateUser: User, userId: number) =>
