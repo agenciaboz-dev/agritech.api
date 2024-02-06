@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: NewBank) => {
-  console.log("Iniciando a criação de dados bancarios...");
+  console.log("Input: ", data);
   const bank = await prisma.bank.create({
     data: {
       name: data.name,
@@ -16,11 +16,12 @@ const create = async (data: NewBank) => {
   });
   console.log({ bank });
 
-  console.log("Dados bancarios criados:", bank);
+  console.log("Output: ", bank);
   return { bank };
 };
 
 const update = async (data: NewBank) => {
+  console.log("Input:", data);
   const bank = await prisma.bank.update({
     where: { employeeId: data.employeeId },
     data: {
@@ -30,9 +31,13 @@ const update = async (data: NewBank) => {
       account: data.account,
     },
   });
-  console.log("Bank details updated: ", data);
+  console.log("Output: ", bank);
 
   return { bank };
+};
+
+const find = async (id: number) => {
+  return await prisma.bank.findUnique({ where: { id } });
 };
 
 const list = async () => {
@@ -43,4 +48,5 @@ export default {
   create,
   update,
   list,
+  find,
 };
