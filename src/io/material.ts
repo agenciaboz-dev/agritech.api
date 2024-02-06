@@ -3,16 +3,11 @@ import databaseHandler from "../databaseHandler/material";
 import { Material } from "@prisma/client";
 
 const newMaterial = async (socket: Socket, data: Material) => {
-  console.log("New Report:", data);
+  console.log(data);
 
   try {
     const material = await databaseHandler.create(data);
-
-    if (material) {
-      socket.emit("material:creation:success", material);
-    } else {
-      socket.emit("material:creation:failed");
-    }
+    socket.emit("material:creation:success", material);
   } catch (error) {
     console.log(error);
     socket.emit("material:creation:failed", { error: error });
@@ -20,38 +15,24 @@ const newMaterial = async (socket: Socket, data: Material) => {
 };
 
 const updateMaterial = async (socket: Socket, data: Material) => {
-  console.log("Update Report:", data);
+  console.log(data);
 
   try {
     const material = await databaseHandler.update(data);
-
-    if (material) {
-      socket.emit("material:update:success", material);
-    } else {
-      socket.emit("material:update:failed");
-    }
+    socket.emit("material:update:success", material);
   } catch (error) {
     console.log(error);
     socket.emit("material:update:failed", { error: error });
   }
 };
 
-const findMaterial = async (socket: Socket, data: { materialId: number }) => {
-  const materialId = data.materialId;
+const findMaterial = async (socket: Socket, id: number) => {
+  console.log(id);
   try {
-    const material = await databaseHandler.find(materialId);
-    console.log(material);
-    if (material) {
-      socket.emit("material:find:success", material);
-    } else {
-      socket.emit("material:find:failed", {
-        error: "Material não encontrado.",
-      });
-    }
+    const material = await databaseHandler.find(id);
+    socket.emit("material:find:success", material);
   } catch (error) {
-    console.error(
-      `Error fetching report for ID: ${materialId}. Error: ${error}`
-    );
+    console.error(`Error fetching report for ID: ${id}. Error: ${error}`);
     socket.emit("report:find:error", { error: error });
   }
 };

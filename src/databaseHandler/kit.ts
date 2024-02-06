@@ -48,7 +48,7 @@ const inclusions = {
   },
 };
 const create = async (data: NewKit) => {
-  console.log("Iniciando a criação do kit...");
+  console.log(data);
 
   let image: string | undefined;
 
@@ -94,8 +94,8 @@ const create = async (data: NewKit) => {
     },
   });
 
-  console.log("Kit criado:", kit);
-  console.log("Calendario do Kit criado:", calendar);
+  console.log("Kit:", kit);
+  console.log("Calendario:", calendar);
   return await prisma.kit.findFirst({
     where: { id: kit.id },
     include: inclusions.kit,
@@ -119,8 +119,7 @@ const update = async (data: NewKit) => {
       active: data.active,
     },
   });
-  console.log("Kit update: ", data);
-
+  console.log(data);
   return kit;
 };
 
@@ -129,18 +128,6 @@ const list = async () => {
     include: inclusions.kit,
   });
 };
-
-// const activate = async (data: Kit) => {
-//   const kit = await prisma.kit.update({
-//     where: { id: data.id },
-//     data: {
-//       active: !data.active,
-//     },
-//   });
-//   console.log("Kit update: ", data);
-
-//   return kit;
-// };
 
 const toggle = async (id: number) => {
   const kit = await prisma.kit.findUnique({
@@ -170,7 +157,7 @@ const add = async (data: ManageKitMembers) => {
       employees: true,
     },
   });
-  console.log("Kit update: ", data);
+  console.log(kit);
 
   return kit;
 };
@@ -187,7 +174,7 @@ const remove = async (data: ManageKitMembers) => {
       employees: true,
     },
   });
-  console.log("Kit update: ", data);
+  console.log(kit);
   return kit;
 };
 

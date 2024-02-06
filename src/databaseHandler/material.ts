@@ -5,7 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: NewMaterial) => {
-  console.log("Initiating Material Creation...");
+  console.log(data);
   const material = await prisma.material.create({
     data: {
       talhao: data.talhao,
@@ -24,7 +24,6 @@ const create = async (data: NewMaterial) => {
   });
   console.log({ material });
 
-  console.log("Material Created:", material);
   return material;
 };
 
@@ -46,8 +45,7 @@ const update = async (data: Material) => {
     },
     include: { report: true },
   });
-  console.log("Material Update: ", data);
-
+  console.log(material);
   return material;
 };
 

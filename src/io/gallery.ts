@@ -4,10 +4,9 @@ import { NewGallery } from "../definitions/gallery";
 import { Gallery } from "@prisma/client";
 
 const newGallery = async (socket: Socket, data: any) => {
-  console.log("New Gallery:", data);
+  console.log(data);
   try {
     const gallery = await databaseHandler.create(data);
-
     socket.emit("gallery:creation:success", gallery);
   } catch (error) {
     console.log(error);
@@ -16,7 +15,7 @@ const newGallery = async (socket: Socket, data: any) => {
 };
 
 const updateGallery = async (socket: Socket, data: NewGallery) => {
-  console.log("Updated Gallery:", data);
+  console.log(data);
   try {
     const gallery = await databaseHandler.update(data);
 
@@ -40,7 +39,7 @@ const listGallery = async (socket: Socket) => {
 };
 
 const removeGallery = async (socket: Socket, id: number) => {
-  console.log("Hello World");
+  console.log(id);
   try {
     const gallery = await databaseHandler.remove(id);
     socket.emit("gallery:remove:success", gallery);

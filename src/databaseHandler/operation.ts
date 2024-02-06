@@ -4,7 +4,7 @@ import { PrismaClient, Operation } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const create = async (data: Operation) => {
-  console.log("Initiating Operation Creation");
+  console.log(data);
   const operation = await prisma.operation.create({
     data: {
       culture: data.culture,
@@ -16,14 +16,13 @@ const create = async (data: Operation) => {
     },
   });
   console.log({ operation });
-  console.log("Report Criado aberto:", operation);
   return operation;
 };
 
-const update = async (id: number, data: Operation) => {
-  console.log("Initiating Operation Update");
+const update = async (data: Operation) => {
+  console.log(data);
   const operation = await prisma.operation.update({
-    where: { id },
+    where: { id: data.id },
     data: {
       culture: data.culture,
       areaMap: data.areaMap,
@@ -33,7 +32,7 @@ const update = async (id: number, data: Operation) => {
       reportId: data.reportId,
     },
   });
-  console.log("Report Atualizado:", operation);
+  console.log(operation);
   return operation;
 };
 

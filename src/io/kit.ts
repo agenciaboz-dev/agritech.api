@@ -7,13 +7,7 @@ const newKit = async (socket: Socket, data: any) => {
 
   try {
     const kit = await databaseHandler.create(data);
-
-    if (kit) {
-      socket.emit("kit:creation:success", kit);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("kit:creation:failed");
-    }
+    socket.emit("kit:creation:success", kit);
   } catch (error) {
     console.log(error);
     socket.emit("kit:creation:failed", { error: error });
@@ -25,14 +19,7 @@ const updateKit = async (socket: Socket, data: any) => {
 
   try {
     const kit = await databaseHandler.update(data);
-
-    if (kit) {
-      socket.emit("kit:update:success", kit);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("kit:update:failed");
-      console.log("Erro de dados do Kit ou id não encontrado");
-    }
+    socket.emit("kit:update:success", kit);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Id não encontrado";
@@ -42,24 +29,16 @@ const updateKit = async (socket: Socket, data: any) => {
 };
 
 const listKit = async (socket: Socket) => {
-  // console.log("Lista de kits")
   const kit = await databaseHandler.list();
   socket.emit("kit:list:success", kit);
 };
 
 const activateKit = async (socket: Socket, data: Kit) => {
-  console.log("Kit pra ativar/desativar:", data);
+  console.log(data);
 
   try {
     const kit = await databaseHandler.toggle(data.id);
-
-    if (kit) {
-      socket.emit("kit:toggle:success", kit);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("kit:toggle:failed");
-      console.log("Erro de dados do Kit ou id não encontrado");
-    }
+    socket.emit("kit:toggle:success", kit);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Id não encontrado";
@@ -69,17 +48,11 @@ const activateKit = async (socket: Socket, data: Kit) => {
 };
 
 const addEmployeeKit = async (socket: Socket, data: any) => {
-  console.log("Adicionando funcionário ao kit:", data);
+  console.log(data);
 
   try {
     const kit = await databaseHandler.add(data);
-
-    if (kit) {
-      socket.emit("kit:addEmployee:success", kit);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("kit:addEmployee:failed");
-    }
+    socket.emit("kit:addEmployee:success", kit);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2016") message = "Algum dos id's não foi encontrado";
@@ -89,17 +62,11 @@ const addEmployeeKit = async (socket: Socket, data: any) => {
 };
 
 const removeEmployeeKit = async (socket: Socket, data: any) => {
-  console.log("Removendo funcionário do kit:", data);
+  console.log(data);
 
   try {
     const kit = await databaseHandler.remove(data);
-
-    if (kit) {
-      socket.emit("kit:removeEmployee:success", kit);
-      // socket.broadcast.emit("user:update", user)
-    } else {
-      socket.emit("kit:removeEmployee:failed");
-    }
+    socket.emit("kit:removeEmployee:success", kit);
   } catch (error: any) {
     let message = error;
     if (error.code === "P2025") message = "Algum id está incorreto";
