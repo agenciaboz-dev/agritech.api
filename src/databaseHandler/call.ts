@@ -280,7 +280,7 @@ const listPending = async () => {
       kit: true,
       producer: { include: { user: true } },
       user: true,
-      talhao: true,
+      talhao: { include: { location: true, gallery: true, tillage: {include:{address:true,gallery:true,location:true}} } },
     },
   });
 };
