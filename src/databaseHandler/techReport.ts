@@ -4,7 +4,7 @@ import { NewTechReport } from "../definitions/techReport";
 const prisma = new PrismaClient();
 
 const create = async (data: NewTechReport) => {
-  console.log("Initiating new TechReport...");
+  console.log(data);
   const techReport = await prisma.techReport.create({
     data: {
       date: data.date,
@@ -15,12 +15,11 @@ const create = async (data: NewTechReport) => {
     },
   });
   console.log({ techReport });
-
-  console.log("TechReport Created:", techReport);
   return techReport;
 };
 
 const update = async (data: NewTechReport) => {
+  console.log(data);
   const techReport = await prisma.techReport.update({
     where: { id: data.id },
     data: {
@@ -31,7 +30,7 @@ const update = async (data: NewTechReport) => {
       reportId: data.reportId,
     },
   });
-  console.log("Objecto actualizado: ", data);
+  console.log(techReport);
 
   return techReport;
 };
