@@ -1,5 +1,5 @@
 -- AlterTable
-ALTER TABLE `call` MODIFY `comments` TEXT NULL;
+ALTER TABLE `Call` MODIFY `comments` TEXT NULL;
 
 -- AlterTable
-ALTER TABLE `user` ADD COLUMN `isManager` BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE `User` ADD COLUMN `isManager` BOOLEAN NOT NULL DEFAULT false;
