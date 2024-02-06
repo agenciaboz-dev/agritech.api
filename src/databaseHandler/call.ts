@@ -1,6 +1,4 @@
-// import { CloseCall, OpenCall } from "../definitions/call";
-import { Call, PrismaClient, Report } from "@prisma/client";
-import createReport from "./report";
+import { Call, PrismaClient } from "@prisma/client";
 import { OpenCall, AdminCall } from "../definitions/call";
 
 const prisma = new PrismaClient();

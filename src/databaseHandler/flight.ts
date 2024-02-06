@@ -1,5 +1,5 @@
 import { NewFlight } from "../definitions/flight";
-import { Gallery, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

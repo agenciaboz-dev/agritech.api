@@ -1,6 +1,5 @@
 import { NewCoordinate } from "../definitions/coordinate";
-import { Coordinate, PrismaClient } from "@prisma/client";
-import coordinate from "../io/coordinate";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 

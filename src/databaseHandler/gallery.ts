@@ -1,7 +1,6 @@
 import { NewGallery } from "../definitions/gallery";
-import { Gallery, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { saveImage } from "../saveImage";
-import tillage from "./tillage";
 
 const prisma = new PrismaClient();
 
@@ -9,7 +8,6 @@ const create = async (data: NewGallery) => {
   console.log(data);
   try {
     let urls: string[] = [];
-
     const uploaded = data.images?.map((file) => {
       saveImage(`gallery`, file.file, file.name);
       return `gallery/${file.name}`;
@@ -32,7 +30,7 @@ const create = async (data: NewGallery) => {
       },
     });
 
-    console.log("Gallery created:", gallery);
+    console.log(gallery);
   } catch (error) {
     console.log(error);
   }
