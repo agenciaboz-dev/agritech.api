@@ -320,9 +320,7 @@ export const handleSocket = (socket: Socket) => {
     product.updateProduct(socket, data)
   );
   socket.on("product:list", () => product.listProduct(socket));
-  socket.on("product:find", (productId: number) =>
-    product.findProduct(socket, { productId })
-  );
+  socket.on("product:find", (id: number) => product.findProduct(socket, id));
 
   // TREATMENT OPS
   socket.on("treatment:create", (data: any) =>

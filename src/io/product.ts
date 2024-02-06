@@ -3,16 +3,11 @@ import databaseHandler from "../databaseHandler/product";
 import { Product } from "@prisma/client";
 
 const newProduct = async (socket: Socket, data: Product) => {
-  console.log("New Product:", data);
+  console.log(data);
 
   try {
     const product = await databaseHandler.create(data);
-
-    if (product) {
-      socket.emit("product:creation:success", product);
-    } else {
-      socket.emit("product:creation:failed");
-    }
+    socket.emit("product:creation:success", product);
   } catch (error) {
     console.log(error);
     socket.emit("product:creation:failed", { error: error });
@@ -20,38 +15,23 @@ const newProduct = async (socket: Socket, data: Product) => {
 };
 
 const updateProduct = async (socket: Socket, data: Product) => {
-  console.log("Update Product:", data);
+  console.log(data);
 
   try {
     const product = await databaseHandler.update(data);
-
-    if (product) {
-      socket.emit("product:update:success", product);
-    } else {
-      socket.emit("product:update:failed");
-    }
+    socket.emit("product:update:success", product);
   } catch (error) {
     console.log(error);
     socket.emit("product:update:failed", { error: error });
   }
 };
 
-const findProduct = async (socket: Socket, data: { productId: number }) => {
-  const productId = data.productId;
+const findProduct = async (socket: Socket, id: number) => {
   try {
-    const product = await databaseHandler.find(productId);
-    console.log(product);
-    if (product) {
-      socket.emit("product:find:success", product);
-    } else {
-      socket.emit("product:find:failed", {
-        error: "Product not found",
-      });
-    }
+    const product = await databaseHandler.find(id);
+    socket.emit("product:find:success", product);
   } catch (error) {
-    console.error(
-      `Error fetching product for ID: ${productId}. Error: ${error}`
-    );
+    console.error(`Error fetching product for ID: ${id}. Error: ${error}`);
     socket.emit("product:find:error", { error: error });
   }
 };
