@@ -81,7 +81,6 @@ model Producer{
     tillage         Tillage[]    
     call            Call[]
 
-    hectarePrice    Float?
 
 
 }
@@ -99,6 +98,7 @@ model Tillage{
     others          String?
     comments        String?      @db.Text
 
+    hectarePrice    Float?
     address         Address?
 
     location        Coordinate[]
@@ -117,7 +117,7 @@ model Talhao {
     area            Float
 
     tillage         Tillage?       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int?      
+    tillageId       Int      
 
     location        Coordinate[]
     gallery         Gallery[]
