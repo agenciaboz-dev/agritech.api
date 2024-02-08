@@ -15,7 +15,7 @@ const newReport = async (socket: Socket, data: NewReport) => {
   }
 };
 
-const updateReport = async (socket: Socket, data: Report) => {
+const updateReport = async (socket: Socket, data: NewReport) => {
   console.log(data);
 
   try {
@@ -48,9 +48,20 @@ const listReport = async (socket: Socket) => {
   }
 };
 
+const createNewReportAtMidnight = async (socket: Socket, data: NewReport) => {
+  try {
+    const report = await databaseHandler.createNewReportAtMidnight(data);
+    socket.emit("midnight:report:creation:success", report);
+  } catch (error) {
+    console.log(error);
+    socket.emit("midnightreport:creation:failed", { error: error });
+  }
+};
+
 export default {
   newReport,
   updateReport,
   findReport,
   listReport,
+  createNewReportAtMidnight,
 };

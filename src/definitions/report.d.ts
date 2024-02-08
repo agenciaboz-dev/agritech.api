@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 
 declare interface Flight {
+  id: number;
   humidity: number;
   wind_velocity: number;
   height: number;
@@ -19,12 +20,14 @@ declare interface Flight {
 }
 
 declare interface Product {
+  id: number;
   name: string;
   dosage: number;
   unit: string;
 }
 
 declare interface TechReport {
+  id: number;
   date: string;
   init: string;
   finish: string;
@@ -33,6 +36,7 @@ declare interface TechReport {
 }
 
 declare interface Treatment {
+  id: number;
   products: Product[];
 }
 

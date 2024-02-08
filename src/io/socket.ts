@@ -359,4 +359,8 @@ export const handleSocket = (socket: Socket) => {
   socket.on("report:find", (id: number) => report.findReport(socket, id));
 
   socket.on("report:list", () => report.listReport(socket));
+
+  socket.on("midnight:report:create", (data: any) =>
+    report.createNewReportAtMidnight(socket, data)
+  );
 };

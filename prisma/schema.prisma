@@ -247,7 +247,7 @@ model Call {
     stage           CallStages    @default(STAGE0)
     stages          Stage[]
     
-    reports             Report[]
+    reports         Report[]
     
     talhao          Talhao?         @relation(fields: [talhaoId],references: [id])
     talhaoId        Int?
