@@ -10,6 +10,8 @@ declare interface NewTillage {
     pilot?: string
     others?: string
     comments?: string
+    hectarePrice: number
+
     address: {
         street: string
         district: string
