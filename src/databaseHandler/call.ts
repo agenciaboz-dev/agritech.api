@@ -229,12 +229,13 @@ const cancel = async (data: Call) => {
 };
 
 const list = async () => {
-  const call = await prisma.call.findMany({
+  const calls = await prisma.call.findMany({
     include: {
       kit: { include: { employees: true, calls: true, objects: true } },
       producer: { include: { user: true } },
       user: true,
-      talhao: true,
+      stages: true,
+      talhao: { include: { tillage: { include: { address: true } } } },
 
       reports: true,
     },
@@ -312,9 +313,18 @@ const listApproved = async () => {
           objects: true,
         },
       },
-      talhao: { include: { location: true } },
+      talhao: {
+        include: {
+          location: true,
+          gallery: true,
+          tillage: {
+            include: { address: true, gallery: true, location: true },
+          },
+        },
+      },
       producer: { include: { user: true } },
       user: true,
+      stages: true,
       reports: {
         include: {
           operation: true,
@@ -327,11 +337,11 @@ const listApproved = async () => {
   });
 };
 
-// const find = async (id: number) => {
-//   const report = await prisma.report.findUnique({ where: { id } });
-//   console.log({ report });
-//   return report;
-// };
+const find = async (id: number) => {
+  const report = await prisma.report.findUnique({ where: { id } });
+  console.log({ report });
+  return report;
+};
 
 export default {
   adminCreate,
