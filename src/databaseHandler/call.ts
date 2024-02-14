@@ -226,7 +226,7 @@ const list = async () => {
             producer: { include: { user: true } },
             user: true,
             stages: true,
-            talhao: true,
+            talhao: { include: { tillage: { include: { address: true } } } },
 
             reports: {
                 include: {
@@ -305,7 +305,13 @@ const listApproved = async () => {
                     objects: true,
                 },
             },
-            talhao: { include: { location: true } },
+            talhao: {
+                include: {
+                    location: true,
+                    gallery: true,
+                    tillage: { include: { address: true, gallery: true, location: true } },
+                },
+            },
             producer: { include: { user: true } },
             user: true,
             stages: true,
