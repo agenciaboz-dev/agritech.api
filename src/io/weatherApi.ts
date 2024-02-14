@@ -1,16 +1,16 @@
 import axios from "axios"
 import { Socket } from "socket.io"
 
-const climate = async (socket: Socket, data: any) => {
-    const token = "119ddb6515ba1746ff413ff579a29fbb"
+const climate = async (socket: Socket, city: any) => {
+    const token = "HDYZ4EFPY3HGBAZCNDVBPJ5UX"
     try {
         const response = await axios.get(
-            `https://agencyboz_novaes_tainara:dH1sy2W08N@api.meteomatics.com/2023-12-27T00:00:00Z/t_2m:C/-12.4214,-41.7668/json`
+            `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city.data}?key=${token}`
         )
-        socket.emit("weather:cep:success", response.data.data)
-        console.log(response.data)
+        const { icon } = response.data.currentConditions
+        socket.emit("weather:find:success", response.data)
     } catch (error) {
-        socket.emit("weather:cep:failed", error)
+        socket.emit("weather:find:failed", error)
         console.log(error)
     }
 }
