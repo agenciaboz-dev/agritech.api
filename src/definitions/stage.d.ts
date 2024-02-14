@@ -1,11 +1,11 @@
-import { Stage } from "@prisma/client"
+import { Stage } from "@prisma/client";
 
 declare interface NewStage {
-    name: string
-    date: string
-    start: string
-    finish: string
-    duration: string
-    comments: string
-    callId: number
+  name: string;
+  date: string;
+  start: string;
+  finish: string;
+  duration: string;
+  comments: string;
+  reportId: number;
 }

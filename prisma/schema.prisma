@@ -225,13 +225,7 @@ enum CallStatus {
     CANCELED
 }
 
-enum CallStages {
-    STAGE0
-    STAGE1
-    STAGE2
-    STAGE3
-    STAGE4
-}
+
 model Call {
     id              Int           @id @default(autoincrement())
     forecast        String        @default("")
@@ -243,46 +237,31 @@ model Call {
     totalPrice      Float?
 
     status          CallStatus    @default(OPEN)
-
-    stage           CallStages    @default(STAGE0)
-    stages          Stage[]
     
     reports         Report[]
     
-    talhao          Talhao?         @relation(fields: [talhaoId],references: [id])
+    talhao          Talhao?       @relation(fields: [talhaoId],references: [id])
     talhaoId        Int?
 
-    kit             Kit?           @relation(fields: [kitId],references: [id])
+    kit             Kit?          @relation(fields: [kitId],references: [id])
     kitId           Int?         
 
-    producer        Producer?      @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId      Int?              
 
-    user            User?          @relation(fields: [userId],references: [id],onDelete: Cascade)
+    user            User?         @relation(fields: [userId],references: [id],onDelete: Cascade)
     userId          Int?          
 }
 
 
-model Stage {
-    id              Int           @id @default(autoincrement())
-    name            String?
-    date            String?     
-    start           String?    
-    finish          String?     
-    duration        String?
-    comments        String?       @db.Text
 
-    callId          Int
-    call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
-    
-}
 
 model Kit {
     id              Int           @id @default(autoincrement())
     image           String?       @db.Text 
     name            String
     description     String
-    active          Boolean      @default(false)
+    active          Boolean       @default(false)
     hectareDay      Float
     objects         Object[]
     employees       Employee[]  
@@ -302,7 +281,27 @@ model Object {
 }
 
 
+enum ReportStages {
+    STAGE0
+    STAGE1
+    STAGE2
+    STAGE3
+    STAGE4
+}
 
+model Stage {
+    id              Int           @id @default(autoincrement())
+    name            String?
+    date            String?     
+    start           String?    
+    finish          String?     
+    duration        String?
+    comments        String?       @db.Text
+
+    reportId        Int
+    report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
+    
+}
 
 model Report {
     id              Int           @id @default(autoincrement())
@@ -313,6 +312,9 @@ model Report {
 
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int
+
+    stage           ReportStages    @default(STAGE0)
+    stages          Stage[]
 
     operation       Operation?
     treatment       Treatment?

@@ -43,7 +43,7 @@ const list = async () => {
     include: {
       location: true,
       gallery: true,
-      calls: { include: { reports: true, kit: true, stages: true } },
+      calls: { include: { reports: true, kit: true } },
     },
   });
 };
