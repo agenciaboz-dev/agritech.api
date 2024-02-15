@@ -139,7 +139,7 @@ export const handleSocket = (socket: Socket) => {
 
     socket.on("coordinate:cep", (data: string) => cep.coordinateCep(socket, data))
 
-    socket.on("weather:find", (city: any) => weather.climate(socket, city))
+    socket.on("weather:find", (data: any) => weather.climate(socket, data))
 
     socket.on("coordinate:update", (updateCoordinate: Coordinate) => coordinate.updateCoordinate(socket, updateCoordinate))
 
