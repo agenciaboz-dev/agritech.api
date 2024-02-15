@@ -196,11 +196,11 @@ model Bank{
 
 model Professional{
     id              Int           @id @default(autoincrement())
-    department      String  
+    department      String?  
     office          String
-    admission       DateTime      @db.Date
-    salary          String
-    work_time       DateTime      @db.Time()
+    admission       DateTime?      @db.Date
+    salary          Float?
+    // work_time       DateTime?      @db.Time()
 
     employee        Employee      @relation(fields: [employeeId],references: [id],onDelete: Cascade)
     employeeId      Int           @unique

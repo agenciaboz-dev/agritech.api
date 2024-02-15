@@ -278,10 +278,9 @@ const newEmployee = async (data: NewUser) => {
             const professional = await prisma.professional.create({
                 data: {
                     admission: data.employee.professional?.admission || "",
-                    salary: data.employee.professional?.salary || "",
+                    salary: data.employee.professional?.salary,
                     department: "",
                     office: data.office,
-                    work_time: "",
                     employeeId: employee.id,
                 },
                 include: { employee: true },

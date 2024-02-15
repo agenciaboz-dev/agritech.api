@@ -39,7 +39,7 @@ declare interface NewUser {
             agency: string
         }
         professional?: {
-            salary?: string
+            salary?: number
             admission: string
         }
     }
