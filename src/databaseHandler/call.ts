@@ -84,6 +84,7 @@ const adminCreate = async (data: AdminCall) => {
       call,
       tillage,
       stage,
+      report,
       updatedCall,
     });
 
