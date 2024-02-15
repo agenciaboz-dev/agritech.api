@@ -30,7 +30,6 @@ const adminCreate = async (data: AdminCall) => {
     const call = await prisma.call.create({
       data: {
         open: new Date().getTime().toString(),
-        approved: data.approved,
         comments: data.comments,
         talhaoId: data.talhaoId,
         producerId: data.producerId,
@@ -55,11 +54,18 @@ const adminCreate = async (data: AdminCall) => {
       },
     });
 
+    const report = await prisma.report.create({
+      data: {
+        stage: "STAGE1",
+        callId: call.id,
+      },
+    });
+
     // Create the stage
     const stage = await prisma.stage.create({
       data: {
         name: "STAGE1",
-        reportId: call.id,
+        reportId: report.id,
       },
     });
 
@@ -81,7 +87,7 @@ const adminCreate = async (data: AdminCall) => {
       updatedCall,
     });
 
-    return { call, tillage, stage, updatedCall };
+    return { call, tillage, stage, report, updatedCall };
   } catch (error) {
     console.error("Error in creating and updating the call:", error);
     throw error;
@@ -93,25 +99,17 @@ const create = async (data: OpenCall) => {
   const call = await prisma.call.create({
     data: {
       open: new Date().getTime().toString(),
-      approved: data.approved,
+
       comments: data.comments,
       talhaoId: data.talhaoId,
       producerId: data.producerId,
       userId: data.userId,
-      kitId: data.kitId || undefined,
       forecast: data.forecast,
     },
   });
 
-  const tillage = await prisma.tillage.update({
-    where: { id: data.talhao.tillageId },
-    data: {
-      hectarePrice: data.hectarePrice,
-    },
-  });
-
-  console.log({ call, tillage });
-  return { call, tillage };
+  console.log({ call });
+  return { call };
 };
 
 const update = async (data: Call) => {
@@ -164,13 +162,6 @@ const approve = async (data: ApproveCall) => {
         },
       });
 
-      const tillage = await prisma.tillage.update({
-        where: { id: data.talhao.tillageId },
-        data: {
-          hectarePrice: data.hectarePrice ?? undefined,
-        },
-      });
-
       const report = await prisma.report.create({
         data: {
           stage: "STAGE1",
@@ -186,7 +177,7 @@ const approve = async (data: ApproveCall) => {
       });
       console.log(stage);
 
-      return { call: updatedCall, stage, tillage };
+      return { call: updatedCall, stage, report };
     } else {
       throw new Error("Call not found or kit already assigned");
     }
@@ -234,54 +225,54 @@ const list = async () => {
       kit: { include: { employees: true, calls: true, objects: true } },
       producer: { include: { user: true } },
       user: true,
-      stages: true,
       talhao: { include: { tillage: { include: { address: true } } } },
 
       reports: true,
     },
   });
-
-  // // Process each call and update the totalPrice
-  // const updatedCalls = await Promise.all(
-  //   calls.map(async (call) => {
-  //     const findTillage = await prisma.tillage.findUnique({
-  //       where: { id: call.talhao?.tillageId || 0 },
-  //     });
-  //     const tillageHectarePrice = findTillage?.hectarePrice || 0;
-
-  //     // Calculate the total areaTrabalhada from all reports
-  //     const totalAreaTrabalhada = call.reports.reduce((total, report) => {
-  //       return total + (report.areaTrabalhada || 0);
-  //     }, 0);
-
-  //     // Calculate the desired value for each call
-  //     const calculatedValue = tillageHectarePrice * totalAreaTrabalhada;
-
-  //     // Update the totalPrice in the database
-  //     const updatedCall = await prisma.call.update({
-  //       where: { id: call.id },
-  //       data: {
-  //         totalPrice: calculatedValue,
-  //       },
-  //       include: {
-  //         kit: { include: { employees: true, calls: true, objects: true } },
-  //         producer: { include: { user: true } },
-  //         user: true,
-  //         talhao: true,
-  //         reports: {
-  //           include: {
-  //             operation: true,
-  //           },
-  //         },
-  //       },
-  //     });
-
-  //     return updatedCall;
-  //   })
-  // );
-
-  return call;
 };
+
+// // Process each call and update the totalPrice
+// const updatedCalls = await Promise.all(
+//   calls.map(async (call) => {
+//     const findTillage = await prisma.tillage.findUnique({
+//       where: { id: call.talhao?.tillageId || 0 },
+//     });
+//     const tillageHectarePrice = findTillage?.hectarePrice || 0;
+
+//     // Calculate the total areaTrabalhada from all reports
+//     const totalAreaTrabalhada = call.reports.reduce((total, report) => {
+//       return total + (report.areaTrabalhada || 0);
+//     }, 0);
+
+//     // Calculate the desired value for each call
+//     const calculatedValue = tillageHectarePrice * totalAreaTrabalhada;
+
+//     // Update the totalPrice in the database
+//     const updatedCall = await prisma.call.update({
+//       where: { id: call.id },
+//       data: {
+//         totalPrice: calculatedValue,
+//       },
+//       include: {
+//         kit: { include: { employees: true, calls: true, objects: true } },
+//         producer: { include: { user: true } },
+//         user: true,
+//         talhao: true,
+//         reports: {
+//           include: {
+//             operation: true,
+//           },
+//         },
+//       },
+//     });
+
+//     return updatedCall;
+//   })
+// );
+
+//   return call;
+// };
 
 const listPending = async () => {
   return await prisma.call.findMany({
@@ -324,7 +315,6 @@ const listApproved = async () => {
       },
       producer: { include: { user: true } },
       user: true,
-      stages: true,
       reports: {
         include: {
           operation: true,
@@ -337,11 +327,11 @@ const listApproved = async () => {
   });
 };
 
-const find = async (id: number) => {
-  const report = await prisma.report.findUnique({ where: { id } });
-  console.log({ report });
-  return report;
-};
+// const find = async (id: number) => {
+//   const report = await prisma.report.findUnique({ where: { id } });
+//   console.log({ report });
+//   return report;
+// };
 
 export default {
   adminCreate,

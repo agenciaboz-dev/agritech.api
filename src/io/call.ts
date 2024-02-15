@@ -48,6 +48,7 @@ const approveCall = async (socket: Socket, data: ApproveCall) => {
     const call = await databaseHandler.approve(data);
     socket.emit("call:approve:success", call);
     socket.emit("stage:creation:success", call.stage);
+    socket.emit("report:creation:success", call.report);
   } catch (error) {
     console.log(error);
     socket.emit("call:approve:failed", { error: error });

@@ -22,7 +22,7 @@ const updateStageOne = async (socket: Socket, data: Stage) => {
     const stage = await databaseHandler.updateOne(data);
     socket.emit("stage:updateOne:success", stage.stage1);
     socket.emit("stage:creationOne:success", stage.stage2);
-    socket.emit("call:updateOne:success", stage.updatedCall);
+    socket.emit("report:updateOne:success", stage.updatedReport);
   } catch (error) {
     console.log(error);
     socket.emit("stage:updateOne:failed", { error: error });
@@ -35,7 +35,7 @@ const updateStageTwo = async (socket: Socket, data: Stage) => {
     const stage = await databaseHandler.updateTwo(data);
     socket.emit("stage:updateTwo:success", stage.stage2);
     socket.emit("stage:creationTwo:success", stage.stage3);
-    socket.emit("call:updateTwo:success", stage.updatedCall);
+    socket.emit("report:updateTwo:success", stage.updatedReport);
   } catch (error) {
     console.log(error);
     socket.emit("stage:updateTwo:failed", { error: error });
@@ -46,7 +46,7 @@ const updateStageThree = async (socket: Socket, data: Stage) => {
   try {
     const stage = await databaseHandler.updateThree(data);
     socket.emit("stage:updateThree:success", stage.stage3);
-    socket.emit("call:updateThree:success", stage.updatedCall);
+    socket.emit("report:updateThree:success", stage.updatedReport);
   } catch (error) {
     console.log(error);
     socket.emit("stage:updateThree:failed", { error: error });

@@ -15,7 +15,9 @@ const create = async (data: NewStage) => {
   });
 
   if (existingStage) {
-    throw new Error(`A stage with status STAGE1 already exists for this call.`);
+    throw new Error(
+      `A stage with status STAGE1 already exists for this report.`
+    );
   }
 
   // If no existing stage, proceed with creating the new stage
@@ -66,11 +68,13 @@ const updateOne = async (data: Stage) => {
   const stage2 = await prisma.stage.create({
     data: {
       name: "STAGE2",
-      reportId: data.reportId,
+      report: {
+        connect: { id: stage1.reportId },
+      },
     },
   });
 
-  const updatedCall = await prisma.report.update({
+  const updatedReport = await prisma.report.update({
     where: { id: stage1.reportId },
     data: {
       stage: "STAGE2",
@@ -80,8 +84,8 @@ const updateOne = async (data: Stage) => {
     },
   });
 
-  console.log(stage1, stage2, updatedCall);
-  return { stage1, stage2, updatedCall };
+  console.log(stage1, stage2, updatedReport);
+  return { stage1, stage2, updatedReport };
 };
 
 const updateTwo = async (data: Stage) => {
@@ -117,7 +121,7 @@ const updateTwo = async (data: Stage) => {
     },
   });
 
-  const updatedCall = await prisma.report.update({
+  const updatedReport = await prisma.report.update({
     where: { id: stage2.reportId },
     data: {
       stage: "STAGE3",
@@ -127,8 +131,8 @@ const updateTwo = async (data: Stage) => {
     },
   });
 
-  console.log(stage2, stage3, updatedCall);
-  return { stage2, stage3, updatedCall };
+  console.log(stage2, stage3, updatedReport);
+  return { stage2, stage3, updatedReport };
 };
 
 const updateThree = async (data: Stage) => {
@@ -155,7 +159,7 @@ const updateThree = async (data: Stage) => {
       },
     });
 
-    const updatedCall = await prisma.report.update({
+    const updatedReport = await prisma.report.update({
       where: { id: existingStage.reportId },
       data: {
         stage: "STAGE4",
@@ -165,11 +169,11 @@ const updateThree = async (data: Stage) => {
       },
     });
 
-    console.log(stage3, updatedCall);
+    console.log(stage3, updatedReport);
 
-    return { stage3, updatedCall };
+    return { stage3, updatedReport };
   } else {
-    throw new Error("Call is already at status STAGE4");
+    throw new Error("Report is already at status STAGE4");
   }
 };
 
