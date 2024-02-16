@@ -204,6 +204,98 @@ const newUser = async (data: NewUser) => {
         console.log(error)
     }
 }
+const newEmployee = async (data: NewUser) => {
+    console.log(data)
+    try {
+        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
+
+        let image: string | undefined
+
+        if (data.image?.file) {
+            saveImage(`user/profile`, data.image.file, data.image.name)
+            image = `user/profile/${data.image.name}`
+        }
+
+        console.log(data)
+        const user = await prisma.user.create({
+            data: {
+                birth: birth,
+                cpf: data.cpf.replace(/\D/g, ""),
+                email: normalize(data.email),
+                name: data.name,
+                password: data.password,
+                phone: data.phone?.replace(/\D/g, ""),
+                username: normalize(data.username),
+                isAdmin: data.isAdmin || false,
+                approved: data.approved, // <<<<< gambiarrei
+                rejected: null,
+                office: data.office,
+
+                image: image,
+            },
+            include: inclusions.user,
+        })
+
+        const address = await prisma.address.create({
+            data: {
+                street: data.address.street,
+                number: data.address.number,
+                city: data.address.city,
+                cep: data.address.cep,
+                adjunct: data.address.adjunct || "",
+                district: data.address.district,
+                uf: data.address.uf,
+                userId: user.id,
+            },
+        })
+        console.log(user, address)
+
+        if (data.employee) {
+            const employee = await prisma.employee.create({
+                data: {
+                    gender: data.employee.gender,
+                    relationship: data.employee.relationship,
+                    nationality: data.employee.nationality,
+                    residence: data.employee.residence,
+                    rg: data.employee.rg,
+                    voter_card: data.employee.voter_card,
+                    work_card: data.employee.work_card,
+                    military: data.employee.military,
+                    userid: user.id,
+                },
+            })
+
+            const bank = await prisma.bank.create({
+                data: {
+                    account: data.employee.bank.account,
+                    agency: data.employee.bank.agency,
+                    name: data.employee.bank.name,
+                    type: data.employee.bank.type,
+                    employeeId: employee.id,
+                },
+                include: { employee: true },
+            })
+            const professional = await prisma.professional.create({
+                data: {
+                    admission: data.employee.professional?.admission || "",
+                    salary: data.employee.professional?.salary,
+                    department: "",
+                    office: data.office,
+                    employeeId: employee.id,
+                },
+                include: { employee: true },
+            })
+
+            console.log(employee)
+        }
+        return await prisma.user.findFirst({
+            where: { id: user.id },
+            include: inclusions.user,
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const update = async (data: NewUser & { id: number }) => {
     const birth = data.birth.split("/").reverse().join("/")
@@ -324,6 +416,7 @@ export default {
     findById,
     findByUsername,
     newUser,
+    newEmployee,
     update,
     toggleAdmin,
     toggleManager,

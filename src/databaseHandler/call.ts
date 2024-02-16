@@ -111,6 +111,28 @@ const adminCreate = async (data: AdminCall) => {
         kitId: data.kitId,
         init: new Date().getTime().toString(),
       },
+      include: {
+        talhao: {
+          include: {
+            calls: true,
+            gallery: true,
+            location: true,
+            tillage: true,
+          },
+        },
+        kit: { include: { employees: true, calendar: true, objects: true } },
+        reports: {
+          include: {
+            call: true,
+            material: true,
+            operation: true,
+            stages: true,
+            techReport: true,
+            treatment: true,
+          },
+        },
+        producer: { include: { tillage: true, user: true } },
+      },
     });
 
     console.log("Call, Producer, Stage, and Updated Call created/updated:", {
@@ -121,7 +143,7 @@ const adminCreate = async (data: AdminCall) => {
       updatedCall,
     });
 
-    return { call, tillage, stage, report, updatedCall };
+    return { updatedCall };
   } catch (error) {
     console.error("Error in creating and updating the call:", error);
     throw error;
@@ -254,14 +276,13 @@ const cancel = async (data: Call) => {
 };
 
 const list = async () => {
-  const calls = await prisma.call.findMany({
+  return await prisma.call.findMany({
     include: {
       kit: { include: { employees: true, calls: true, objects: true } },
       producer: { include: { user: true } },
       user: true,
       talhao: { include: { tillage: { include: { address: true } } } },
-
-      reports: true,
+      reports: { include: { stages: true, call: true } },
     },
   });
 };
@@ -351,6 +372,10 @@ const listApproved = async () => {
       user: true,
       reports: {
         include: {
+          call: {
+            include: { talhao: { include: { tillage: true } }, kit: true },
+          },
+          stages: true,
           operation: true,
           treatment: { include: { products: true } },
           material: true,

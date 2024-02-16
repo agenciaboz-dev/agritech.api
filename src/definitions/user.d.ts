@@ -32,11 +32,15 @@ declare interface NewUser {
         work_card: string
         military: string
         residence: string
-        bank_data: {
+        bank: {
             account: string
             type: string
             name: string
             agency: string
+        }
+        professional?: {
+            salary?: number
+            admission: string
         }
     }
     producer?: {

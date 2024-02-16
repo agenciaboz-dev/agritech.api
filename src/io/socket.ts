@@ -108,6 +108,7 @@ export const handleSocket = (socket: Socket) => {
     //USER OPS
     socket.on("user:logout", (data) => user.logout(socket, clients, data))
     socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser))
+    socket.on("user:newEmployee", (newEmployee: User) => user.newEmployee(socket, newEmployee))
     socket.on("user:reject", (id) => user.reject(socket, id))
     socket.on("user:approve", (id) => user.approve(socket, id))
     socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))

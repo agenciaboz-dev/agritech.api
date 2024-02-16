@@ -196,11 +196,11 @@ model Bank{
 
 model Professional{
     id              Int           @id @default(autoincrement())
-    department      String  
+    department      String?  
     office          String
-    admission       DateTime      @db.Date
-    salary          String
-    work_time       DateTime      @db.Time()
+    admission       DateTime?      @db.Date
+    salary          Float?
+    // work_time       DateTime?      @db.Time()
 
     employee        Employee      @relation(fields: [employeeId],references: [id],onDelete: Cascade)
     employeeId      Int           @unique
@@ -324,11 +324,11 @@ model Report {
 }
 model Operation {
     id              Int           @id @default(autoincrement())
-    service         String
-    culture         String
-    areaMap         Float
-    equipment       String
-    model           String
+    service         String        @default("")
+    culture         String        @default("")
+    areaMap         Float         @default(0)
+    equipment       String        @default("")
+    model           String        @default("")
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     reportId        Int           @unique
@@ -356,16 +356,16 @@ model Product{
 
 model Material{
     id              Int           @id @default(autoincrement())
-    talhao          String
+    talhao          String        @default("")
     area            Float
-    product         String
-    dosage          Float
-    classification  String
+    product         String        @default("")
+    dosage          Float         
+    classification  String        @default("")
     total           Float
     removed         Float
     applied         Float
     returned        Float
-    comments        String        @db.Text
+    comments        String        @db.Text 
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     reportId        Int           
@@ -373,10 +373,10 @@ model Material{
 
 model TechReport{
     id              Int           @id @default(autoincrement())
-    date            String        
-    init            String      
-    finish          String      
-    comments        String        @db.Text
+    date            String        @default("")
+    init            String        @default("")
+    finish          String        @default("")
+    comments        String        @db.Text 
 
     flight          Flight[]
 
