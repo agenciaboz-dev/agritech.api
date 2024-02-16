@@ -33,6 +33,11 @@ declare interface AdminCall {
   userId: number;
   forecast: string;
   hectarePrice: number;
+
+  operation: Operation;
+  treatment: Treatment;
+  material: Material[];
+  techReport: TechReport;
 }
 
 declare interface CloseCall {

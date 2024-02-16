@@ -56,8 +56,41 @@ const adminCreate = async (data: AdminCall) => {
 
     const report = await prisma.report.create({
       data: {
-        stage: "STAGE1",
         callId: call.id,
+        stage: "STAGE1",
+        date: new Date().getTime().toString(),
+        hour: new Date().getTime().toString(),
+
+        operation: {
+          create: {
+            service: "",
+            culture: "",
+            areaMap: 0,
+            equipment: "",
+            model: "",
+          },
+        },
+        material: { create: [] },
+        techReport: {
+          create: {
+            date: "",
+            init: "",
+            finish: "",
+            comments: "",
+            flight: { create: [] },
+          },
+        },
+        treatment: {
+          create: {
+            products: { create: [] },
+          },
+        },
+      },
+      include: {
+        operation: true,
+        treatment: { include: { products: true } },
+        material: true,
+        techReport: { include: { flight: true } },
       },
     });
 
