@@ -103,6 +103,7 @@ const create = async (data: NewKit) => {
 }
 
 const update = async (data: NewKit) => {
+    console.log(data)
     let image: string | undefined
 
     if (data.image?.file) {
@@ -118,6 +119,24 @@ const update = async (data: NewKit) => {
             description: data.description,
             active: data.active,
             hectareDay: data.hectareDay,
+            objects: {
+                deleteMany: { kitId: data.id },
+                create: data.objects?.map((item) => ({
+                    name: item.name,
+                    description: item.description,
+                    quantity: item.quantity,
+                })),
+            },
+            employees: {
+                disconnect: data.employees?.map((employee) => ({ id: employee.id })),
+                connect: data.employees?.map((employee) => ({ id: employee.id })),
+            },
+        },
+        include: {
+            calendar: true,
+            calls: true,
+            objects: true,
+            employees: true,
         },
     })
     console.log(data)

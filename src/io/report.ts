@@ -1,67 +1,92 @@
-import { Socket } from "socket.io";
-import databaseHandler from "../databaseHandler/report";
-import { Report } from "@prisma/client";
-import { NewReport } from "../definitions/report";
+import { Socket } from "socket.io"
+import databaseHandler from "../databaseHandler/report"
+import { Report } from "@prisma/client"
+import { NewReport } from "../definitions/report"
+import { NewMaterial } from "../definitions/material"
 
 const newReport = async (socket: Socket, data: NewReport) => {
-  console.log(data);
+    console.log(data)
 
-  try {
-    const report = await databaseHandler.create(data);
-    socket.emit("report:creation:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("report:creation:failed", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.create(data)
+        socket.emit("report:creation:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:creation:failed", { error: error })
+    }
+}
 
-const updateReport = async (socket: Socket, data: NewReport) => {
-  console.log(data);
+const approvedReport = async (socket: Socket, reportId: number) => {
+    try {
+        const report = await databaseHandler.approve(reportId)
+        socket.emit("report:approved:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:approved:failed", { error: error })
+    }
+}
+const closeReport = async (socket: Socket, reportId: number) => {
+    try {
+        const report = await databaseHandler.approve(reportId)
+        socket.emit("report:closed:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:closed:failed", { error: error })
+    }
+}
 
-  try {
-    const report = await databaseHandler.update(data);
+const updateReport = async (
+    socket: Socket,
+    data: { reportId: number; areaTrabalhada: number; materials: NewMaterial[] }
+) => {
+    console.log(data)
 
-    socket.emit("report:update:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("report:update:failed", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.update(data)
+
+        socket.emit("report:update:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:update:failed", { error: error })
+    }
+}
 
 const findReport = async (socket: Socket, id: number) => {
-  try {
-    const report = await databaseHandler.find(id);
-    socket.emit("report:find:success", report);
-  } catch (error) {
-    console.error(`Error fetching report for ID: ${id}. Error: ${error}`);
-    socket.emit("report:find:error", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.find(id)
+        socket.emit("report:find:success", report)
+    } catch (error) {
+        console.error(`Error fetching report for ID: ${id}. Error: ${error}`)
+        socket.emit("report:find:error", { error: error })
+    }
+}
 
 const listReport = async (socket: Socket) => {
-  try {
-    const report = await databaseHandler.list();
-    socket.emit("report:list:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("report:list:failed", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.list()
+        socket.emit("report:list:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:list:failed", { error: error })
+    }
+}
 
 const createNewReportAtMidnight = async (socket: Socket, data: NewReport) => {
-  try {
-    const report = await databaseHandler.createNewReportAtMidnight(data);
-    socket.emit("midnight:report:creation:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("midnightreport:creation:failed", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.createNewReportAtMidnight(data)
+        socket.emit("midnight:report:creation:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("midnightreport:creation:failed", { error: error })
+    }
+}
 
 export default {
-  newReport,
-  updateReport,
-  findReport,
-  listReport,
-  createNewReportAtMidnight,
-};
+    newReport,
+    updateReport,
+    findReport,
+    listReport,
+    createNewReportAtMidnight,
+  approvedReport,
+  closeReport
+}

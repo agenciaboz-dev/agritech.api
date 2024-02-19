@@ -2,6 +2,7 @@
 import { PrismaClient } from "@prisma/client"
 import { NewReport } from "../definitions/report"
 import { NewMaterial } from "../definitions/material"
+import tillage from "./tillage"
 
 const prisma = new PrismaClient()
 
@@ -120,6 +121,36 @@ const update = async (data: { reportId: number; areaTrabalhada: number; material
     console.log(report)
     return report
 }
+const approve = async (reportId: number) => {
+    const report = await prisma.report.update({
+        where: { id: reportId },
+        data: { approved: true },
+        include: {
+            operation: true,
+            treatment: { include: { products: true } },
+            material: true,
+            techReport: { include: { flight: true } },
+        },
+    })
+
+    console.log(report)
+    return report
+}
+const close = async (reportId: number) => {
+    const report = await prisma.report.update({
+        where: { id: reportId },
+        data: { close: new Date().getTime().toString() },
+        include: {
+            operation: true,
+            treatment: { include: { products: true } },
+            material: true,
+            techReport: { include: { flight: true } },
+        },
+    })
+
+    console.log(report)
+    return report
+}
 
 const find = async (id: number) => {
     return await prisma.report.findUnique({
@@ -136,10 +167,11 @@ const find = async (id: number) => {
 const list = async () => {
     return await prisma.report.findMany({
         include: {
+            call: { include: { kit: true, talhao: { include: { tillage: true } } } },
             operation: true,
             treatment: true,
             material: true,
-            techReport: true,
+            techReport: { include: { flight: true } },
         },
     })
 }
@@ -181,4 +213,6 @@ export default {
     find,
     list,
     createNewReportAtMidnight,
+  approve,
+  close
 }

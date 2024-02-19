@@ -282,4 +282,8 @@ export const handleSocket = (socket: Socket) => {
     socket.on("report:list", () => report.listReport(socket))
 
     socket.on("midnight:report:create", (data: any) => report.createNewReportAtMidnight(socket, data))
+
+    socket.on("report:approve", (reportId: number) => report.approvedReport(socket, reportId))
+
+    socket.on("report:close", (reportId: number) => report.closeReport(socket, reportId))
 }

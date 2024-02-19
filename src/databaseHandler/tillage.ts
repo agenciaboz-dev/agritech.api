@@ -112,7 +112,6 @@ const list = async () => {
             location: true,
             gallery: true,
             producer: true,
-
             talhao: {
                 include: {
                     gallery: true,
