@@ -6,6 +6,6 @@ declare interface NewTechReport {
   init: string;
   finish: string;
   comments: string;
-  flights: Flight[];
+  flight: Flight[];
   reportId: number;
 }

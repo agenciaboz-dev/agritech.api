@@ -23,6 +23,7 @@ const update = async (data: NewTreatment) => {
         data: {
             reportId: data.reportId,
             products: {
+                deleteMany: { treatmentId: data.id },
                 create: data.products.map((product) => ({
                     name: product.name,
                     dosage: product.dosage,
@@ -30,7 +31,11 @@ const update = async (data: NewTreatment) => {
                 })),
             },
         },
-        include: { products: true },
+        include: {
+            report: {
+                include: { operation: true, treatment: true, techReport: true, material: true, stages: true, call: true },
+            },
+        },
     })
     console.log("Objecto actualizado: ", data)
 
