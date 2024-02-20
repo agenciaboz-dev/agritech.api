@@ -1,4 +1,4 @@
-import { Report, Producer, Operation, Material, Flight, Call } from "@prisma/client"
+import { Report, Producer, Operation, Material, Flight, Call, Talhao } from "@prisma/client"
 
 declare interface Flight {
     id: number
@@ -45,4 +45,6 @@ declare interface NewReport {
     material: Material[]
     techReport: TechReport
     approved?: boolean
+    totalPrice?: number
+    
 }

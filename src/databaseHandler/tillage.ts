@@ -118,7 +118,21 @@ const list = async () => {
                     location: true,
                     tillage: true,
                     calls: {
-                        include: { reports: true, kit: true, producer: true },
+                        include: {
+                            reports: {
+                                include: {
+                                    stages: true,
+                                    call: true,
+                                    material: true,
+                                    operation: true,
+                                    treatment: { include: { products: true } },
+                                    techReport: true,
+                                },
+                            },
+                            kit: true,
+                            producer: true,
+                            talhao: true,
+                        },
                     },
                 },
             },

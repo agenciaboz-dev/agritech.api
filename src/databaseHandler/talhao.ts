@@ -44,7 +44,23 @@ const list = async () => {
             location: true,
             gallery: true,
             tillage: true,
-            calls: { include: { reports: true, kit: true, producer: true, talhao: true } },
+            calls: {
+                include: {
+                    reports: {
+                        include: {
+                            stages: true,
+                            call: true,
+                            material: true,
+                            operation: true,
+                            treatment: { include: { products: true } },
+                            techReport: true,
+                        },
+                    },
+                    kit: true,
+                    producer: true,
+                    talhao: true,
+                },
+            },
         },
     })
 }

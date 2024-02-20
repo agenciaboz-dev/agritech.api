@@ -310,6 +310,7 @@ model Report {
     hour            String?       @default("") 
     close           String?       @default("") 
     approved        Boolean?      @default(false)
+    totalPrice      Float?        @default(0)
 
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int

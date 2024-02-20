@@ -87,13 +87,14 @@ const create = async (data: NewReport) => {
     return report
 }
 
-const update = async (data: { reportId: number; areaTrabalhada: number; materials: NewMaterial[] }) => {
+const update = async (data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }) => {
     console.log(data)
 
     const report = await prisma.report.update({
         where: { id: data.reportId },
         data: {
             areaTrabalhada: data.areaTrabalhada,
+            totalPrice: data.totalPrice,
             material: {
                 deleteMany: { reportId: data.reportId },
                 create: data.materials.map((material) => ({
@@ -213,6 +214,6 @@ export default {
     find,
     list,
     createNewReportAtMidnight,
-  approve,
-  close
+    approve,
+    close,
 }
