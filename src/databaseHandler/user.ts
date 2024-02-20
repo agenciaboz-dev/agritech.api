@@ -26,7 +26,7 @@ const inclusions = {
                 professional: true,
                 calendars: true,
                 producers: true,
-                kits: true,
+                kits: { include: { calls: true } },
             },
         },
         address: true,
@@ -62,6 +62,31 @@ const approve = async (id: number) => {
         data: {
             approved: true,
             rejected: null,
+        },
+        include: {
+            producer: {
+                include: {
+                    tillage: {
+                        include: {
+                            address: true,
+                            location: true,
+                            gallery: true,
+                            talhao: { include: { calls: true } },
+                        },
+                    },
+                    user: true,
+                },
+            },
+            employee: {
+                include: {
+                    bank: true,
+                    professional: true,
+                    calendars: true,
+                    producers: true,
+                    kits: { include: { calls: { include: { talhao: true } } } },
+                },
+            },
+            address: true,
         },
     })
 }
@@ -105,7 +130,31 @@ const pendingList = async () =>
 const approvedList = async () =>
     await prisma.user.findMany({
         where: { approved: true },
-        include: inclusions.user,
+        include: {
+            producer: {
+                include: {
+                    tillage: {
+                        include: {
+                            address: true,
+                            location: true,
+                            gallery: true,
+                            talhao: { include: { calls: true } },
+                        },
+                    },
+                    user: true,
+                },
+            },
+            employee: {
+                include: {
+                    bank: true,
+                    professional: true,
+                    calendars: true,
+                    producers: true,
+                    kits: { include: { calls: { include: { talhao: true } } } },
+                },
+            },
+            address: true,
+        },
     })
 
 const findById = async (id: number) => {
