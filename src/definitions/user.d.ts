@@ -10,6 +10,7 @@ declare interface NewUser {
     phone: string
     image: Image
     isAdmin: boolean
+    isManager: boolean
     approved: boolean
     rejected: string
     office: string

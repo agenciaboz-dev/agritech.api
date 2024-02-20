@@ -227,7 +227,8 @@ const newEmployee = async (data: NewUser) => {
                 phone: data.phone?.replace(/\D/g, ""),
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
-                approved: data.approved, // <<<<< gambiarrei
+                isManager: data.isManager || false,
+                approved: data.approved,
                 rejected: null,
                 office: data.office,
 

@@ -184,6 +184,7 @@ const toggleAdmin = async (socket: Socket, data: User) => {
     try {
         const user = await prisma.toggleAdmin(data.id)
         socket.emit("user:admin:toggle:success", user)
+        console.log(user.isAdmin)
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
@@ -196,6 +197,7 @@ const toggleManager = async (socket: Socket, data: User) => {
     try {
         const user = await prisma.toggleManager(data.id)
         socket.emit("user:manager:toggle:success", user)
+        console.log(user.isManager)
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
