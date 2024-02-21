@@ -37,7 +37,7 @@ const closeReport = async (socket: Socket, reportId: number) => {
 
 const updateReport = async (
     socket: Socket,
-    data: { reportId: number; areaTrabalhada: number; materials: NewMaterial[] }
+    data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }
 ) => {
     console.log(data)
 
@@ -87,6 +87,6 @@ export default {
     findReport,
     listReport,
     createNewReportAtMidnight,
-  approvedReport,
-  closeReport
+    approvedReport,
+    closeReport,
 }

@@ -43,7 +43,7 @@ const inclusions = {
     kit: {
         objects: true,
         employees: true,
-        calls: true,
+        calls: { include: { talhao: true } },
         calendar: true,
     },
 }
@@ -145,7 +145,11 @@ const update = async (data: NewKit) => {
 
 const list = async () => {
     return await prisma.kit.findMany({
-        include: inclusions.kit,
+        include: {
+            objects: true,
+            employees: true,
+            calls: { include: { talhao: true } },
+        },
     })
 }
 
