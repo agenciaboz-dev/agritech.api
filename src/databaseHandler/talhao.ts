@@ -26,6 +26,7 @@ const update = async (data: NewTalhao) => {
         data: {
             name: data.name,
             area: data.area,
+            cover: data.cover,
         },
     })
     console.log(data)

@@ -97,7 +97,7 @@ model Tillage{
     pilot           String?
     others          String?
     comments        String?      @db.Text
-    cover           String?      @db.Text 
+    cover           String?     @db.LongText
     hectarePrice    Float?
     address         Address?
 
@@ -115,7 +115,7 @@ model Talhao {
     id              Int           @id @default(autoincrement())
     name            String
     area            Float
-    cover           String?        @db.Text 
+    cover           String?      @db.LongText
 
     tillage         Tillage?      @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int      
