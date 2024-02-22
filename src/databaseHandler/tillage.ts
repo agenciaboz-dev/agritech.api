@@ -22,6 +22,7 @@ const create = async (data: NewTillage) => {
     console.log(data)
     const tillage = await prisma.tillage.create({
         data: {
+            cover: data.cover,
             name: data.name,
             area: Number(data.area),
             owner: data.owner,
@@ -74,6 +75,7 @@ const update = async (data: NewTillage & { id: number }) => {
     const tillage = await prisma.tillage.update({
         where: { id: data.id },
         data: {
+            cover: data.cover,
             name: data.name,
             area: data.area,
             owner: data.owner,
@@ -110,7 +112,7 @@ const list = async () => {
         include: {
             address: true,
             location: true,
-            gallery: true,
+            gallery: { include: { images: true } },
             producer: true,
             talhao: {
                 include: {

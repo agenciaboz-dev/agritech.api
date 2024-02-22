@@ -1,6 +1,6 @@
 import { NewKit, ManageKitMembers } from "../definitions/kit"
 import { Kit, PrismaClient } from "@prisma/client"
-import { saveImage } from "../saveImage"
+import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
@@ -53,8 +53,7 @@ const create = async (data: NewKit) => {
     let image: string | undefined
 
     if (data.image?.file) {
-        saveImage(`kit`, data.image.file, data.image.name)
-        image = `kit/${data.image.name}`
+        image = saveImage(`kit/`, data.image.file, data.image.name)
     }
 
     const kit = await prisma.kit.create({
@@ -107,8 +106,7 @@ const update = async (data: NewKit) => {
     let image: string | undefined
 
     if (data.image?.file) {
-        saveImage(`kit`, data.image.file, data.image.name)
-        image = `kit/${data.image.name}`
+        image = saveImage(`kit/`, data.image.file, data.image.name)
     }
 
     const kit = await prisma.kit.update({

@@ -7,8 +7,10 @@ const create = async (data: NewTalhao) => {
     console.log(data)
     const talhao = await prisma.talhao.create({
         data: {
+            cover: data.cover,
             name: data.name,
             area: Number(data.area),
+
             tillageId: data.tillageId,
         },
     })
@@ -34,7 +36,7 @@ const update = async (data: NewTalhao) => {
 const find = async (id: number) => {
     return await prisma.talhao.findUnique({
         where: { id },
-        include: { location: true, gallery: true, calls: true },
+        include: { location: true, gallery: { include: { images: true } }, calls: true },
     })
 }
 
@@ -42,7 +44,7 @@ const list = async () => {
     return await prisma.talhao.findMany({
         include: {
             location: true,
-            gallery: true,
+            gallery: { include: { images: true } },
             tillage: true,
             calls: {
                 include: {

@@ -2,7 +2,7 @@ import { Socket } from "socket.io"
 import { User, Employee } from "@prisma/client"
 import { getIoInstance, handleSocket } from "./socket"
 import user from "../databaseHandler/user"
-import { saveImage } from "../saveImage"
+import { saveImage } from "../tools/saveImage"
 import { ClientBag } from "../definitions/client"
 import { LoginForm } from "../definitions/user"
 

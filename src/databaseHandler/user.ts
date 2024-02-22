@@ -1,7 +1,7 @@
 import { NewUser } from "../definitions/user"
 import { PrismaClient } from "@prisma/client"
 import normalize from "../normalize"
-import { saveImage } from "../saveImage"
+import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
@@ -179,8 +179,7 @@ const newUser = async (data: NewUser) => {
         let image: string | undefined
 
         if (data.image?.file) {
-            saveImage(`user/profile`, data.image.file, data.image.name)
-            image = `user/profile/${data.image.name}`
+            image = saveImage(`user/profile`, data.image.file, data.image.name)
         }
 
         console.log(data)
@@ -261,8 +260,7 @@ const newEmployee = async (data: NewUser) => {
         let image: string | undefined
 
         if (data.image?.file) {
-            saveImage(`user/profile`, data.image.file, data.image.name)
-            image = `user/profile/${data.image.name}`
+            image = saveImage(`user/profile`, data.image.file, data.image.name)
         }
 
         console.log(data)
@@ -353,8 +351,7 @@ const update = async (data: NewUser & { id: number }) => {
         let image: string | undefined
 
         if (data.image?.file) {
-            saveImage(`user/profile`, data.image.file, data.image.name)
-            image = `user/profile/${data.image.name}`
+            image = saveImage(`user/profile`, data.image.file, data.image.name)
         }
 
         const address = await prisma.address.update({

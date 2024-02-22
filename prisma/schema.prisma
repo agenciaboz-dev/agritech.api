@@ -97,7 +97,7 @@ model Tillage{
     pilot           String?
     others          String?
     comments        String?      @db.Text
-
+    cover           String?      @db.Text 
     hectarePrice    Float?
     address         Address?
 
@@ -106,7 +106,7 @@ model Tillage{
     talhao          Talhao[]
 
 
-    producer         Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producer         Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId       Int?  
 
 }
@@ -115,8 +115,9 @@ model Talhao {
     id              Int           @id @default(autoincrement())
     name            String
     area            Float
+    cover           String?        @db.Text 
 
-    tillage         Tillage?       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillage         Tillage?      @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int      
 
     location        Coordinate[]
@@ -140,6 +141,7 @@ model Gallery{
     id              Int           @id @default(autoincrement())
     images          GalleryImage[]
 
+
     talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
     talhaoId        Int           
 
@@ -151,7 +153,7 @@ model Gallery{
 model GalleryImage {
 
     id              Int           @id @default(autoincrement())
-    url             String
+    url             String        @db.Text 
     galleryId       Int
     gallery         Gallery       @relation(fields: [galleryId], references: [id], onDelete: Cascade)
 }

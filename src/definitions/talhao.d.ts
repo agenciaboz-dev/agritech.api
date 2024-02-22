@@ -6,6 +6,7 @@ declare interface NewTalhao {
     area: number
     tillageId: number
     location: Coordinate[]
+    cover?: string
     gallery: Gallery[]
     calls: Call[]
 }

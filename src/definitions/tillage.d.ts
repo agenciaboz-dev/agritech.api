@@ -11,7 +11,6 @@ declare interface NewTillage {
     others?: string
     comments?: string
     hectarePrice: number
-
     address: {
         street: string
         district: string
@@ -22,6 +21,7 @@ declare interface NewTillage {
         adjunct?: string
     }
     location?: Coordinate[]
+    cover?: string
     gallery?: Gallery[]
     talhao?: Talhao[]
     call?: Call
