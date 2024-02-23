@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client"
 import { NewTalhao } from "../definitions/talhao"
+import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
@@ -10,14 +11,53 @@ const create = async (data: NewTalhao) => {
             cover: data.cover,
             name: data.name,
             area: Number(data.area),
-
             tillageId: data.tillageId,
         },
     })
-    console.log({ talhao })
 
-    console.log(talhao)
-    return { talhao }
+    const uploaded = await Promise.all(
+        data.gallery.map(async (item) => {
+            try {
+                const urls: string[] = []
+                const files = item.images?.map((file) => {
+                    return saveImage(`gallery/`, file.file, file.name)
+                })
+
+                console.log({ NOME_ARQUIVO: files })
+
+                if (files) {
+                    urls.push(...files)
+                }
+
+                const images = await Promise.all(
+                    item.images?.map(async (file) => {
+                        try {
+                            const imageUrl = await saveImage(`gallery/`, file.file, file.name)
+                            return { url: imageUrl }
+                        } catch (error) {
+                            console.log("Error saving image:", error)
+                            throw error
+                        }
+                    }) || []
+                )
+
+                const gallery = await prisma.gallery.create({
+                    data: {
+                        talhaoId: talhao.id,
+                        tillageId: talhao.tillageId,
+                        images: { create: images },
+                    },
+                })
+
+                return gallery
+            } catch (error) {
+                console.log("Error creating gallery:", error)
+                throw error
+            }
+        })
+    )
+
+    return prisma.talhao.findUnique({ where: { id: talhao.id }, include: { gallery: { include: { images: true } } } })
 }
 
 const update = async (data: NewTalhao) => {

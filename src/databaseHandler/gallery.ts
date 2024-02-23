@@ -9,13 +9,13 @@ const create = async (data: NewGallery) => {
     try {
         let urls: string[] = []
         const uploaded = data.images?.map((file) => {
-            saveImage(`gallery`, file.file, file.name)
-            return `gallery/${file.name}`
+            return saveImage(`gallery`, file.file, file.name)
         })
 
         if (uploaded) {
             urls = [...uploaded]
         }
+        console.log({ url: urls })
 
         data.urls?.map((url) => urls.push(url))
         console.log({ urls })
@@ -23,7 +23,7 @@ const create = async (data: NewGallery) => {
         const gallery = await prisma.gallery.create({
             data: {
                 images: {
-                    create: uploaded?.map((item) => ({ url: item })),
+                    create: uploaded?.map((item) => ({ url: item, })),
                 },
                 tillageId: data.tillageId,
                 talhaoId: data.talhaoId,

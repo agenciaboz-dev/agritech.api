@@ -1,4 +1,6 @@
 import { Talhao, Coordinate, Gallery, Call } from "@prisma/client"
+import { NewGallery } from "./gallery"
+
 
 declare interface NewTalhao {
     id: number
@@ -7,6 +9,6 @@ declare interface NewTalhao {
     tillageId: number
     location: Coordinate[]
     cover?: string
-    gallery: Gallery[]
+    gallery: NewGallery[]
     calls: Call[]
 }
