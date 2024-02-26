@@ -44,6 +44,7 @@ import {
     Report,
     Talhao,
 } from "@prisma/client"
+import { NewGallery } from "../definitions/gallery"
 
 let io: SocketIoServer | null = null
 
@@ -153,7 +154,7 @@ export const handleSocket = (socket: Socket) => {
     // GALLERY OPS
     socket.on("gallery:create", (newGallery: Gallery) => gallery.newGallery(socket, newGallery))
 
-    socket.on("gallery:update", (updateGallery: Gallery) => gallery.updateGallery(socket, updateGallery))
+    socket.on("gallery:update", (updateGallery: NewGallery) => gallery.updateGallery(socket, updateGallery))
 
     socket.on("gallery:list", () => {
         gallery.listGallery(socket)

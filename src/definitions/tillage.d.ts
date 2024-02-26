@@ -22,7 +22,7 @@ declare interface NewTillage {
     }
     location?: Coordinate[]
     cover?: string
-    gallery?: Gallery[]
+    gallery?: NewGallery[]
     talhao?: Talhao[]
     call?: Call
     producerId?: number

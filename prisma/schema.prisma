@@ -143,8 +143,8 @@ model Gallery{
     name            String?       @default("")
 
 
-    talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
-    talhaoId        Int           
+    talhao          Talhao?        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
+    talhaoId        Int?           
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int           

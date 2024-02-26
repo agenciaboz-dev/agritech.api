@@ -2,6 +2,7 @@ import { OpenCall } from "../definitions/call"
 import { NewTillage } from "../definitions/tillage"
 import { PrismaClient } from "@prisma/client"
 import talhao from "./talhao"
+import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
@@ -65,6 +66,49 @@ const create = async (data: NewTillage) => {
             })
         )
     }
+
+    const uploaded =
+        data.gallery &&
+        (await Promise.all(
+            data.gallery.map(async (item) => {
+                try {
+                    const urls: string[] = []
+                    const files = item.images?.map((file: any) => {
+                        return saveImage(`gallery/`, file.file, file.name)
+                    })
+
+                    console.log({ NOME_ARQUIVO: files })
+
+                    if (files) {
+                        urls.push(...files)
+                    }
+
+                    const images = await Promise.all(
+                        item.images?.map(async (file: any) => {
+                            try {
+                                const imageUrl = await saveImage(`gallery/`, file.file, file.name)
+                                return { url: imageUrl }
+                            } catch (error) {
+                                console.log("Error saving image:", error)
+                                throw error
+                            }
+                        }) || []
+                    )
+
+                    const gallery = await prisma.gallery.create({
+                        data: {
+                            tillageId: tillage.id,
+                            images: { create: images },
+                        },
+                    })
+
+                    return gallery
+                } catch (error) {
+                    console.log("Error creating gallery:", error)
+                    throw error
+                }
+            })
+        ))
 
     console.log(tillage)
 
