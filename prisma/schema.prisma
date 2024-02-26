@@ -67,9 +67,10 @@ model Address{
 }
 
 model Producer{
-    id              Int          @id @default(autoincrement())
-    cnpj            String       @unique
-    contract        Boolean      @default(false)
+    id                       Int          @id @default(autoincrement())
+    cnpj                     String       @unique
+    contract                 Boolean      @default(false)
+    inscricaoEstadual        String       @unique
 
     user            User         @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int          @unique

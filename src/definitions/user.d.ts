@@ -49,6 +49,7 @@ declare interface NewUser {
         tillage: Tillage
         contract: boolean
         employeeId: number
+        inscricaoEstadual: string
     }
 }
 

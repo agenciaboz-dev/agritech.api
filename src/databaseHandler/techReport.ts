@@ -14,7 +14,7 @@ const create = async (data: NewTechReport) => {
             reportId: data.reportId,
         },
     })
-    console.log({ techReport })
+    console.log({ Laudo: techReport })
     return techReport
 }
 

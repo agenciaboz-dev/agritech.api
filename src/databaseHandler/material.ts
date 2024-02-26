@@ -21,7 +21,7 @@ const create = async (data: NewMaterial) => {
         },
         include: { report: true },
     })
-    console.log({ material })
+    console.log({ Insumos: material })
 
     return material
 }

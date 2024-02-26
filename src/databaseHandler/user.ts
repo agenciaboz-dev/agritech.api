@@ -236,6 +236,7 @@ const newUser = async (data: NewUser) => {
             const producer = await prisma.producer.create({
                 data: {
                     cnpj: data.producer.cnpj,
+                    inscricaoEstadual: data.producer.inscricaoEstadual,
                     contract: data.producer.contract,
                     employeeId: data.producer.employeeId,
                     tillage: data.producer.tillage,
@@ -391,6 +392,7 @@ const update = async (data: NewUser & { id: number }) => {
                 where: { userid: data.id },
                 data: {
                     cnpj: data.producer.cnpj,
+                    inscricaoEstadual: data.producer.inscricaoEstadual,
                     userid: data.id,
                 },
             })
@@ -410,6 +412,7 @@ const update = async (data: NewUser & { id: number }) => {
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
                 approved: data.isAdmin,
+                isManager: data.isManager || false,
             },
             include: inclusions.user,
         })

@@ -11,7 +11,7 @@ const create = async (data: NewTreatment) => {
             reportId: data.reportId,
         },
     })
-    console.log({ treatment })
+    console.log({ Tratamento: treatment })
 
     console.log("Treatment Created:", treatment)
     return treatment

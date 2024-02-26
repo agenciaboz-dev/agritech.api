@@ -84,7 +84,10 @@ const create = async (data: NewReport) => {
     })
     console.log(report)
 
-    return report
+    return prisma.report.findUnique({
+        where: { id: report.id },
+        include: { operation: true, material: true, techReport: true, treatment: true, call: true },
+    })
 }
 
 const update = async (data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }) => {
@@ -120,7 +123,10 @@ const update = async (data: { reportId: number; totalPrice: number; areaTrabalha
     })
 
     console.log(report)
-    return report
+    return prisma.report.findUnique({
+        where: { id: report.id },
+        include: { operation: true, material: true, techReport: true, treatment: true, call: true },
+    })
 }
 const approve = async (reportId: number) => {
     const report = await prisma.report.update({
