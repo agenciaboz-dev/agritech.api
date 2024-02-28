@@ -46,6 +46,7 @@ import {
 } from "@prisma/client"
 import { NewGallery } from "../types/gallery"
 import { UserFull } from "../prisma/types/user"
+import { NotificationClass as Notification } from "../class/Notification"
 
 let io: SocketIoServer | null = null
 
@@ -82,8 +83,7 @@ const add = (client: Client) => {
     clientList.push(client)
 }
 
-const update = (client: Client, user: User) =>
-    (clientList = [...clientList.filter((item) => item.socket != client.socket), { ...client, user }])
+const update = (client: Client, user: User) => (clientList = [...clientList.filter((item) => item.socket != client.socket), { ...client, user }])
 
 export const handleSocket = (socket: Socket) => {
     const io = getIoInstance()
@@ -288,4 +288,8 @@ export const handleSocket = (socket: Socket) => {
     socket.on("report:approve", (reportId: number) => report.approvedReport(socket, reportId))
 
     socket.on("report:close", (reportId: number) => report.closeReport(socket, reportId))
+
+    // notifications
+    socket.on("notification:list", (user_id: number) => Notification.list(socket, user_id))
+    socket.on("notification:viewed", (id: number, user_id: number) => Notification.viewed(socket, id, user_id))
 }

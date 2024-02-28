@@ -418,5 +418,5 @@ model Notification {
     
     viewed_by   String
 
-    user        User[]
+    users       User[]
 }
