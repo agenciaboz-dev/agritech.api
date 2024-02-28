@@ -16,7 +16,7 @@ export const saveImage = (path: string, file: ArrayBuffer, filename: string) => 
     bulkWebPConvert({ pathToOutput: uploadDir, pathToSource: uploadDir, quality: 70 })
 
     const port = process.env.PORT
-    const url = `${env == "dev" ? `http://localhost:${port}` : `https://app.agencyboz.com:${port}`}/${filepath}`
+    const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${filepath}`
     console.log(url)
     return url
 }
