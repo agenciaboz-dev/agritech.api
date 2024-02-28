@@ -411,7 +411,7 @@ const update = async (data: NewUser & { id: number }) => {
                 image: image,
                 username: normalize(data.username),
                 isAdmin: data.isAdmin || false,
-                approved: data.isAdmin,
+                approved: data.approved,
                 isManager: data.isManager || false,
             },
             include: inclusions.user,
