@@ -1,6 +1,6 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
 import { Stage, PrismaClient, Report, Call } from "@prisma/client"
-import { NewStage } from "../definitions/stage"
+import { NewStage } from "../types/stage"
 
 const prisma = new PrismaClient()
 

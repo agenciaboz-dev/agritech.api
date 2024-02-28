@@ -1,4 +1,4 @@
-import { NewMaterial } from "../definitions/material"
+import { NewMaterial } from "../types/material"
 import { Material } from "@prisma/client"
 import { PrismaClient } from "@prisma/client"
 

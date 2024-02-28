@@ -1,7 +1,8 @@
-import { NewUser } from "../definitions/user"
+import { NewUser } from "../types/user"
 import { PrismaClient } from "@prisma/client"
 import normalize from "../normalize"
 import { saveImage } from "../tools/saveImage"
+import { UserFull, user_include } from "../prisma/types/user"
 
 const prisma = new PrismaClient()
 
@@ -174,8 +175,6 @@ const findByUsername = async (username: string) =>
 const newUser = async (data: NewUser) => {
     console.log(data)
     try {
-        const birth = data.birth ? new Date(data.birth.split("/").reverse().join("/")) : undefined
-
         let image: string | undefined
 
         if (data.image?.file) {
@@ -185,7 +184,7 @@ const newUser = async (data: NewUser) => {
         console.log(data)
         const user = await prisma.user.create({
             data: {
-                birth: birth,
+                birth: data.birth,
                 cpf: data.cpf.replace(/\D/g, ""),
                 email: normalize(data.email),
                 name: data.name,
@@ -267,7 +266,7 @@ const newEmployee = async (data: NewUser) => {
         console.log(data)
         const user = await prisma.user.create({
             data: {
-                birth: birth,
+                birth: data.birth,
                 cpf: data.cpf.replace(/\D/g, ""),
                 email: normalize(data.email),
                 name: data.name,
@@ -346,81 +345,40 @@ const newEmployee = async (data: NewUser) => {
     }
 }
 
-const update = async (data: NewUser & { id: number }) => {
-    const birth = data.birth.split("/").reverse().join("/")
-    try {
-        let image: string | undefined
+const update = async (data: Partial<UserFull>, id: number) => {
+    let image_url: string | undefined
 
-        if (data.image?.file) {
-            image = saveImage(`user/profile`, data.image.file, data.image.name)
-        }
-
-        const address = await prisma.address.update({
-            where: { userId: data.id },
-            data: {
-                street: data.address.street,
-                number: data.address.number,
-                city: data.address.city,
-                cep: data.address.cep,
-                adjunct: data.address.adjunct,
-                district: data.address.district,
-                uf: data.address.uf,
-                userId: data.id,
-            },
-        })
-        console.log(address)
-
-        if (data.employee) {
-            const employee = await prisma.employee.update({
-                where: { userid: data.id },
-                data: {
-                    gender: data.employee.gender,
-                    relationship: data.employee.relationship,
-                    nationality: data.employee.nationality,
-                    residence: data.employee.residence,
-                    rg: data.employee.rg,
-                    voter_card: data.employee.voter_card,
-                    work_card: data.employee.work_card,
-                    military: data.employee.military,
-                    userid: data.id,
-                },
-            })
-
-            console.log(employee)
-        } else if (data.producer) {
-            const producer = await prisma.producer.update({
-                where: { userid: data.id },
-                data: {
-                    cnpj: data.producer.cnpj,
-                    inscricaoEstadual: data.producer.inscricaoEstadual,
-                    userid: data.id,
-                },
-            })
-            console.log(producer)
-        }
-
-        const user = await prisma.user.update({
-            where: { id: data.id },
-            data: {
-                birth: new Date(birth),
-                cpf: data.cpf.replace(/\D/g, ""),
-                email: normalize(data.email),
-                name: data.name,
-                password: data.password,
-                phone: data.phone?.replace(/\D/g, ""),
-                image: image,
-                username: normalize(data.username),
-                isAdmin: data.isAdmin || false,
-                approved: data.approved,
-                isManager: data.isManager || false,
-            },
-            include: inclusions.user,
-        })
-
-        return { user }
-    } catch (error) {
-        console.log(error)
+    if (data.image && typeof data.image != "string") {
+        image_url = saveImage(`user/profile`, data.image.file, data.image.name)
     }
+
+    const user = await prisma.user.update({
+        where: { id },
+        data: {
+            ...data,
+
+            calls: {},
+            chats: {},
+            image: image_url || undefined,
+            address: data.address ? { update: { ...data.address } } : {},
+            producer: data.producer ? { update: { ...data.producer, tillage: {} } } : {},
+            employee: data.employee
+                ? {
+                      update: {
+                          ...data.employee,
+                          bank: data.employee.bank ? { update: { ...data.employee.bank } } : {},
+                          professional: data.employee.professional ? { update: { ...data.employee.professional } } : {},
+                          calendars: {},
+                          kits: {},
+                          producers: {},
+                      },
+                  }
+                : {},
+        },
+        include: user_include,
+    })
+
+    return user
 }
 
 const toggleAdmin = async (id: number) => {

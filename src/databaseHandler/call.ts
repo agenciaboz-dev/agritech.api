@@ -1,5 +1,5 @@
 import { Call, PrismaClient } from "@prisma/client"
-import { OpenCall, AdminCall, ApproveCall } from "../definitions/call"
+import { OpenCall, AdminCall, ApproveCall } from "../types/call"
 
 const prisma = new PrismaClient()
 

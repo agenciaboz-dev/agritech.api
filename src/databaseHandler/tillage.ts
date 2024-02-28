@@ -1,5 +1,5 @@
-import { OpenCall } from "../definitions/call"
-import { NewTillage } from "../definitions/tillage"
+import { OpenCall } from "../types/call"
+import { NewTillage } from "../types/tillage"
 import { PrismaClient } from "@prisma/client"
 import talhao from "./talhao"
 import { saveImage } from "../tools/saveImage"

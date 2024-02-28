@@ -1,4 +1,4 @@
-import { NewKit, ManageKitMembers } from "../definitions/kit"
+import { NewKit, ManageKitMembers } from "../types/kit"
 import { Kit, PrismaClient } from "@prisma/client"
 import { saveImage } from "../tools/saveImage"
 

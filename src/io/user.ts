@@ -3,8 +3,9 @@ import { User, Employee } from "@prisma/client"
 import { getIoInstance, handleSocket } from "./socket"
 import user from "../databaseHandler/user"
 import { saveImage } from "../tools/saveImage"
-import { ClientBag } from "../definitions/client"
-import { LoginForm } from "../definitions/user"
+import { ClientBag } from "../types/client"
+import { LoginForm } from "../types/user"
+import { UserFull } from "../prisma/types/user"
 
 interface UpdateUser extends Omit<User, "id"> {
     id: number
@@ -169,11 +170,12 @@ const findUser = async (socket: Socket, id: number) => {
     }
 }
 
-const updateUser = async (socket: Socket, data: any) => {
+const update = async (socket: Socket, data: Partial<UserFull>, id: number) => {
     console.log(data)
     try {
-        const updatedUser = await prisma.update(data)
+        const updatedUser = await prisma.update(data, id)
         socket.emit("user:update:success", updatedUser)
+        socket.broadcast.emit("user:update", updatedUser)
     } catch (error) {
         console.log(error)
         socket.emit("user:update:failed", { error: error })
@@ -214,7 +216,7 @@ export default {
     approve,
     handleLogin,
     findUser,
-    updateUser,
+    update,
     listUsersApproved,
     listPendingApproval,
     toggleAdmin,

@@ -1,4 +1,4 @@
-import { NewTreatment } from "../definitions/treatment"
+import { NewTreatment } from "../types/treatment"
 import { Treatment } from "@prisma/client"
 import { PrismaClient } from "@prisma/client"
 

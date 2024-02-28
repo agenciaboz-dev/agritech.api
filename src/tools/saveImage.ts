@@ -13,7 +13,7 @@ export const saveImage = (path: string, file: ArrayBuffer, filename: string) => 
     const filepath = join(uploadDir, filename)
     createWriteStream(filepath).write(buffer)
 
-    bulkWebPConvert({ pathToOutput: uploadDir, pathToSource: uploadDir, quality: 70 })
+    // bulkWebPConvert({ pathToOutput: uploadDir, pathToSource: uploadDir, quality: 70 })
 
     const port = process.env.PORT
     const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${filepath}`

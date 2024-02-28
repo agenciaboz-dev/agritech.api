@@ -6,8 +6,8 @@ import { Socket } from "socket.io"
 import cep from "./geolocalTest"
 import weather from "./weatherApi"
 
-import { Client, ClientBag } from "../definitions/client"
-import { LoginForm } from "../definitions/user"
+import { Client, ClientBag } from "../types/client"
+import { LoginForm } from "../types/user"
 
 import user from "./user"
 import tillage from "./tillage"
@@ -44,7 +44,8 @@ import {
     Report,
     Talhao,
 } from "@prisma/client"
-import { NewGallery } from "../definitions/gallery"
+import { NewGallery } from "../types/gallery"
+import { UserFull } from "../prisma/types/user"
 
 let io: SocketIoServer | null = null
 
@@ -116,7 +117,7 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:find", (id: number) => user.findUser(socket, id))
     socket.on("users:list", () => user.listUsersApproved(socket))
     // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
-    socket.on("user:update", (updateUser: User, userId: number) => user.updateUser(socket, updateUser))
+    socket.on("user:update", (updateUser: Partial<UserFull>, userId: number) => user.update(socket, updateUser, userId))
     socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
     socket.on("user:toggle:admin", (data: User) => user.toggleAdmin(socket, data))
     socket.on("user:toggle:manager", (data: User) => user.toggleManager(socket, data))

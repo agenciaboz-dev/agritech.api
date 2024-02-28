@@ -1,4 +1,4 @@
-import { NewGallery } from "../definitions/gallery"
+import { NewGallery } from "../types/gallery"
 import { PrismaClient } from "@prisma/client"
 import { saveImage } from "../tools/saveImage"
 
@@ -23,7 +23,7 @@ const create = async (data: NewGallery) => {
         const gallery = await prisma.gallery.create({
             data: {
                 images: {
-                    create: uploaded?.map((item) => ({ url: item, })),
+                    create: uploaded?.map((item) => ({ url: item })),
                 },
                 tillageId: data.tillageId,
                 talhaoId: data.talhaoId,

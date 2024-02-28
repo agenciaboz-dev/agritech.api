@@ -1,7 +1,7 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
 import { PrismaClient } from "@prisma/client"
-import { NewReport } from "../definitions/report"
-import { NewMaterial } from "../definitions/material"
+import { NewReport } from "../types/report"
+import { NewMaterial } from "../types/material"
 import tillage from "./tillage"
 
 const prisma = new PrismaClient()

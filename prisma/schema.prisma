@@ -28,8 +28,8 @@ model User{
     id              Int          @id @default(autoincrement())
     name            String      
     cpf             String       @unique
-    birth           DateTime?    @db.Date
-    phone           String?
+    birth           String
+    phone           String
     image           String?      @db.Text
     username        String       @unique
     email           String       @unique

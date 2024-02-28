@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client"
-import { NewTalhao } from "../definitions/talhao"
+import { NewTalhao } from "../types/talhao"
 import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()

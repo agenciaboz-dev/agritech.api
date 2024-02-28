@@ -1,5 +1,5 @@
 import { Stage, PrismaClient, Report, Call } from "@prisma/client"
-import { NewTechReport } from "../definitions/techReport"
+import { NewTechReport } from "../types/techReport"
 
 const prisma = new PrismaClient()
 
