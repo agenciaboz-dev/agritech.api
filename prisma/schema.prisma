@@ -42,6 +42,7 @@ model User{
 
     calls           Call[]
     chats           Chat[]
+    notifications   Notification[]
 
     address         Address?    
     employee        Employee?
@@ -405,4 +406,17 @@ model Flight{
 
     techReport      TechReport    @relation(fields: [techReportId],references: [id],onDelete: Cascade)
     techReportId    Int           
+}
+
+model Notification {
+    id          Int         @id @default(autoincrement())
+    action      String
+    datetime    String
+
+    target_key  String
+    target_id   Int
+    
+    viewed_by   String
+
+    user        User[]
 }
