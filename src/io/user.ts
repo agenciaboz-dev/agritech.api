@@ -6,6 +6,7 @@ import { saveImage } from "../tools/saveImage"
 import { ClientBag } from "../types/client"
 import { LoginForm } from "../types/user"
 import { UserFull } from "../prisma/types/user"
+import { Notification } from "../class/Notification"
 
 interface UpdateUser extends Omit<User, "id"> {
     id: number
@@ -50,6 +51,15 @@ const newUser = async (socket: Socket, userNew: any) => {
 
             socket.emit("user:status:review", pendingUser)
             socket.broadcast.emit("admin:list:update", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
+
+            if (pendingUser?.employee) {
+                new Notification({
+                    action: "new",
+                    target_id: pendingUser.id,
+                    target_key: "employee",
+                    users: await Notification.getAdmins(),
+                })
+            }
         }
     } catch (error: any) {
         console.log("OLHA O GRANDE ERRO: ------------", error)
@@ -187,6 +197,7 @@ const toggleAdmin = async (socket: Socket, data: User) => {
         const user = await prisma.toggleAdmin(data.id)
         socket.emit("user:admin:toggle:success", user)
         console.log(user.isAdmin)
+        new Notification({ action: "admin", target_id: user.id, target_key: "employee", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
@@ -200,6 +211,7 @@ const toggleManager = async (socket: Socket, data: User) => {
         const user = await prisma.toggleManager(data.id)
         socket.emit("user:manager:toggle:success", user)
         console.log(user.isManager)
+        new Notification({ action: "manager", target_id: user.id, target_key: "employee", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"

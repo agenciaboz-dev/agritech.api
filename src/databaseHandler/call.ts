@@ -34,7 +34,7 @@ const adminCreate = async (data: AdminCall) => {
                 talhaoId: data.talhaoId,
                 producerId: data.producerId,
                 userId: data.userId,
-                kitId: data.kitId || undefined,
+                kitId: data.kitId,
                 forecast: data.forecast,
             },
         })
@@ -120,7 +120,7 @@ const adminCreate = async (data: AdminCall) => {
                         tillage: true,
                     },
                 },
-                kit: { include: { employees: true, calendar: true, objects: true } },
+                kit: { include: { employees: { include: { user: true } }, calendar: true, objects: true } },
                 reports: {
                     include: {
                         call: true,
@@ -161,7 +161,9 @@ const create = async (data: OpenCall) => {
             producerId: data.producerId,
             userId: data.userId,
             forecast: data.forecast,
+            kitId: data.kitId,
         },
+        include: { producer: { include: { user: true } }, user: { include: { employee: true, producer: true } } },
     })
 
     console.log({ call })
@@ -214,6 +216,7 @@ const approve = async (data: ApproveCall) => {
                     kitId: data.kitId,
                     init: new Date().getTime().toString(),
                 },
+                include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
             })
 
             const report = await prisma.report.create({
@@ -282,6 +285,7 @@ const close = async (data: Call) => {
             finish: new Date().getTime().toString(),
             status: "CLOSED",
         },
+        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
     })
     console.log({ call })
     return { call }
@@ -294,6 +298,7 @@ const cancel = async (data: Call) => {
         data: {
             status: "CANCELED",
         },
+        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
     })
     console.log({ call })
 

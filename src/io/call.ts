@@ -3,14 +3,17 @@ import databaseHandler from "../databaseHandler/call"
 import tillage from "../databaseHandler/tillage"
 import { Call } from "@prisma/client"
 import { ApproveCall, OpenCall } from "../types/call"
+import { Notification } from "../class/Notification"
 
 const newAdminCall = async (socket: Socket, data: any) => {
     console.log(data)
 
     try {
         const call = await databaseHandler.adminCreate(data)
-        const tillageUpdate = await tillage.list()
         socket.emit("adminCall:creation:success", call)
+
+        const employees = call.updatedCall.kit.employees.map((item) => item.user)
+        new Notification({ action: "new", target_id: call.updatedCall.id, target_key: "call", users: [call.updatedCall.producer.user, ...employees] })
     } catch (error) {
         console.log(error)
         socket.emit("adminCall:creation:failed", { error: error })
@@ -23,6 +26,15 @@ const newCall = async (socket: Socket, data: any) => {
     try {
         const call = await databaseHandler.create(data)
         socket.emit("call:creation:success", call)
+
+        const user = call.call.user
+        const admins = await Notification.getAdmins()
+        new Notification({
+            action: "new",
+            target_id: call.call.id,
+            target_key: "call",
+            users: user.producer ? admins : [...admins, call.call.producer.user],
+        })
     } catch (error) {
         console.log(error)
         socket.emit("call:creation:failed", { error: error })
@@ -49,6 +61,9 @@ const approveCall = async (socket: Socket, data: ApproveCall) => {
         socket.emit("call:approve:success", call)
         socket.emit("stage:creation:success", call.stage)
         socket.emit("report:creation:success", call.report)
+
+        const employees = call.call.kit.employees.map((item) => item.user)
+        new Notification({ action: "approve", target_id: call.call.id, target_key: "call", users: [...employees, call.call.producer.user] })
     } catch (error) {
         console.log(error)
         socket.emit("call:approve:failed", { error: error })
@@ -61,6 +76,8 @@ const closeCall = async (socket: Socket, data: Call) => {
     try {
         const call = await databaseHandler.close(data)
         socket.emit("call:close:success", call)
+        const employees = call.call.kit.employees.map((item) => item.user)
+        new Notification({ action: "close", target_id: call.call.id, target_key: "call", users: [...employees, call.call.producer.user] })
     } catch (error) {
         console.error(error)
         socket.emit("call:close:failed", { error: error })
@@ -74,6 +91,8 @@ const cancelCall = async (socket: Socket, data: Call) => {
         const call = await databaseHandler.cancel(data)
         socket.emit("call:cancel:success", call)
         // socket.emit("report:creation:success", report)
+        const employees = call.call.kit.employees.map((item) => item.user)
+        new Notification({ action: "cancel", target_id: call.call.id, target_key: "call", users: [...employees, call.call.producer.user] })
     } catch (error) {
         console.log(error)
         socket.emit("call:cancel:failed", { error: error })

@@ -42,7 +42,7 @@ const inclusions = {
     gallery: {},
     kit: {
         objects: true,
-        employees: true,
+        employees: { include: { user: true } },
         calls: { include: { talhao: true } },
         calendar: true,
     },
@@ -134,7 +134,7 @@ const update = async (data: NewKit) => {
             calendar: true,
             calls: true,
             objects: true,
-            employees: true,
+            employees: { include: { user: true } },
         },
     })
     console.log(data)

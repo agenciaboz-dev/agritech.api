@@ -10,7 +10,7 @@ declare interface OpenCall {
   talhao: Talhao;
   talhaoId: number;
   kit?: Kit;
-  kitId?: number;
+  kitId: number;
   producerId: number;
   userId: number;
   forecast: string;
@@ -19,25 +19,25 @@ declare interface OpenCall {
 }
 
 declare interface AdminCall {
-  id: number;
-  open: string;
-  init: string;
-  comments: string;
-  approved: boolean;
+    id: number
+    open: string
+    init: string
+    comments: string
+    approved: boolean
 
-  talhao: Talhao;
-  talhaoId?: number;
-  kit?: Kit;
-  kitId?: number;
-  producerId: number;
-  userId: number;
-  forecast: string;
-  hectarePrice: number;
+    talhao: Talhao
+    talhaoId: number
+    kit?: Kit
+    kitId: number
+    producerId: number
+    userId: number
+    forecast: string
+    hectarePrice: number
 
-  operation: Operation;
-  treatment: Treatment;
-  material: Material[];
-  techReport: TechReport;
+    operation: Operation
+    treatment: Treatment
+    material: Material[]
+    techReport: TechReport
 }
 
 declare interface CloseCall {

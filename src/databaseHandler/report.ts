@@ -137,6 +137,7 @@ const approve = async (reportId: number) => {
             treatment: { include: { products: true } },
             material: true,
             techReport: { include: { flight: true } },
+            call: { include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } } },
         },
     })
 

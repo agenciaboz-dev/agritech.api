@@ -116,20 +116,19 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
     socket.on("user:find", (id: number) => user.findUser(socket, id))
     socket.on("users:list", () => user.listUsersApproved(socket))
-    // socket.on("user:list", (userId: number) => user.findUser(socket, { userId }));
     socket.on("user:update", (updateUser: Partial<UserFull>, userId: number) => user.update(socket, updateUser, userId))
     socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
     socket.on("user:toggle:admin", (data: User) => user.toggleAdmin(socket, data))
     socket.on("user:toggle:manager", (data: User) => user.toggleManager(socket, data))
 
     // TILLAGE OPS
-    socket.on("tillage:create", (newTillage: Tillage) => tillage.newTillage(socket, newTillage))
+    socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) => tillage.newTillage(socket, newTillage, isAdmin))
     socket.on("tillage:update", (updateTillage: Tillage) => tillage.updateTillage(socket, updateTillage))
 
     socket.on("tillage:list", () => tillage.listTillage(socket))
 
     // TALHAO OPS
-    socket.on("talhao:create", (newTalhao: Talhao) => talhao.newTalhao(socket, newTalhao))
+    socket.on("talhao:create", (newTalhao: Talhao, isAdmin: boolean) => talhao.newTalhao(socket, newTalhao, isAdmin))
 
     socket.on("talhao:update", (updateTalhao: Talhao) => talhao.updateTalhao(socket, updateTalhao))
 
@@ -186,14 +185,6 @@ export const handleSocket = (socket: Socket) => {
     })
 
     // CALENDAR OPS
-    // socket.on("employee:calendar:create", (newEmpCalendar: Calendar) =>
-    //   calendar.newCalendarEmp(socket, newEmpCalendar)
-    // );
-
-    // socket.on("kit:calendar:create", (newKitCalendar: Calendar) =>
-    //   calendar.newCalendarKit(socket, newKitCalendar)
-    // );
-
     socket.on("calendar:update", (updateCalendar: Calendar) => calendar.updateCalendar(socket, updateCalendar))
 
     socket.on("calendar:list", () => {
@@ -211,9 +202,6 @@ export const handleSocket = (socket: Socket) => {
     socket.on("call:listApproved", () => call.listCallApproved(socket))
     socket.on("call:cancel", (data: any) => call.cancelCall(socket, data))
     socket.on("call:close", (data: any) => call.closeCall(socket, data))
-
-    // CHAT OPS
-    socket.on("chat:new", (data1: any, data2: any) => chat.newChat(socket, data1, data2))
 
     // BANK OPS
     socket.on("bank:create", (newBank: Bank) => bank.newBank(socket, newBank))

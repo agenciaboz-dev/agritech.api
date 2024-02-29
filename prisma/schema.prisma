@@ -108,8 +108,8 @@ model Tillage{
     talhao          Talhao[]
 
 
-    producer         Producer?    @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId       Int?  
+    producer         Producer    @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId       Int
 
 }
 
@@ -119,7 +119,7 @@ model Talhao {
     area            Float
     cover           String?      @db.LongText
 
-    tillage         Tillage?      @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillage         Tillage      @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int      
 
     location        Coordinate[]
@@ -245,17 +245,17 @@ model Call {
     
     reports         Report[]
     
-    talhao          Talhao?       @relation(fields: [talhaoId],references: [id])
-    talhaoId        Int?
+    talhao          Talhao       @relation(fields: [talhaoId],references: [id])
+    talhaoId        Int
 
-    kit             Kit?          @relation(fields: [kitId],references: [id])
-    kitId           Int?         
+    kit             Kit          @relation(fields: [kitId],references: [id])
+    kitId           Int         
 
-    producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int?              
+    producer        Producer     @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int              
 
-    user            User?         @relation(fields: [userId],references: [id],onDelete: Cascade)
-    userId          Int?          
+    user            User         @relation(fields: [userId],references: [id],onDelete: Cascade)
+    userId          Int          
 }
 
 

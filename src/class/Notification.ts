@@ -78,4 +78,8 @@ export class Notification {
     constructor(data: NewNotification) {
         NotificationClass.new(data)
     }
+
+    static async getAdmins() {
+        return await prisma.user.findMany({ where: { isAdmin: true } })
+    }
 }

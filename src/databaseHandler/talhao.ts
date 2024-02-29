@@ -57,7 +57,10 @@ const create = async (data: NewTalhao) => {
         })
     )
 
-    return prisma.talhao.findUnique({ where: { id: talhao.id }, include: { gallery: { include: { images: true } } } })
+    return prisma.talhao.findUnique({
+        where: { id: talhao.id },
+        include: { gallery: { include: { images: true } }, tillage: { include: { producer: { include: { user: true } } } } },
+    })
 }
 
 const update = async (data: NewTalhao) => {
