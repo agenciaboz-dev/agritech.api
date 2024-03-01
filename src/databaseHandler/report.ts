@@ -137,7 +137,12 @@ const approve = async (reportId: number) => {
             treatment: { include: { products: true } },
             material: true,
             techReport: { include: { flight: true } },
-            call: { include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } } },
+            call: {
+                include: {
+                    producer: { include: { user: true } },
+                    kit: { include: { employees: { include: { user: true } } } },
+                },
+            },
         },
     })
 
@@ -149,6 +154,12 @@ const close = async (reportId: number) => {
         where: { id: reportId },
         data: { close: new Date().getTime().toString() },
         include: {
+            call: {
+                include: {
+                    talhao: { include: { tillage: true } },
+                    producer: { include: { user: true } },
+                },
+            },
             operation: true,
             treatment: { include: { products: true } },
             material: true,
