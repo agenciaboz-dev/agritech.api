@@ -15,7 +15,7 @@ const newAdminCall = async (socket: Socket, data: any) => {
         const employees = call.updatedCall.kit.employees.map((item) => item.user)
         new Notification({ action: "new", target_id: call.updatedCall.id, target_key: "call", users: [call.updatedCall.producer.user, ...employees] })
     } catch (error) {
-        console.log(error)
+        console.log(error) 
         socket.emit("adminCall:creation:failed", { error: error })
     }
 }
