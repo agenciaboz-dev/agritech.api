@@ -85,7 +85,7 @@ const find = async (id: number) => {
 }
 
 const list = async () => {
-    return await prisma.talhao.findMany({
+    const talhoes = await prisma.talhao.findMany({
         include: {
             location: true,
             gallery: { include: { images: true } },
@@ -109,6 +109,8 @@ const list = async () => {
             },
         },
     })
+
+    return talhoes.map((item) => ({ ...item, cover: "" }))
 }
 
 export default {
