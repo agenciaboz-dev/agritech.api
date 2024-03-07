@@ -36,6 +36,7 @@ const create = async (data: NewTillage) => {
             comments: data.comments,
             producerId: data.producerId,
             hectarePrice: data.hectarePrice || 0,
+            
         },
     })
     console.log({ address: data.address })

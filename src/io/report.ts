@@ -31,7 +31,7 @@ const approvedReport = async (socket: Socket, reportId: number) => {
 }
 const closeReport = async (socket: Socket, reportId: number) => {
     try {
-        const report = await databaseHandler.approve(reportId)
+        const report = await databaseHandler.close(reportId)
         socket.emit("report:closed:success", report)
         new Notification({ action: "close", target_id: report.id, target_key: "report", users: await Notification.getAdmins() })
     } catch (error) {

@@ -25,7 +25,7 @@ declare interface NewTillage {
     gallery?: NewGallery[]
     talhao?: Talhao[]
     call?: Call
-    producerId?: number
+    producerId: number
 }
 
 declare interface Tillage extends NewTillage {}
