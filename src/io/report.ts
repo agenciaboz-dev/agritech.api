@@ -45,7 +45,7 @@ const closeReport = async (socket: Socket, reportId: number) => {
         }
 
         const report_index = report.call.reports.findIndex((item) => item.id == report.id)
-        const filename = `Relatório ${report_index + 1} do talhão ${report.call.talhao.name}.pdf`
+        const filename = `Relatório_${new Date(Number(report.date)).toLocaleDateString("pt-br")}_[Produtor]_[Talhao]_[Fazenda]_[Chamado].pdf`
         const file_path = `${output_dir}/${filename}`
         const port = process.env.PORT
         const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${file_path}`
