@@ -197,7 +197,9 @@ const toggleAdmin = async (socket: Socket, data: User) => {
         const user = await prisma.toggleAdmin(data.id)
         socket.emit("user:admin:toggle:success", user)
         console.log(user.isAdmin)
-        new Notification({ action: "admin", target_id: user.id, target_key: "employee", users: [user] })
+        user.isAdmin
+            ? new Notification({ action: "active", target_id: user.id, target_key: "admin", users: [user] })
+            : new Notification({ action: "disabled", target_id: user.id, target_key: "admin", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
@@ -211,7 +213,9 @@ const toggleManager = async (socket: Socket, data: User) => {
         const user = await prisma.toggleManager(data.id)
         socket.emit("user:manager:toggle:success", user)
         console.log(user.isManager)
-        new Notification({ action: "manager", target_id: user.id, target_key: "employee", users: [user] })
+        user.isAdmin
+            ? new Notification({ action: "active", target_id: user.id, target_key: "manager", users: [user] })
+            : new Notification({ action: "disabled", target_id: user.id, target_key: "manager", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
