@@ -1,9 +1,10 @@
 import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler/report"
-import { Report } from "@prisma/client"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
 import { Notification } from "../class/Notification"
+import pdf_handler from "../tools/pdf_handler"
+import { existsSync, mkdirSync } from "fs"
 
 const newReport = async (socket: Socket, data: NewReport) => {
     console.log(data)
@@ -34,6 +35,16 @@ const closeReport = async (socket: Socket, reportId: number) => {
         const report = await databaseHandler.close(reportId)
         socket.emit("report:closed:success", report)
         new Notification({ action: "close", target_id: report.id, target_key: "report", users: await Notification.getAdmins() })
+
+        const output_dir = `static/reports/${report.id}`
+        if (!existsSync(output_dir)) {
+            mkdirSync(output_dir, { recursive: true })
+        }
+        await pdf_handler.fillForm({
+            template_path: "src/templates/report_template.pdf",
+            output_path: `${output_dir}/report.pdf`,
+            report,
+        })
     } catch (error) {
         console.log(error)
         socket.emit("report:closed:failed", { error: error })

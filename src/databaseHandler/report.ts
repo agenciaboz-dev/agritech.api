@@ -1,8 +1,17 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
-import { PrismaClient } from "@prisma/client"
+import { Prisma, PrismaClient } from "@prisma/client"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
-import tillage from "./tillage"
+
+export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
+    material: true,
+    operation: true,
+    treatment: { include: { products: true } },
+    techReport: { include: { flight: true } },
+    call: { include: { talhao: { include: { tillage: true } }, kit: { include: { employees: true } } } },
+})
+
+export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof closing_report_include }>
 
 const prisma = new PrismaClient()
 
@@ -153,21 +162,9 @@ const close = async (reportId: number) => {
     const report = await prisma.report.update({
         where: { id: reportId },
         data: { close: new Date().getTime().toString() },
-        include: {
-            call: {
-                include: {
-                    talhao: { include: { tillage: true } },
-                    producer: { include: { user: true } },
-                },
-            },
-            operation: true,
-            treatment: { include: { products: true } },
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+        include: closing_report_include,
     })
 
-    console.log(report)
     return report
 }
 
