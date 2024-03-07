@@ -11,7 +11,7 @@ export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
     call: {
         include: {
             talhao: { include: { tillage: { include: { address: true } } } },
-            kit: { include: { employees: true } },
+            kit: { include: { employees: { include: { user: true } } } },
             producer: { include: { user: true } },
             reports: true,
         },

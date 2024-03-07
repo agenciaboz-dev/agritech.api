@@ -50,6 +50,11 @@ const closeReport = async (socket: Socket, reportId: number) => {
         const port = process.env.PORT
         const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${file_path}`
 
+        // report.call.kit.employees.forEach((item, index) => {
+        //     const pilot = item.office == 'pilot'
+        //     item.user.name = pilot ?
+        // })
+
         await pdf_handler.fillForm({
             template_path: "src/templates/report_template.pdf",
             output_path: file_path,
