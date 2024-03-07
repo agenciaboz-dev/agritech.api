@@ -1,10 +1,14 @@
 import { Socket } from "socket.io"
-import databaseHandler from "../databaseHandler/report"
+import databaseHandler, { closing_report_include } from "../databaseHandler/report"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
 import { Notification } from "../class/Notification"
 import pdf_handler from "../tools/pdf_handler"
 import { existsSync, mkdirSync } from "fs"
+import { PrismaClient } from "@prisma/client"
+import { env } from "../env"
+
+const prisma = new PrismaClient()
 
 const newReport = async (socket: Socket, data: NewReport) => {
     console.log(data)
@@ -33,18 +37,27 @@ const approvedReport = async (socket: Socket, reportId: number) => {
 const closeReport = async (socket: Socket, reportId: number) => {
     try {
         const report = await databaseHandler.close(reportId)
-        socket.emit("report:closed:success", report)
         new Notification({ action: "close", target_id: report.id, target_key: "report", users: await Notification.getAdmins() })
 
         const output_dir = `static/reports/${report.id}`
         if (!existsSync(output_dir)) {
             mkdirSync(output_dir, { recursive: true })
         }
+
+        const report_index = report.call.reports.findIndex((item) => item.id == report.id)
+        const filename = `Relatório ${report_index + 1} do talhão ${report.call.talhao.name}.pdf`
+        const file_path = `${output_dir}/${filename}`
+        const port = process.env.PORT
+        const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${file_path}`
+
         await pdf_handler.fillForm({
             template_path: "src/templates/report_template.pdf",
-            output_path: `${output_dir}/report.pdf`,
+            output_path: file_path,
             report,
         })
+
+        const updated_report = await prisma.report.update({ where: { id: report.id }, data: { pdf_path: url }, include: closing_report_include })
+        socket.emit("report:closed:success", updated_report)
     } catch (error) {
         console.log(error)
         socket.emit("report:closed:failed", { error: error })

@@ -29,6 +29,8 @@ const fillForm = async (options: PdfFormOptions) => {
 
     const form = pdfDoc.getForm()
 
+    // options.report.call.talhao.tillage.
+
     const fields = form.getFields()
     fields.forEach((_field) => {
         try {
@@ -36,6 +38,9 @@ const fillForm = async (options: PdfFormOptions) => {
             const value = getValueFromPath(options.report, key)
             if (value) {
                 form.getTextField(key)?.setText(value.toString())
+            } else {
+                console.log("chave não encontrada:")
+                console.log(key)
             }
         } catch (error) {
             console.log("error filling a pdf form field")

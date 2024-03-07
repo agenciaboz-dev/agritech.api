@@ -8,7 +8,14 @@ export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
     operation: true,
     treatment: { include: { products: true } },
     techReport: { include: { flight: true } },
-    call: { include: { talhao: { include: { tillage: true } }, kit: { include: { employees: true } } } },
+    call: {
+        include: {
+            talhao: { include: { tillage: { include: { address: true } } } },
+            kit: { include: { employees: true } },
+            producer: { include: { user: true } },
+            reports: true,
+        },
+    },
 })
 
 export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof closing_report_include }>
