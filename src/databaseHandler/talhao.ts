@@ -4,6 +4,29 @@ import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
+const inclusions_talhao = {
+    location: true,
+    gallery: { include: { images: true } },
+    tillage: { include: { address: true } },
+    calls: {
+        include: {
+            reports: {
+                include: {
+                    stages: true,
+                    call: true,
+                    material: true,
+                    operation: true,
+                    treatment: { include: { products: true } },
+                    techReport: true,
+                },
+            },
+            kit: {include:{employees:{include:{user:true}}}},
+            producer: {include:{user:true}},
+            talhao: true,
+        },
+    },
+}
+
 const create = async (data: NewTalhao) => {
     console.log(data)
     const talhao = await prisma.talhao.create({
@@ -80,37 +103,23 @@ const update = async (data: NewTalhao) => {
 const find = async (id: number) => {
     return await prisma.talhao.findUnique({
         where: { id },
-        include: { location: true, gallery: { include: { images: true } }, calls: true },
+        include: inclusions_talhao,
     })
 }
 
 const list = async () => {
     const talhoes = await prisma.talhao.findMany({
-        include: {
-            location: true,
-            gallery: { include: { images: true } },
-            tillage: true,
-            calls: {
-                include: {
-                    reports: {
-                        include: {
-                            stages: true,
-                            call: true,
-                            material: true,
-                            operation: true,
-                            treatment: { include: { products: true } },
-                            techReport: true,
-                        },
-                    },
-                    kit: true,
-                    producer: true,
-                    talhao: true,
-                },
-            },
-        },
+        include: inclusions_talhao,
     })
-
-    return talhoes.map((item) => ({ ...item, cover: "" }))
+    return talhoes.map((item) => ({
+        ...item,
+        cover: "",
+        tillage: { ...item.tillage, cover: "" },
+        calls: item.calls.map((call) => ({
+            ...call,
+            talhao: { ...call.talhao, cover: "" },
+        })),
+    }))
 }
 
 export default {

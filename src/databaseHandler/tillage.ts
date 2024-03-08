@@ -6,18 +6,34 @@ import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
-const inclusions = {
-    tillage: {
-        address: true,
-        location: true,
-        gallery: true,
-        call: true,
-        talhao: { include: { calls: true } },
+const inclusions_tillage = {
+    address: true,
+    location: true,
+    gallery: { include: { images: true } },
+    producer: { include: { user: true } },
+    talhao: {
+        include: {
+            gallery: true,
+            location: true,
+            tillage: { include: { address: true } },
+            calls: {
+                include: {
+                    reports: {
+                        include: {
+                            stages: true,
+                            call: true,
+                            material: true,
+                            operation: true,
+                            treatment: { include: { products: true } },
+                            techReport: true,
+                        },
+                    },
+                    kit: { include: { employees: { include: { user: true } } } },
+                    producer: { include: { user: true } },
+                },
+            },
+        },
     },
-    address: { use: true, tillage: true },
-    location: { tillage: true },
-    gallery: {},
-    call: { stages: true, report: true },
 }
 const create = async (data: NewTillage) => {
     console.log(data)
@@ -36,7 +52,6 @@ const create = async (data: NewTillage) => {
             comments: data.comments,
             producerId: data.producerId,
             hectarePrice: data.hectarePrice || 0,
-            
         },
     })
     console.log({ address: data.address })
@@ -153,38 +168,14 @@ const update = async (data: NewTillage & { id: number }) => {
 }
 
 const list = async () => {
-    return await prisma.tillage.findMany({
-        include: {
-            address: true,
-            location: true,
-            gallery: { include: { images: true } },
-            producer: true,
-            talhao: {
-                include: {
-                    gallery: true,
-                    location: true,
-                    tillage: true,
-                    calls: {
-                        include: {
-                            reports: {
-                                include: {
-                                    stages: true,
-                                    call: true,
-                                    material: true,
-                                    operation: true,
-                                    treatment: { include: { products: true } },
-                                    techReport: true,
-                                },
-                            },
-                            kit: true,
-                            producer: true,
-                            talhao: true,
-                        },
-                    },
-                },
-            },
-        },
+    const tillages = await prisma.tillage.findMany({
+        include: inclusions_tillage,
     })
+    return tillages.map((item) => ({
+        ...item,
+        cover: "",
+        talhao: item.talhao.map((talhao) => ({ ...talhao, cover: "", tillage: { ...talhao.tillage, cover: "" } })),
+    }))
 }
 
 export default {
