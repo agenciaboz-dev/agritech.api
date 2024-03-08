@@ -178,8 +178,15 @@ const list = async () => {
     }))
 }
 
+const coverTillage = async (tillageId: number) => {
+    const tillage = await prisma.tillage.findUnique({ where: { id: tillageId } })
+
+    return tillage
+}
+
 export default {
     create,
     update,
     list,
+    coverTillage,
 }

@@ -83,7 +83,8 @@ const add = (client: Client) => {
     clientList.push(client)
 }
 
-const update = (client: Client, user: User) => (clientList = [...clientList.filter((item) => item.socket != client.socket), { ...client, user }])
+const update = (client: Client, user: User) =>
+    (clientList = [...clientList.filter((item) => item.socket != client.socket), { ...client, user }])
 
 export const handleSocket = (socket: Socket) => {
     const io = getIoInstance()
@@ -126,6 +127,7 @@ export const handleSocket = (socket: Socket) => {
     socket.on("tillage:update", (updateTillage: Tillage) => tillage.updateTillage(socket, updateTillage))
 
     socket.on("tillage:list", () => tillage.listTillage(socket))
+    socket.on("tillage:cover", (id: number) => tillage.tillage_cover(socket, id))
 
     // TALHAO OPS
     socket.on("talhao:create", (newTalhao: Talhao, isAdmin: boolean) => talhao.newTalhao(socket, newTalhao, isAdmin))
@@ -135,6 +137,8 @@ export const handleSocket = (socket: Socket) => {
     socket.on("talhao:find", (talhaoId: number) => talhao.findTalhao(socket, talhaoId))
 
     socket.on("talhao:list", () => talhao.listTalhao(socket))
+
+    socket.on("talhao:cover", (id: number) => talhao.talhao_cover(socket, id))
 
     // COORDINATE OPS
     socket.on("coordinate:create", (newCoorinate: Coordinate) => coordinate.newCoordinate(socket, newCoorinate))

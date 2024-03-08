@@ -20,8 +20,8 @@ const inclusions_talhao = {
                     techReport: true,
                 },
             },
-            kit: {include:{employees:{include:{user:true}}}},
-            producer: {include:{user:true}},
+            kit: { include: { employees: { include: { user: true } } } },
+            producer: { include: { user: true } },
             talhao: true,
         },
     },
@@ -122,9 +122,16 @@ const list = async () => {
     }))
 }
 
+const coverTalhao = async (talhaoId: number) => {
+    const talhao = await prisma.talhao.findUnique({ where: { id: talhaoId } })
+
+    return talhao
+}
+
 export default {
     create,
     update,
     find,
     list,
+    coverTalhao,
 }

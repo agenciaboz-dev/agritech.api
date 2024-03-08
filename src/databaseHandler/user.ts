@@ -113,51 +113,69 @@ const exists = async (data: NewUser) => {
 }
 
 const login = async (data: { login: string; password: string }) => {
-    return await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
         where: {
             OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
             AND: { password: data.password },
         },
         include: inclusions.user,
     })
+
+    return {
+        ...user,
+
+        producer: user?.producer
+            ? {
+                  ...user?.producer,
+                  tillage: user?.producer?.tillage.map((tillage) => ({
+                      ...tillage,
+                      cover: "",
+                      talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                  })),
+              }
+            : null,
+    }
 }
 
-const pendingList = async () =>
-    await prisma.user.findMany({
+const pendingList = async () => {
+    const users = await prisma.user.findMany({
         where: { approved: false },
         include: inclusions.user,
     })
-
-const approvedList = async () =>
-    await prisma.user.findMany({
-        where: { approved: true },
-        include: {
-            producer: {
-                include: {
-                    tillage: {
-                        include: {
-                            address: true,
-                            location: true,
-                            gallery: true,
-                            talhao: { include: { calls: true } },
-                        },
-                    },
-                    user: true,
-                },
-            },
-            employee: {
-                include: {
-                    bank: true,
-                    professional: true,
-                    calendars: true,
-                    producers: true,
-                    kits: { include: { calls: { include: { talhao: true } } } },
-                },
-            },
-            address: true,
+    return users.map((user) => ({
+        ...user,
+        producer: {
+            ...user.producer,
+            tillage: user.producer?.tillage.map((tillage) => ({
+                ...tillage,
+                cover: "",
+                talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+            })),
         },
-    })
+    }))
+}
 
+const approvedList = async () => {
+    const users = await prisma.user.findMany({
+        where: { approved: true },
+        include: inclusions.user,
+    })
+    return users.map((user) => ({
+        ...user,
+        producer: user.producer
+            ? {
+                  ...user.producer,
+                  tillage: user.producer
+                      ? user.producer?.tillage.map((tillage) => ({
+                            ...tillage,
+                            cover: "",
+                            talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                        }))
+                      : null,
+              }
+            : null,
+    }))
+}
 const findById = async (id: number) => {
     return await prisma.user.findFirst({
         where: { id },

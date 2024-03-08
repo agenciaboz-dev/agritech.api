@@ -46,9 +46,20 @@ const listTalhao = async (socket: Socket) => {
     socket.emit("talhao:list:success", talhao)
 }
 
+const talhao_cover = async (socket: Socket, tillageId: number) => {
+    try {
+        const talhao = await databaseHandler.coverTalhao(tillageId)
+        socket.emit("tillage:cover:success", { talhaoId: talhao?.id, cover: talhao?.cover })
+    } catch (error) {
+        console.log(error)
+        socket.emit("tillage:coover:failed", error)
+    }
+}
+
 export default {
     newTalhao,
     updateTalhao,
     listTalhao,
     findTalhao,
+    talhao_cover,
 }

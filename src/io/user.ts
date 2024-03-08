@@ -164,6 +164,7 @@ const listUsersApproved = async (socket: Socket) => {
     try {
         const users = await prisma.approvedList()
         socket.emit("users:list:success", users)
+        console.log({ users: users })
     } catch (error) {
         console.error("Erro para acessar lista de usuários")
         socket.emit("users:list:error", { error })

@@ -28,7 +28,12 @@ const approvedReport = async (socket: Socket, reportId: number) => {
         socket.emit("report:approved:success", report)
 
         const employees = report.call.kit.employees.map((item) => item.user)
-        new Notification({ action: "approve", target_id: report.id, target_key: "report", users: [...employees, report.call.producer.user] })
+        new Notification({
+            action: "approve",
+            target_id: report.id,
+            target_key: "report",
+            users: [...employees, report.call.producer.user],
+        })
     } catch (error) {
         console.log(error)
         socket.emit("report:approved:failed", { error: error })
@@ -37,7 +42,12 @@ const approvedReport = async (socket: Socket, reportId: number) => {
 const closeReport = async (socket: Socket, reportId: number) => {
     try {
         const report = await databaseHandler.close(reportId)
-        new Notification({ action: "close", target_id: report.id, target_key: "report", users: await Notification.getAdmins() })
+        new Notification({
+            action: "close",
+            target_id: report.id,
+            target_key: "report",
+            users: await Notification.getAdmins(),
+        })
 
         const output_dir = `static/reports/${report.id}`
         if (!existsSync(output_dir)) {
@@ -45,7 +55,9 @@ const closeReport = async (socket: Socket, reportId: number) => {
         }
 
         const report_index = report.call.reports.findIndex((item) => item.id == report.id)
-        const filename = `Relatório_${new Date(Number(report.date)).toLocaleDateString("pt-br")}_[Produtor]_[Talhao]_[Fazenda]_[Chamado].pdf`
+        const filename = `Relatório_${new Date(Number(report.date)).toLocaleDateString(
+            "pt-br"
+        )}_[Produtor]_[Talhao]_[Fazenda]_[Chamado].pdf`
         const file_path = `${output_dir}/${filename}`
         const port = process.env.PORT
         const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${file_path}`
@@ -61,7 +73,11 @@ const closeReport = async (socket: Socket, reportId: number) => {
             report,
         })
 
-        const updated_report = await prisma.report.update({ where: { id: report.id }, data: { pdf_path: url }, include: closing_report_include })
+        const updated_report = await prisma.report.update({
+            where: { id: report.id },
+            data: { pdf_path: url },
+            include: closing_report_include,
+        })
         socket.emit("report:closed:success", updated_report)
     } catch (error) {
         console.log(error)
@@ -69,7 +85,10 @@ const closeReport = async (socket: Socket, reportId: number) => {
     }
 }
 
-const updateReport = async (socket: Socket, data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }) => {
+const updateReport = async (
+    socket: Socket,
+    data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }
+) => {
     console.log(data)
 
     try {
