@@ -182,7 +182,7 @@ const findUser = async (socket: Socket, id: number) => {
 }
 
 const update = async (socket: Socket, data: Partial<UserFull>, id: number) => {
-    console.log(data)
+    console.log(data.employee)
     try {
         const updatedUser = await prisma.update(data, id)
         socket.emit("user:update:success", updatedUser)

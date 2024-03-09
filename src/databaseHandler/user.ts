@@ -247,6 +247,26 @@ const newUser = async (data: NewUser) => {
                     userid: user.id,
                 },
             })
+            const bank = await prisma.bank.create({
+                data: {
+                    account: "",
+                    agency: "",
+                    name: "",
+                    type: "",
+                    employeeId: employee.id,
+                },
+                include: { employee: true },
+            })
+            const professional = await prisma.professional.create({
+                data: {
+                    admission: "",
+                    salary: 0,
+                    department: "",
+                    office: data.office,
+                    employeeId: employee.id,
+                },
+                include: { employee: true },
+            })
 
             console.log(employee)
         } else if (data.producer) {

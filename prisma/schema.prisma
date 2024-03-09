@@ -203,7 +203,7 @@ model Professional{
     id              Int           @id @default(autoincrement())
     department      String?  
     office          String
-    admission       DateTime?      @db.Date
+    admission       String?      
     salary          Float?
     // work_time       DateTime?      @db.Time()
 
