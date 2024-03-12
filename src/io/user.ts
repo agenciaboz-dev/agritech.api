@@ -193,11 +193,11 @@ const update = async (socket: Socket, data: Partial<UserFull>, id: number) => {
     }
 }
 
-const toggleAdmin = async (socket: Socket, data: User) => {
+const toggleAdmin = async (socket: Socket, id: number) => {
     try {
-        const user = await prisma.toggleAdmin(data.id)
+        const user = await prisma.toggleAdmin(id)
         socket.emit("user:admin:toggle:success", user)
-        console.log(user.isAdmin)
+        console.log({ Admin: user.isAdmin })
         user.isAdmin
             ? new Notification({ action: "active", target_id: user.id, target_key: "admin", users: [user] })
             : new Notification({ action: "disabled", target_id: user.id, target_key: "admin", users: [user] })
@@ -209,12 +209,12 @@ const toggleAdmin = async (socket: Socket, data: User) => {
     }
 }
 
-const toggleManager = async (socket: Socket, data: User) => {
+const toggleManager = async (socket: Socket, id: number) => {
     try {
-        const user = await prisma.toggleManager(data.id)
+        const user = await prisma.toggleManager(id)
         socket.emit("user:manager:toggle:success", user)
-        console.log(user.isManager)
-        user.isAdmin
+        console.log({ Manager: user.isManager })
+        user.isManager
             ? new Notification({ action: "active", target_id: user.id, target_key: "manager", users: [user] })
             : new Notification({ action: "disabled", target_id: user.id, target_key: "manager", users: [user] })
     } catch (error: any) {

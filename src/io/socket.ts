@@ -119,8 +119,8 @@ export const handleSocket = (socket: Socket) => {
     socket.on("users:list", () => user.listUsersApproved(socket))
     socket.on("user:update", (updateUser: Partial<UserFull>, userId: number) => user.update(socket, updateUser, userId))
     socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
-    socket.on("user:toggle:admin", (data: User) => user.toggleAdmin(socket, data))
-    socket.on("user:toggle:manager", (data: User) => user.toggleManager(socket, data))
+    socket.on("user:toggle:admin", (id: number) => user.toggleAdmin(socket, id))
+    socket.on("user:toggle:manager", (id: number) => user.toggleManager(socket, id))
 
     // TILLAGE OPS
     socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) => tillage.newTillage(socket, newTillage, isAdmin))
