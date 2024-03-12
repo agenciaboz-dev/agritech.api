@@ -172,8 +172,28 @@ const close = async (reportId: number) => {
         include: closing_report_include,
     })
 
-    return report
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
+// export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
+//     material: true,
+//     operation: true,
+//     treatment: { include: { products: true } },
+//     techReport: { include: { flight: true } },
+//     call: {
+//         include: {
+//             talhao: { include: { tillage: { include: { address: true } } } },
+//             kit: { include: { employees: { include: { user: true } } } },
+//             producer: { include: { user: true } },
+//             reports: true,
+//         },
+//     },
+// })
 
 const find = async (id: number) => {
     return await prisma.report.findUnique({

@@ -36,6 +36,7 @@ const adminCreate = async (data: AdminCall) => {
                 userId: data.userId,
                 kitId: data.kitId,
                 forecast: data.forecast,
+                approved: data.approved,
             },
         })
 
@@ -106,7 +107,7 @@ const adminCreate = async (data: AdminCall) => {
         const updatedCall = await prisma.call.update({
             where: { id: call.id },
             data: {
-                approved: data.kitId ? true : false,
+                approved: data.kitId != undefined ? true : false,
                 status: "INPROGRESS",
                 kitId: data.kitId,
                 init: new Date().getTime().toString(),
@@ -142,8 +143,24 @@ const adminCreate = async (data: AdminCall) => {
             report,
             updatedCall,
         })
-
-        return { updatedCall }
+        return {
+            ...updatedCall,
+            talhao: updatedCall.talhao
+                ? {
+                      ...updatedCall.talhao,
+                      cover: "",
+                      tillage: { ...updatedCall.talhao.tillage, cover: "" },
+                  }
+                : null,
+            producer: updatedCall?.producer && {
+                ...updatedCall?.producer,
+                tillage: updatedCall?.producer?.tillage.map((item) => ({
+                    ...item,
+                    cover: "",
+                })),
+                user: updatedCall.producer.user,
+            },
+        }
     } catch (error) {
         console.error("Error in creating and updating the call:", error)
         throw error
@@ -216,7 +233,10 @@ const approve = async (data: ApproveCall) => {
                     kitId: data.kitId,
                     init: new Date().getTime().toString(),
                 },
-                include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+                include: {
+                    producer: { include: { user: true } },
+                    kit: { include: { employees: { include: { user: true } } } },
+                },
             })
 
             const report = await prisma.report.create({
@@ -312,7 +332,7 @@ const cancel = async (data: Call) => {
 }
 
 const list = async () => {
-    return await prisma.call.findMany({
+    const calls = await prisma.call.findMany({
         include: {
             kit: { include: { employees: true, calls: true, objects: true } },
             producer: { include: { user: true } },
@@ -323,6 +343,11 @@ const list = async () => {
             },
         },
     })
+
+    return calls.map((item) => ({
+        ...item,
+        talhao: { ...item.talhao, cover: "", tillage: { ...item.talhao.tillage, cover: "" } },
+    }))
 }
 
 // // Process each call and update the totalPrice

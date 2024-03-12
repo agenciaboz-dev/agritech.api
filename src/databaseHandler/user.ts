@@ -123,7 +123,6 @@ const login = async (data: { login: string; password: string }) => {
 
     return {
         ...user,
-
         producer: user?.producer
             ? {
                   ...user?.producer,

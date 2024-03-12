@@ -1,21 +1,21 @@
-import { Call, Report, Stage, Talhao } from "@prisma/client";
-import { NewTillage, Tillage, Report } from "./tillage";
+import { Call, Report, Stage, Talhao } from "@prisma/client"
+import { NewTillage, Tillage, Report } from "./tillage"
 
 declare interface OpenCall {
-  id: number;
-  open: string;
-  comments: string;
-  approved: boolean;
+    id: number
+    open: string
+    comments: string
+    approved: boolean
 
-  talhao: Talhao;
-  talhaoId: number;
-  kit?: Kit;
-  kitId: number;
-  producerId: number;
-  userId: number;
-  forecast: string;
+    talhao: Talhao
+    talhaoId: number
+    kit?: Kit
+    kitId: number
+    producerId: number
+    userId: number
+    forecast: string
 
-  hectarePrice: number;
+    hectarePrice: number
 }
 
 declare interface AdminCall {
@@ -25,10 +25,10 @@ declare interface AdminCall {
     comments: string
     approved: boolean
 
-    talhao: Talhao
+    talhao?: Talhao
     talhaoId: number
     kit?: Kit
-    kitId: number
+    kitId?: number
     producerId: number
     userId: number
     forecast: string
@@ -41,24 +41,24 @@ declare interface AdminCall {
 }
 
 declare interface CloseCall {
-  finish: Date;
+    finish: Date
 }
 
 interface ApproveCall {
-  id: number;
-  open: string;
-  comments: string;
-  approved: boolean;
+    id: number
+    open: string
+    comments: string
+    approved: boolean
 
-  talhao: Talhao;
-  talhaoId: number;
-  report: Report;
-  reportId: number;
-  kit?: Kit;
-  kitId?: number;
-  producerId: number;
-  userId: number;
-  forecast: string;
+    talhao: Talhao
+    talhaoId: number
+    report: Report
+    reportId: number
+    kit?: Kit
+    kitId?: number
+    producerId: number
+    userId: number
+    forecast: string
 
-  hectarePrice: number;
+    hectarePrice: number
 }
