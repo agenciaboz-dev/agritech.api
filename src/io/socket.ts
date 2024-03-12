@@ -6,8 +6,13 @@ import { Socket } from "socket.io";
 import cep from "./geolocalTest";
 import weather from "./weatherApi";
 
+<<<<<<< HEAD
 import { Client, ClientBag } from "../types/client";
 import { LoginForm } from "../types/user";
+=======
+import { Client, ClientBag } from "../types/client"
+import { LoginForm } from "../types/user"
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
 import user from "./user";
 import tillage from "./tillage";
@@ -30,6 +35,7 @@ import treatment from "./treatment";
 import techReport from "./techReport";
 
 import {
+<<<<<<< HEAD
   User,
   Tillage,
   Coordinate,
@@ -47,6 +53,25 @@ import {
 import { NewGallery } from "../types/gallery";
 import { UserFull } from "../prisma/types/user";
 import { NotificationClass as Notification } from "../class/Notification";
+=======
+    User,
+    Tillage,
+    Coordinate,
+    Gallery,
+    Kit,
+    Object,
+    Calendar,
+    Call,
+    Chat,
+    Bank,
+    Stage,
+    Report,
+    Talhao,
+} from "@prisma/client"
+import { NewGallery } from "../types/gallery"
+import { UserFull } from "../prisma/types/user"
+import { NotificationClass as Notification } from "../class/Notification"
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
 let io: SocketIoServer | null = null;
 
@@ -136,6 +161,7 @@ export const handleSocket = (socket: Socket) => {
     user.toggleManager(socket, data)
   );
 
+<<<<<<< HEAD
   // TILLAGE OPS
   socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) =>
     tillage.newTillage(socket, newTillage, isAdmin)
@@ -155,6 +181,31 @@ export const handleSocket = (socket: Socket) => {
   socket.on("talhao:update", (updateTalhao: Talhao) =>
     talhao.updateTalhao(socket, updateTalhao)
   );
+=======
+    //USER OPS
+    socket.on("user:logout", (data) => user.logout(socket, clients, data))
+    socket.on("user:signup", (newUser: User) => user.newUser(socket, newUser))
+    socket.on("user:newEmployee", (newEmployee: User) => user.newEmployee(socket, newEmployee))
+    socket.on("user:reject", (id) => user.reject(socket, id))
+    socket.on("user:approve", (id) => user.approve(socket, id))
+    socket.on("user:login", (data: LoginForm) => user.handleLogin(socket, data))
+    socket.on("user:find", (id: number) => user.findUser(socket, id))
+    socket.on("users:list", () => user.listUsersApproved(socket))
+    socket.on("user:update", (updateUser: Partial<UserFull>, userId: number) => user.update(socket, updateUser, userId))
+    socket.on("user:pendingApproval", () => user.listPendingApproval(socket))
+    socket.on("user:toggle:admin", (id: number) => user.toggleAdmin(socket, id))
+    socket.on("user:toggle:manager", (id: number) => user.toggleManager(socket, id))
+
+    // TILLAGE OPS
+    socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) => tillage.newTillage(socket, newTillage, isAdmin))
+    socket.on("tillage:update", (updateTillage: Tillage) => tillage.updateTillage(socket, updateTillage))
+
+    socket.on("tillage:list", () => tillage.listTillage(socket))
+    socket.on("tillage:cover", (id: number) => tillage.tillage_cover(socket, id))
+
+    // TALHAO OPS
+    socket.on("talhao:create", (newTalhao: Talhao, isAdmin: boolean) => talhao.newTalhao(socket, newTalhao, isAdmin))
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
   socket.on("talhao:find", (talhaoId: number) =>
     talhao.findTalhao(socket, talhaoId)
@@ -164,10 +215,17 @@ export const handleSocket = (socket: Socket) => {
 
   socket.on("talhao:cover", (id: number) => talhao.talhao_cover(socket, id));
 
+<<<<<<< HEAD
   // COORDINATE OPS
   socket.on("coordinate:create", (newCoorinate: Coordinate) =>
     coordinate.newCoordinate(socket, newCoorinate)
   );
+=======
+    socket.on("talhao:cover", (id: number) => talhao.talhao_cover(socket, id))
+
+    // COORDINATE OPS
+    socket.on("coordinate:create", (newCoorinate: Coordinate) => coordinate.newCoordinate(socket, newCoorinate))
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
   socket.on("coordinate:cep", (data: string) =>
     cep.coordinateCep(socket, data)
@@ -192,9 +250,13 @@ export const handleSocket = (socket: Socket) => {
     gallery.newGallery(socket, newGallery)
   );
 
+<<<<<<< HEAD
   socket.on("gallery:update", (updateGallery: NewGallery) =>
     gallery.updateGallery(socket, updateGallery)
   );
+=======
+    socket.on("gallery:update", (updateGallery: NewGallery) => gallery.updateGallery(socket, updateGallery))
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
   socket.on("gallery:list", () => {
     gallery.listGallery(socket);
@@ -232,6 +294,7 @@ export const handleSocket = (socket: Socket) => {
     object.listObject(socket);
   });
 
+<<<<<<< HEAD
   // CALENDAR OPS
   socket.on("calendar:update", (updateCalendar: Calendar) =>
     calendar.updateCalendar(socket, updateCalendar)
@@ -245,6 +308,10 @@ export const handleSocket = (socket: Socket) => {
   socket.on("admin:call:create", (newCall: Call) =>
     call.newAdminCall(socket, newCall)
   );
+=======
+    // CALENDAR OPS
+    socket.on("calendar:update", (updateCalendar: Calendar) => calendar.updateCalendar(socket, updateCalendar))
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
   socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall));
   socket.on("call:update", (updateCall: Call) =>
@@ -268,6 +335,7 @@ export const handleSocket = (socket: Socket) => {
 
   socket.on("bank:find", (bankId: number) => bank.findBank(socket, bankId));
 
+<<<<<<< HEAD
   // STAGE OPS
   socket.on("stage:update:one", (stageUpdate: Stage) =>
     stage.updateStageOne(socket, stageUpdate)
@@ -287,6 +355,14 @@ export const handleSocket = (socket: Socket) => {
     operation.updateOperation(socket, data)
   );
   socket.on("operation:list", () => operation.listOperation(socket));
+=======
+    // BANK OPS
+    socket.on("bank:create", (newBank: Bank) => bank.newBank(socket, newBank))
+    socket.on("bank:update", (updateBank: Bank) => bank.updateBank(socket, updateBank))
+    socket.on("bank:list", () => {
+        bank.listBank(socket)
+    })
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
   socket.on("operation:find", (id: number) =>
     operation.findOperation(socket, id)
@@ -365,6 +441,7 @@ export const handleSocket = (socket: Socket) => {
     report.closeReport(socket, reportId)
   );
 
+<<<<<<< HEAD
   // notifications
   socket.on("notification:list", (user_id: number) =>
     Notification.list(socket, user_id)
@@ -373,3 +450,17 @@ export const handleSocket = (socket: Socket) => {
     Notification.viewed(socket, id, user_id)
   );
 };
+=======
+    socket.on("report:list", () => report.listReport(socket))
+
+    socket.on("midnight:report:create", (data: any) => report.createNewReportAtMidnight(socket, data))
+
+    socket.on("report:approve", (reportId: number) => report.approvedReport(socket, reportId))
+
+    socket.on("report:close", (reportId: number) => report.closeReport(socket, reportId))
+
+    // notifications
+    socket.on("notification:list", (user_id: number) => Notification.list(socket, user_id))
+    socket.on("notification:viewed", (id: number, user_id: number) => Notification.viewed(socket, id, user_id))
+}
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190

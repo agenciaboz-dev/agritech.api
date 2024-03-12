@@ -1,31 +1,37 @@
+<<<<<<< HEAD
 import { Call, PrismaClient } from "@prisma/client";
 import { OpenCall, AdminCall, ApproveCall } from "../types/call";
+=======
+import { Call, PrismaClient } from "@prisma/client"
+import { OpenCall, AdminCall, ApproveCall } from "../types/call"
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 const inclusions = {
-  call: {
-    tillage: {
-      include: {
-        address: true,
-        location: true,
-        gallery: true,
-        talhao: { include: { name: true, area: true, location: true } },
-      },
+    call: {
+        tillage: {
+            include: {
+                address: true,
+                location: true,
+                gallery: true,
+                talhao: { include: { name: true, area: true, location: true } },
+            },
+        },
+        report: true,
+        kit: true,
+        producer: {
+            include: { tillage: true, user: true },
+        },
+        user: true,
     },
-    report: true,
-    kit: true,
-    producer: {
-      include: { tillage: true, user: true },
-    },
-    user: true,
-  },
-};
+}
 
 const adminCreate = async (data: AdminCall) => {
-  try {
-    console.log({ Ola_aqui: data });
+    try {
+        console.log({ Ola_aqui: data })
 
+<<<<<<< HEAD
     // Create the call
     const call = await prisma.call.create({
       data: {
@@ -38,70 +44,85 @@ const adminCreate = async (data: AdminCall) => {
         forecast: data.forecast,
       },
     });
+=======
+        // Create the call
+        const call = await prisma.call.create({
+            data: {
+                open: new Date().getTime().toString(),
+                comments: data.comments,
+                talhaoId: data.talhaoId,
+                producerId: data.producerId,
+                userId: data.userId,
+                kitId: data.kitId,
+                forecast: data.forecast,
+            },
+        })
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
-    // Update the producer
-    const findTalhao = await prisma.talhao.findUnique({
-      where: { id: data.talhaoId },
-    });
-    const findTillage = await prisma.tillage.findUnique({
-      where: { id: findTalhao?.tillageId },
-    });
-    console.log({ talhao: findTalhao });
-    const tillage = await prisma.tillage.update({
-      where: { id: findTalhao?.tillageId },
-      data: {
-        hectarePrice: data.hectarePrice || findTillage?.hectarePrice,
-      },
-    });
+        // Update the producer
+        const findTalhao = await prisma.talhao.findUnique({
+            where: { id: data.talhaoId },
+        })
+        const findTillage = await prisma.tillage.findUnique({
+            where: { id: findTalhao?.tillageId },
+        })
+        console.log({ talhao: findTalhao })
+        const tillage = await prisma.tillage.update({
+            where: { id: findTalhao?.tillageId },
+            data: {
+                hectarePrice: data.hectarePrice || findTillage?.hectarePrice,
+            },
+        })
 
-    const report = await prisma.report.create({
-      data: {
-        callId: call.id,
-        stage: "STAGE1",
-        date: new Date().getTime().toString(),
-        hour: new Date().getTime().toString(),
+        const report = await prisma.report.create({
+            data: {
+                callId: call.id,
+                stage: "STAGE1",
+                date: new Date().getTime().toString(),
+                hour: new Date().getTime().toString(),
 
-        operation: {
-          create: {
-            service: "",
-            culture: "",
-            areaMap: 0,
-            equipment: "",
-            model: "",
-          },
-        },
-        material: { create: [] },
-        techReport: {
-          create: {
-            date: "",
-            init: "",
-            finish: "",
-            comments: "",
-            flight: { create: [] },
-          },
-        },
-        treatment: {
-          create: {
-            products: { create: [] },
-          },
-        },
-      },
-      include: {
-        operation: true,
-        treatment: { include: { products: true } },
-        material: true,
-        techReport: { include: { flight: true } },
-      },
-    });
+                operation: {
+                    create: {
+                        service: "",
+                        culture: "",
+                        areaMap: 0,
+                        equipment: "",
+                        model: "",
+                    },
+                },
+                material: { create: [] },
+                techReport: {
+                    create: {
+                        date: "",
+                        init: "",
+                        finish: "",
+                        comments: "",
+                        flight: { create: [] },
+                    },
+                },
+                treatment: {
+                    create: {
+                        products: { create: [] },
+                    },
+                },
+            },
+            include: {
+                operation: true,
+                treatment: { include: { products: true } },
+                material: true,
+                techReport: { include: { flight: true } },
+            },
+        })
 
-    // Create the stage
-    const stage = await prisma.stage.create({
-      data: {
-        name: "STAGE1",
-        reportId: report.id,
-      },
-    });
+        // Create the stage
+        const stage = await prisma.stage.create({
+            data: {
+                name: "STAGE1",
+                reportId: report.id,
+            },
+        })
 
+<<<<<<< HEAD
     // Update the call
     const updatedCall = await prisma.call.update({
       where: { id: call.id },
@@ -140,28 +161,63 @@ const adminCreate = async (data: AdminCall) => {
         producer: { include: { tillage: true, user: true } },
       },
     });
+=======
+        // Update the call
+        const updatedCall = await prisma.call.update({
+            where: { id: call.id },
+            data: {
+                approved: data.kitId ? true : false,
+                status: "INPROGRESS",
+                kitId: data.kitId,
+                init: new Date().getTime().toString(),
+            },
+            include: {
+                talhao: {
+                    include: {
+                        calls: true,
+                        gallery: true,
+                        location: true,
+                        tillage: true,
+                    },
+                },
+                kit: { include: { employees: { include: { user: true } }, calendar: true, objects: true } },
+                reports: {
+                    include: {
+                        call: true,
+                        material: true,
+                        operation: true,
+                        stages: true,
+                        techReport: true,
+                        treatment: true,
+                    },
+                },
+                producer: { include: { tillage: true, user: true } },
+            },
+        })
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
-    console.log("Call, Producer, Stage, and Updated Call created/updated:", {
-      call,
-      tillage,
-      stage,
-      report,
-      updatedCall,
-    });
+        console.log("Call, Producer, Stage, and Updated Call created/updated:", {
+            call,
+            tillage,
+            stage,
+            report,
+            updatedCall,
+        })
 
-    return { updatedCall };
-  } catch (error) {
-    console.error("Error in creating and updating the call:", error);
-    throw error;
-  }
-};
+        return { updatedCall }
+    } catch (error) {
+        console.error("Error in creating and updating the call:", error)
+        throw error
+    }
+}
 
 const create = async (data: OpenCall) => {
-  console.log(data);
-  const call = await prisma.call.create({
-    data: {
-      open: new Date().getTime().toString(),
+    console.log(data)
+    const call = await prisma.call.create({
+        data: {
+            open: new Date().getTime().toString(),
 
+<<<<<<< HEAD
       comments: data.comments,
       talhaoId: data.talhaoId,
       producerId: data.producerId,
@@ -174,124 +230,139 @@ const create = async (data: OpenCall) => {
       user: { include: { employee: true, producer: true } },
     },
   });
+=======
+            comments: data.comments,
+            talhaoId: data.talhaoId,
+            producerId: data.producerId,
+            userId: data.userId,
+            forecast: data.forecast,
+            kitId: data.kitId,
+        },
+        include: { producer: { include: { user: true } }, user: { include: { employee: true, producer: true } } },
+    })
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
-  console.log({ call });
-  return { call };
-};
+    console.log({ call })
+    return { call }
+}
 
 const update = async (data: Call) => {
-  console.log(data);
-  const call = await prisma.call.update({
-    where: { id: data.id },
-    data: {
-      open: data.open,
-      init: data.init,
-      finish: data.finish,
-      approved: data.approved,
-      comments: data.comments,
-      status: data.status,
-      talhaoId: data.talhaoId,
-      producerId: data.producerId,
-      userId: data.userId,
-      kitId: data.kitId,
-      totalPrice: data.totalPrice,
-    },
-  });
-  console.log({ call });
-  return call;
-};
-
-const approve = async (data: ApproveCall) => {
-  try {
-    const call = await prisma.call.findUnique({ where: { id: data.id } });
-
-    if (call) {
-      const existingReport = await prisma.report.findFirst({
-        where: {
-          callId: data.id,
-          stage: "STAGE1",
-        },
-      });
-
-      if (existingReport) {
-        throw new Error(
-          "A STAGE1 status stage already exists for this call's initial report"
-        );
-      }
-
-      const updatedCall = await prisma.call.update({
+    console.log(data)
+    const call = await prisma.call.update({
         where: { id: data.id },
         data: {
-          approved: data.kitId ? true : false,
-          status: "INPROGRESS",
-          kitId: data.kitId,
-          init: new Date().getTime().toString(),
+            open: data.open,
+            init: data.init,
+            finish: data.finish,
+            approved: data.approved,
+            comments: data.comments,
+            status: data.status,
+            talhaoId: data.talhaoId,
+            producerId: data.producerId,
+            userId: data.userId,
+            kitId: data.kitId,
+            totalPrice: data.totalPrice,
         },
+<<<<<<< HEAD
         include: {
           producer: { include: { user: true } },
           kit: { include: { employees: { include: { user: true } } } },
         },
       });
+=======
+    })
+    console.log({ call })
+    return call
+}
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
-      const report = await prisma.report.create({
-        data: {
-          callId: call.id,
-          stage: "STAGE1",
-          date: new Date().getTime().toString(),
-          hour: new Date().getTime().toString(),
+const approve = async (data: ApproveCall) => {
+    try {
+        const call = await prisma.call.findUnique({ where: { id: data.id } })
 
-          operation: {
-            create: {
-              service: "",
-              culture: "",
-              areaMap: 0,
-              equipment: "",
-              model: "",
-            },
-          },
-          material: { create: [] },
-          techReport: {
-            create: {
-              date: "",
-              init: "",
-              finish: "",
-              comments: "",
-              flight: { create: [] },
-            },
-          },
-          treatment: {
-            create: {
-              products: { create: [] },
-            },
-          },
-        },
-        include: {
-          operation: true,
-          treatment: { include: { products: true } },
-          material: true,
-          techReport: { include: { flight: true } },
-        },
-      });
+        if (call) {
+            const existingReport = await prisma.report.findFirst({
+                where: {
+                    callId: data.id,
+                    stage: "STAGE1",
+                },
+            })
 
-      const stage = await prisma.stage.create({
-        data: {
-          name: "STAGE1",
-          reportId: report.id,
-        },
-      });
-      console.log(stage);
+            if (existingReport) {
+                throw new Error("A STAGE1 status stage already exists for this call's initial report")
+            }
 
-      return { call: updatedCall, stage, report };
-    } else {
-      throw new Error("Call not found or kit already assigned");
+            const updatedCall = await prisma.call.update({
+                where: { id: data.id },
+                data: {
+                    approved: data.kitId ? true : false,
+                    status: "INPROGRESS",
+                    kitId: data.kitId,
+                    init: new Date().getTime().toString(),
+                },
+                include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+            })
+
+            const report = await prisma.report.create({
+                data: {
+                    callId: call.id,
+                    stage: "STAGE1",
+                    date: new Date().getTime().toString(),
+                    hour: new Date().getTime().toString(),
+
+                    operation: {
+                        create: {
+                            service: "",
+                            culture: "",
+                            areaMap: 0,
+                            equipment: "",
+                            model: "",
+                        },
+                    },
+                    material: { create: [] },
+                    techReport: {
+                        create: {
+                            date: "",
+                            init: "",
+                            finish: "",
+                            comments: "",
+                            flight: { create: [] },
+                        },
+                    },
+                    treatment: {
+                        create: {
+                            products: { create: [] },
+                        },
+                    },
+                },
+                include: {
+                    operation: true,
+                    treatment: { include: { products: true } },
+                    material: true,
+                    techReport: { include: { flight: true } },
+                },
+            })
+
+            const stage = await prisma.stage.create({
+                data: {
+                    name: "STAGE1",
+                    reportId: report.id,
+                },
+            })
+            console.log(stage)
+
+            return { call: updatedCall, stage, report }
+        } else {
+            throw new Error("Call not found or kit already assigned")
+        }
+    } catch (error) {
+        console.error("Error in approving call:", error)
+        throw error
     }
-  } catch (error) {
-    console.error("Error in approving call:", error);
-    throw error;
-  }
-};
+}
 
 const close = async (data: Call) => {
+<<<<<<< HEAD
   console.log(data);
   const call = await prisma.call.update({
     where: { id: data.id },
@@ -321,17 +392,43 @@ const cancel = async (data: Call) => {
     },
   });
   console.log({ call });
+=======
+    console.log(data)
+    const call = await prisma.call.update({
+        where: { id: data.id },
+        data: {
+            finish: new Date().getTime().toString(),
+            status: "CLOSED",
+        },
+        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+    })
+    console.log({ call })
+    return { call }
+}
 
-  // const report = await prisma.report.create({
-  //   data: {
-  //     callId: call.id,
-  //   },
-  // });
-  // console.log("Report criado para o chamado:", report);
-  return { call };
-};
+const cancel = async (data: Call) => {
+    console.log(data)
+    const call = await prisma.call.update({
+        where: { id: data.id },
+        data: {
+            status: "CANCELED",
+        },
+        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+    })
+    console.log({ call })
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
+
+    // const report = await prisma.report.create({
+    //   data: {
+    //     callId: call.id,
+    //   },
+    // });
+    // console.log("Report criado para o chamado:", report);
+    return { call }
+}
 
 const list = async () => {
+<<<<<<< HEAD
   return await prisma.call.findMany({
     include: {
       kit: { include: { employees: true, calls: true, objects: true } },
@@ -351,6 +448,20 @@ const list = async () => {
     },
   });
 };
+=======
+    return await prisma.call.findMany({
+        include: {
+            kit: { include: { employees: true, calls: true, objects: true } },
+            producer: { include: { user: true } },
+            user: true,
+            talhao: { include: { tillage: { include: { address: true } } } },
+            reports: {
+                include: { stages: true, call: true, material: true, operation: true, treatment: true, techReport: true },
+            },
+        },
+    })
+}
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
 // // Process each call and update the totalPrice
 // const updatedCalls = await Promise.all(
@@ -395,34 +506,61 @@ const list = async () => {
 // };
 
 const listPending = async () => {
-  return await prisma.call.findMany({
-    where: { approved: false },
-    include: {
-      kit: true,
-      producer: { include: { user: true } },
-      user: true,
-      talhao: {
+    return await prisma.call.findMany({
+        where: { approved: false },
         include: {
-          location: true,
-          gallery: true,
-          tillage: {
-            include: { address: true, gallery: true, location: true },
-          },
+            kit: true,
+            producer: { include: { user: true } },
+            user: true,
+            talhao: {
+                include: {
+                    location: true,
+                    gallery: true,
+                    tillage: {
+                        include: { address: true, gallery: true, location: true },
+                    },
+                },
+            },
         },
-      },
-    },
-  });
-};
+    })
+}
 const listApproved = async () => {
-  return await prisma.call.findMany({
-    where: { approved: true },
-    include: {
-      kit: {
+    return await prisma.call.findMany({
+        where: { approved: true },
         include: {
-          employees: { include: { user: true } },
-          calls: true,
-          objects: true,
+            kit: {
+                include: {
+                    employees: { include: { user: true } },
+                    calls: true,
+                    objects: true,
+                },
+            },
+            talhao: {
+                include: {
+                    location: true,
+                    gallery: true,
+                    tillage: {
+                        include: { address: true, gallery: true, location: true },
+                    },
+                },
+            },
+            producer: { include: { user: true } },
+            user: true,
+            reports: {
+                include: {
+                    call: {
+                        include: { talhao: { include: { tillage: true } }, kit: true },
+                    },
+
+                    stages: true,
+                    operation: true,
+                    treatment: { include: { products: true } },
+                    material: true,
+                    techReport: { include: { flight: true } },
+                },
+            },
         },
+<<<<<<< HEAD
       },
       talhao: {
         include: {
@@ -451,6 +589,10 @@ const listApproved = async () => {
     },
   });
 };
+=======
+    })
+}
+>>>>>>> 62412f3865876661278db39e39fb3ea7fbd57190
 
 // const find = async (id: number) => {
 //   const report = await prisma.report.findUnique({ where: { id } });
@@ -459,14 +601,14 @@ const listApproved = async () => {
 // };
 
 export default {
-  adminCreate,
-  create,
-  update,
-  approve,
-  close,
-  cancel,
-  list,
-  listPending,
-  listApproved,
-  // find,
-};
+    adminCreate,
+    create,
+    update,
+    approve,
+    close,
+    cancel,
+    list,
+    listPending,
+    listApproved,
+    // find,
+}
