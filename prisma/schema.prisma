@@ -28,8 +28,8 @@ model User{
     id              Int          @id @default(autoincrement())
     name            String      
     cpf             String       @unique
-    birth           DateTime?    @db.Date
-    phone           String?
+    birth           String
+    phone           String
     image           String?      @db.Text
     username        String       @unique
     email           String       @unique
@@ -42,6 +42,7 @@ model User{
 
     calls           Call[]
     chats           Chat[]
+    notifications   Notification[]
 
     address         Address?    
     employee        Employee?
@@ -67,9 +68,10 @@ model Address{
 }
 
 model Producer{
-    id              Int          @id @default(autoincrement())
-    cnpj            String       @unique
-    contract        Boolean      @default(false)
+    id                       Int          @id @default(autoincrement())
+    cnpj                     String       @unique
+    contract                 Boolean      @default(false)
+    inscricaoEstadual        String       @unique
 
     user            User         @relation(fields: [userid],references: [id],onDelete: Cascade)
     userid          Int          @unique
@@ -97,7 +99,7 @@ model Tillage{
     pilot           String?
     others          String?
     comments        String?      @db.Text
-
+    cover           String?     @db.LongText
     hectarePrice    Float?
     address         Address?
 
@@ -106,8 +108,8 @@ model Tillage{
     talhao          Talhao[]
 
 
-    producer         Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId       Int?  
+    producer         Producer    @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId       Int
 
 }
 
@@ -115,8 +117,9 @@ model Talhao {
     id              Int           @id @default(autoincrement())
     name            String
     area            Float
+    cover           String?      @db.LongText
 
-    tillage         Tillage?       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
+    tillage         Tillage      @relation(fields: [tillageId],references: [id],onDelete: Cascade)
     tillageId       Int      
 
     location        Coordinate[]
@@ -139,19 +142,21 @@ model Coordinate{
 model Gallery{
     id              Int           @id @default(autoincrement())
     images          GalleryImage[]
+    name            String?       @default("")
 
-    talhao          Talhao        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
-    talhaoId        Int           
+
+    talhao          Talhao?        @relation(fields: [talhaoId],references: [id],onDelete: Cascade)
+    talhaoId        Int?           
 
     tillage         Tillage       @relation(fields: [tillageId],references: [id],onDelete: Cascade)
-    tillageId       Int           @unique
+    tillageId       Int           
     
 }
 
 model GalleryImage {
 
     id              Int           @id @default(autoincrement())
-    url             String
+    url             String        @db.Text 
     galleryId       Int
     gallery         Gallery       @relation(fields: [galleryId], references: [id], onDelete: Cascade)
 }
@@ -198,7 +203,7 @@ model Professional{
     id              Int           @id @default(autoincrement())
     department      String?  
     office          String
-    admission       DateTime?      @db.Date
+    admission       String?      
     salary          Float?
     // work_time       DateTime?      @db.Time()
 
@@ -240,17 +245,17 @@ model Call {
     
     reports         Report[]
     
-    talhao          Talhao?       @relation(fields: [talhaoId],references: [id])
-    talhaoId        Int?
+    talhao          Talhao       @relation(fields: [talhaoId],references: [id])
+    talhaoId        Int
 
-    kit             Kit?          @relation(fields: [kitId],references: [id])
-    kitId           Int?         
+    kit             Kit          @relation(fields: [kitId],references: [id])
+    kitId           Int         
 
-    producer        Producer?     @relation(fields: [producerId],references: [id],onDelete: Cascade)
-    producerId      Int?              
+    producer        Producer     @relation(fields: [producerId],references: [id],onDelete: Cascade)
+    producerId      Int              
 
-    user            User?         @relation(fields: [userId],references: [id],onDelete: Cascade)
-    userId          Int?          
+    user            User         @relation(fields: [userId],references: [id],onDelete: Cascade)
+    userId          Int          
 }
 
 
@@ -281,13 +286,7 @@ model Object {
 }
 
 
-enum ReportStages {
-    STAGE0
-    STAGE1
-    STAGE2
-    STAGE3
-    STAGE4
-}
+
 
 model Stage {
     id              Int           @id @default(autoincrement())
@@ -303,12 +302,23 @@ model Stage {
     
 }
 
+enum ReportStages {
+    STAGE0
+    STAGE1
+    STAGE2
+    STAGE3
+    STAGE4
+}
+
 model Report {
     id              Int           @id @default(autoincrement())
     areaTrabalhada  Float         @default(0)
     date            String?       @default("")
     hour            String?       @default("") 
     close           String?       @default("") 
+    approved        Boolean?      @default(false)
+    totalPrice      Float?        @default(0)
+    pdf_path        String?
 
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int
@@ -399,4 +409,17 @@ model Flight{
 
     techReport      TechReport    @relation(fields: [techReportId],references: [id],onDelete: Cascade)
     techReportId    Int           
+}
+
+model Notification {
+    id          Int         @id @default(autoincrement())
+    action      String
+    datetime    String
+
+    target_key  String
+    target_id   Int
+    
+    viewed_by   String
+
+    users       User[]
 }

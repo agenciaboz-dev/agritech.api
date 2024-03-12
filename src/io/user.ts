@@ -2,9 +2,11 @@ import { Socket } from "socket.io"
 import { User, Employee } from "@prisma/client"
 import { getIoInstance, handleSocket } from "./socket"
 import user from "../databaseHandler/user"
-import { saveImage } from "../saveImage"
-import { ClientBag } from "../definitions/client"
-import { LoginForm } from "../definitions/user"
+import { saveImage } from "../tools/saveImage"
+import { ClientBag } from "../types/client"
+import { LoginForm } from "../types/user"
+import { UserFull } from "../prisma/types/user"
+import { Notification } from "../class/Notification"
 
 interface UpdateUser extends Omit<User, "id"> {
     id: number
@@ -49,6 +51,15 @@ const newUser = async (socket: Socket, userNew: any) => {
 
             socket.emit("user:status:review", pendingUser)
             socket.broadcast.emit("admin:list:update", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
+
+            if (pendingUser?.employee) {
+                new Notification({
+                    action: "new",
+                    target_id: pendingUser.id,
+                    target_key: "employee",
+                    users: await Notification.getAdmins(),
+                })
+            }
         }
     } catch (error: any) {
         console.log("OLHA O GRANDE ERRO: ------------", error)
@@ -153,6 +164,7 @@ const listUsersApproved = async (socket: Socket) => {
     try {
         const users = await prisma.approvedList()
         socket.emit("users:list:success", users)
+        console.log({ users: users })
     } catch (error) {
         console.error("Erro para acessar lista de usuários")
         socket.emit("users:list:error", { error })
@@ -169,11 +181,12 @@ const findUser = async (socket: Socket, id: number) => {
     }
 }
 
-const updateUser = async (socket: Socket, data: any) => {
-    console.log(data)
+const update = async (socket: Socket, data: Partial<UserFull>, id: number) => {
+    console.log(data.employee)
     try {
-        const updatedUser = await prisma.update(data)
+        const updatedUser = await prisma.update(data, id)
         socket.emit("user:update:success", updatedUser)
+        socket.broadcast.emit("user:update", updatedUser)
     } catch (error) {
         console.log(error)
         socket.emit("user:update:failed", { error: error })
@@ -184,6 +197,10 @@ const toggleAdmin = async (socket: Socket, data: User) => {
     try {
         const user = await prisma.toggleAdmin(data.id)
         socket.emit("user:admin:toggle:success", user)
+        console.log(user.isAdmin)
+        user.isAdmin
+            ? new Notification({ action: "active", target_id: user.id, target_key: "admin", users: [user] })
+            : new Notification({ action: "disabled", target_id: user.id, target_key: "admin", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
@@ -196,6 +213,10 @@ const toggleManager = async (socket: Socket, data: User) => {
     try {
         const user = await prisma.toggleManager(data.id)
         socket.emit("user:manager:toggle:success", user)
+        console.log(user.isManager)
+        user.isAdmin
+            ? new Notification({ action: "active", target_id: user.id, target_key: "manager", users: [user] })
+            : new Notification({ action: "disabled", target_id: user.id, target_key: "manager", users: [user] })
     } catch (error: any) {
         let message = error
         if (error.code === "P2025") message = "Id não encontrado"
@@ -212,7 +233,7 @@ export default {
     approve,
     handleLogin,
     findUser,
-    updateUser,
+    update,
     listUsersApproved,
     listPendingApproval,
     toggleAdmin,

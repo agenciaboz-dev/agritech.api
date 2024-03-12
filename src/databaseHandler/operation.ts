@@ -32,7 +32,7 @@ const update = async (data: Operation) => {
       reportId: data.reportId,
     },
   });
-  console.log(operation);
+  console.log({operação:operation});
   return operation;
 };
 

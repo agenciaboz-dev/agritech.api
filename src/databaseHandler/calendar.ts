@@ -1,7 +1,7 @@
-import { CalendarHandler } from "../definitions/calendar";
-import { Calendar, PrismaClient } from "@prisma/client";
+import { CalendarHandler } from "../types/calendar"
+import { Calendar, PrismaClient } from "@prisma/client"
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient()
 
 // const createEmp = async (data: NewEmployeeCalendar) => {
 //   console.log("Iniciando a criação do calendario do Empregado...");
@@ -32,29 +32,29 @@ const prisma = new PrismaClient();
 // };
 
 const update = async (data: Calendar) => {
-  const calendar = await prisma.calendar.update({
-    where: { id: data.id },
-    data: {
-      name: data.name,
-    },
-  });
-  console.log("Coordinate Update: ", data);
+    const calendar = await prisma.calendar.update({
+        where: { id: data.id },
+        data: {
+            name: data.name,
+        },
+    })
+    console.log("Coordinate Update: ", data)
 
-  return calendar;
-};
+    return calendar
+}
 
 const list = async () => {
-  return await prisma.calendar.findMany({
-    include: {
-      employee: true,
-      kit: true,
-    },
-  });
-};
+    return await prisma.calendar.findMany({
+        include: {
+            employee: true,
+            kit: true,
+        },
+    })
+}
 
 export default {
-  // createEmp,
-  // createKit,
-  update,
-  list,
-};
+    // createEmp,
+    // createKit,
+    update,
+    list,
+}

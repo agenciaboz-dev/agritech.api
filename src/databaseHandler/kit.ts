@@ -1,6 +1,6 @@
-import { NewKit, ManageKitMembers } from "../definitions/kit"
+import { NewKit, ManageKitMembers } from "../types/kit"
 import { Kit, PrismaClient } from "@prisma/client"
-import { saveImage } from "../saveImage"
+import { saveImage } from "../tools/saveImage"
 
 const prisma = new PrismaClient()
 
@@ -42,8 +42,8 @@ const inclusions = {
     gallery: {},
     kit: {
         objects: true,
-        employees: true,
-        calls: true,
+        employees: { include: { user: true } },
+        calls: { include: { talhao: true } },
         calendar: true,
     },
 }
@@ -53,8 +53,7 @@ const create = async (data: NewKit) => {
     let image: string | undefined
 
     if (data.image?.file) {
-        saveImage(`kit`, data.image.file, data.image.name)
-        image = `kit/${data.image.name}`
+        image = saveImage(`kit/`, data.image.file, data.image.name)
     }
 
     const kit = await prisma.kit.create({
@@ -103,11 +102,11 @@ const create = async (data: NewKit) => {
 }
 
 const update = async (data: NewKit) => {
+    console.log(data)
     let image: string | undefined
 
     if (data.image?.file) {
-        saveImage(`kit`, data.image.file, data.image.name)
-        image = `kit/${data.image.name}`
+        image = saveImage(`kit/`, data.image.file, data.image.name)
     }
 
     const kit = await prisma.kit.update({
@@ -118,6 +117,24 @@ const update = async (data: NewKit) => {
             description: data.description,
             active: data.active,
             hectareDay: data.hectareDay,
+            objects: {
+                deleteMany: { kitId: data.id },
+                create: data.objects?.map((item) => ({
+                    name: item.name,
+                    description: item.description,
+                    quantity: item.quantity,
+                })),
+            },
+            employees: {
+                disconnect: data.employees?.map((employee) => ({ id: employee.id })),
+                connect: data.employees?.map((employee) => ({ id: employee.id })),
+            },
+        },
+        include: {
+            calendar: true,
+            calls: true,
+            objects: true,
+            employees: { include: { user: true } },
         },
     })
     console.log(data)
@@ -126,7 +143,11 @@ const update = async (data: NewKit) => {
 
 const list = async () => {
     return await prisma.kit.findMany({
-        include: inclusions.kit,
+        include: {
+            objects: true,
+            employees: true,
+            calls: { include: { talhao: true } },
+        },
     })
 }
 
