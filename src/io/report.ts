@@ -127,6 +127,7 @@ const findReport = async (socket: Socket, id: number) => {
 };
 
 const listReport = async (socket: Socket) => {
+    console.log("report:list")
   try {
     const report = await databaseHandler.list();
     socket.emit("report:list:success", report);
@@ -136,29 +137,29 @@ const listReport = async (socket: Socket) => {
   }
 };
 
-cron.schedule("* * * * *", async () => {
-  console.log("Cron job started");
-  try {
-    const unclosedReports = await prisma.report.findMany({
-      where: { close: "" },
-    });
-    console.log(unclosedReports);
-    if (unclosedReports.length === 0) {
-      console.log("No unclosed reports found");
-    } else {
-      console.log("Unclosed reports found");
-    }
+// cron.schedule("* * * * *", async () => {
+//   console.log("Cron job started");
+//   try {
+//     const unclosedReports = await prisma.report.findMany({
+//       where: { close: "" },
+//     });
+//     console.log(unclosedReports);
+//     if (unclosedReports.length === 0) {
+//       console.log("No unclosed reports found");
+//     } else {
+//       console.log("Unclosed reports found");
+//     }
 
-    //   await prisma.report.create({
-    //     data: reportData,
-    //     // Include other necessary setup based on your Prisma model relations
-    //   });
+//     //   await prisma.report.create({
+//     //     data: reportData,
+//     //     // Include other necessary setup based on your Prisma model relations
+//     //   });
 
-    //   console.log(`Report created for call ID: ${call.id}`);
-  } catch (error) {
-    console.error(`Error`, error);
-  }
-});
+//     //   console.log(`Report created for call ID: ${call.id}`);
+//   } catch (error) {
+//     console.error(`Error`, error);
+//   }
+// });
 
 export default {
   newReport,

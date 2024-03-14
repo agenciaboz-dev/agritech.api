@@ -47,6 +47,7 @@ import {
 import { NewGallery } from "../types/gallery";
 import { UserFull } from "../prisma/types/user";
 import { NotificationClass as Notification } from "../class/Notification";
+import { NewStage } from "../types/stage"
 
 let io: SocketIoServer | null = null;
 
@@ -267,15 +268,7 @@ export const handleSocket = (socket: Socket) => {
   socket.on("bank:find", (bankId: number) => bank.findBank(socket, bankId));
 
   // STAGE OPS
-  socket.on("stage:update:one", (stageUpdate: Stage) =>
-    stage.updateStageOne(socket, stageUpdate)
-  );
-  socket.on("stage:update:two", (stageUpdate: Stage) =>
-    stage.updateStageTwo(socket, stageUpdate)
-  );
-  socket.on("stage:update:three", (stageUpdate: Stage) =>
-    stage.updateStageThree(socket, stageUpdate)
-  );
+  socket.on("stage:new", (data: NewStage, stage_number: number) => stage.newStage(socket, data, stage_number))
 
   // OPERATION OPS
   socket.on("operation:create", (data: any) =>

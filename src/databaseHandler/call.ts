@@ -58,7 +58,7 @@ const adminCreate = async (data: AdminCall) => {
         const report = await prisma.report.create({
             data: {
                 callId: call.id,
-                stage: "STAGE1",
+                stage: 1,
                 date: new Date().getTime().toString(),
                 hour: new Date().getTime().toString(),
 
@@ -92,14 +92,6 @@ const adminCreate = async (data: AdminCall) => {
                 treatment: { include: { products: true } },
                 material: true,
                 techReport: { include: { flight: true } },
-            },
-        })
-
-        // Create the stage
-        const stage = await prisma.stage.create({
-            data: {
-                name: "STAGE1",
-                reportId: report.id,
             },
         })
 
@@ -139,7 +131,6 @@ const adminCreate = async (data: AdminCall) => {
         console.log("Call, Producer, Stage, and Updated Call created/updated:", {
             call,
             tillage,
-            stage,
             report,
             updatedCall,
         })
@@ -220,7 +211,7 @@ const approve = async (data: ApproveCall) => {
             const existingReport = await prisma.report.findFirst({
                 where: {
                     callId: data.id,
-                    stage: "STAGE1",
+                    stage: 1,
                 },
             })
 
@@ -245,7 +236,7 @@ const approve = async (data: ApproveCall) => {
             const report = await prisma.report.create({
                 data: {
                     callId: call.id,
-                    stage: "STAGE1",
+                    stage: 1,
                     date: new Date().getTime().toString(),
                     hour: new Date().getTime().toString(),
 
@@ -282,15 +273,7 @@ const approve = async (data: ApproveCall) => {
                 },
             })
 
-            const stage = await prisma.stage.create({
-                data: {
-                    name: "STAGE1",
-                    reportId: report.id,
-                },
-            })
-            console.log(stage)
-
-            return { call: updatedCall, stage, report }
+            return { call: updatedCall, report }
         } else {
             throw new Error("Call not found or kit already assigned")
         }

@@ -18,7 +18,21 @@ export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
     },
 })
 
+export const report_include = Prisma.validator<Prisma.ReportInclude>()({
+    operation: true,
+    treatment: { include: { products: true } },
+    material: true,
+    techReport: { include: { flight: true } },
+    call: {
+        include: {
+            producer: { include: { user: true } },
+            kit: { include: { employees: { include: { user: true } } } },
+        },
+    },
+})
+
 export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof closing_report_include }>
+
 
 const prisma = new PrismaClient()
 

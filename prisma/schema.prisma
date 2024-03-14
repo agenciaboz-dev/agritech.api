@@ -302,14 +302,6 @@ model Stage {
     
 }
 
-enum ReportStages {
-    STAGE0
-    STAGE1
-    STAGE2
-    STAGE3
-    STAGE4
-}
-
 model Report {
     id              Int           @id @default(autoincrement())
     areaTrabalhada  Float         @default(0)
@@ -323,7 +315,7 @@ model Report {
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int
 
-    stage           ReportStages    @default(STAGE0)
+    stage           Int           @default(0)
     stages          Stage[]
 
     operation       Operation?
