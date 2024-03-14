@@ -413,7 +413,7 @@ const listPending = async () => {
         where: { approved: false },
         include: {
             kit: true,
-            producer: { include: { user: true } },
+            producer: { include: { user: true, call: true } },
             user: true,
             talhao: {
                 include: {

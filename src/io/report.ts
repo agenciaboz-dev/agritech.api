@@ -31,8 +31,8 @@ const approvedReport = async (socket: Socket, reportId: number) => {
     const report = await databaseHandler.approve(reportId);
     socket.emit("report:approved:success", report);
 
-    const employees = report.call.kit.employees.map((item) => item.user);
-    new Notification({
+    const employees = report.call.kit?.employees.map((item) => item.user);
+    if(employees) new Notification({
       action: "approve",
       target_id: report.id,
       target_key: "report",

@@ -208,7 +208,7 @@ const find = async (id: number) => {
 }
 
 const list = async () => {
-    return await prisma.report.findMany({
+    const reports = await prisma.report.findMany({
         include: {
             call: { include: { kit: true, talhao: { include: { tillage: true } } } },
             operation: true,
@@ -217,6 +217,14 @@ const list = async () => {
             techReport: { include: { flight: true } },
         },
     })
+
+    return reports.map((item) => ({
+        ...item,
+        call: {
+            ...item.call,
+            talhao: { ...item.call.talhao, cover: "", tillage: { ...item.call.talhao.tillage, cover: "" } },
+        },
+    }))
 }
 
 const createNewReportAtMidnight = async (data: NewReport) => {

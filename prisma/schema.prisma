@@ -248,8 +248,8 @@ model Call {
     talhao          Talhao       @relation(fields: [talhaoId],references: [id])
     talhaoId        Int
 
-    kit             Kit          @relation(fields: [kitId],references: [id])
-    kitId           Int         
+    kit             Kit?          @relation(fields: [kitId],references: [id])
+    kitId           Int?         
 
     producer        Producer     @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId      Int              
