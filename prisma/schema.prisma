@@ -286,13 +286,7 @@ model Object {
 }
 
 
-enum ReportStages {
-    STAGE0
-    STAGE1
-    STAGE2
-    STAGE3
-    STAGE4
-}
+
 
 model Stage {
     id              Int           @id @default(autoincrement())
@@ -306,6 +300,14 @@ model Stage {
     reportId        Int
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
     
+}
+
+enum ReportStages {
+    STAGE0
+    STAGE1
+    STAGE2
+    STAGE3
+    STAGE4
 }
 
 model Report {

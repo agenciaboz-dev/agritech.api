@@ -180,7 +180,10 @@ const create = async (data: OpenCall) => {
             forecast: data.forecast,
             kitId: data.kitId,
         },
-        include: { producer: { include: { user: true } }, user: { include: { employee: true, producer: true } } },
+        include: {
+            producer: { include: { user: true } },
+            user: { include: { employee: true, producer: true } },
+        },
     })
 
     console.log({ call })
@@ -305,7 +308,10 @@ const close = async (data: Call) => {
             finish: new Date().getTime().toString(),
             status: "CLOSED",
         },
-        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+        include: {
+            producer: { include: { user: true } },
+            kit: { include: { employees: { include: { user: true } } } },
+        },
     })
     console.log({ call })
     return { call }
@@ -318,7 +324,10 @@ const cancel = async (data: Call) => {
         data: {
             status: "CANCELED",
         },
-        include: { producer: { include: { user: true } }, kit: { include: { employees: { include: { user: true } } } } },
+        include: {
+            producer: { include: { user: true } },
+            kit: { include: { employees: { include: { user: true } } } },
+        },
     })
     console.log({ call })
 
@@ -339,7 +348,14 @@ const list = async () => {
             user: true,
             talhao: { include: { tillage: { include: { address: true } } } },
             reports: {
-                include: { stages: true, call: true, material: true, operation: true, treatment: true, techReport: true },
+                include: {
+                    stages: true,
+                    call: true,
+                    material: true,
+                    operation: true,
+                    treatment: true,
+                    techReport: true,
+                },
             },
         },
     })
