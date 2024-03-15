@@ -145,19 +145,16 @@ const update = async (data: { reportId: number; totalPrice: number; areaTrabalha
                 })),
             },
         },
-        include: {
-            operation: true,
-            treatment: { include: { products: true } },
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+        include: report_include,
     })
 
-    console.log(report)
-    return prisma.report.findUnique({
-        where: { id: report.id },
-        include: { operation: true, material: true, techReport: true, treatment: true, call: true },
-    })
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
 const approve = async (reportId: number) => {
     const report = await prisma.report.update({

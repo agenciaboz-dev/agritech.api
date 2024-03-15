@@ -1,6 +1,7 @@
 import { NewTreatment } from "../types/treatment"
 import { Treatment } from "@prisma/client"
 import { PrismaClient } from "@prisma/client"
+import { report_include } from "./report"
 
 const prisma = new PrismaClient()
 
@@ -18,28 +19,32 @@ const create = async (data: NewTreatment) => {
 }
 
 const update = async (data: NewTreatment) => {
-    const treatment = await prisma.treatment.update({
-        where: { id: data.id },
+    const report = await prisma.report.update({
+        where: { id: data.reportId },
         data: {
-            reportId: data.reportId,
-            products: {
-                deleteMany: { treatmentId: data.id },
-                create: data.products.map((product) => ({
-                    name: product.name,
-                    dosage: product.dosage,
-                    unit: product.unit,
-                })),
+            treatment: {
+                update: {
+                    products: {
+                        deleteMany: { treatmentId: data.id },
+                        create: data.products.map((product) => ({
+                            name: product.name,
+                            dosage: product.dosage,
+                            unit: product.unit,
+                        })),
+                    },
+                },
             },
         },
-        include: {
-            report: {
-                include: { operation: true, treatment: true, techReport: true, material: true, stages: true, call: true },
-            },
-        },
+        include: report_include,
     })
-    console.log("Objecto actualizado: ", data)
 
-    return treatment
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
 
 const find = async (id: number) => {
