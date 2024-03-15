@@ -27,6 +27,7 @@ export const report_include = Prisma.validator<Prisma.ReportInclude>()({
         include: {
             producer: { include: { user: true } },
             kit: { include: { employees: { include: { user: true } } } },
+            talhao: { include: { tillage: { include: { address: true } } } },
         },
     },
 })
@@ -223,13 +224,7 @@ const find = async (id: number) => {
 
 const list = async () => {
     const reports = await prisma.report.findMany({
-        include: {
-            call: { include: { kit: true, talhao: { include: { tillage: true } } } },
-            operation: true,
-            treatment: true,
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+        include: report_include,
     })
 
     return reports.map((item) => ({

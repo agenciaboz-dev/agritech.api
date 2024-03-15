@@ -9,7 +9,7 @@ const prisma = new PrismaClient()
 const create = async (data: NewStage, stage: number) => {
     console.log(data)
 
-    const report = prisma.report.update({
+    const report = await prisma.report.update({
         where: { id: data.reportId },
         data: {
             stage,
@@ -27,7 +27,13 @@ const create = async (data: NewStage, stage: number) => {
         include: report_include,
     })
 
-    return report
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
 
 export default {
