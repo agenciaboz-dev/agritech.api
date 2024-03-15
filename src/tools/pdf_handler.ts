@@ -78,8 +78,8 @@ const fillForm = async (options: PdfFormOptions) => {
                 if (value) {
                     writeFieldValue(form, key, value)
                 } else {
-                    console.log("chave não encontrada:")
-                    console.log(key)
+                    // console.log("chave não encontrada:")
+                    // console.log(key)
                 }
             }
         } catch (error) {

@@ -3,21 +3,6 @@ import { Prisma, PrismaClient } from "@prisma/client"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
 
-export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
-    material: true,
-    operation: true,
-    treatment: { include: { products: true } },
-    techReport: { include: { flight: true } },
-    call: {
-        include: {
-            talhao: { include: { tillage: { include: { address: true } } } },
-            kit: { include: { employees: { include: { user: true } } } },
-            producer: { include: { user: true } },
-            reports: true,
-        },
-    },
-})
-
 export const report_include = Prisma.validator<Prisma.ReportInclude>()({
     operation: true,
     treatment: { include: { products: true } },
@@ -28,12 +13,12 @@ export const report_include = Prisma.validator<Prisma.ReportInclude>()({
             producer: { include: { user: true } },
             kit: { include: { employees: { include: { user: true } } } },
             talhao: { include: { tillage: { include: { address: true } } } },
+            reports: true,
         },
     },
 })
 
-export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof closing_report_include }>
-
+export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof report_include }>
 
 const prisma = new PrismaClient()
 
@@ -181,7 +166,7 @@ const close = async (reportId: number) => {
     const report = await prisma.report.update({
         where: { id: reportId },
         data: { close: new Date().getTime().toString() },
-        include: closing_report_include,
+        include: report_include,
     })
 
     return {
