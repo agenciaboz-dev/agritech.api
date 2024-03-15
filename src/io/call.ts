@@ -65,7 +65,6 @@ const approveCall = async (socket: Socket, data: ApproveCall) => {
     try {
         const call = await databaseHandler.approve(data)
         socket.emit("call:approve:success", call)
-        socket.emit("stage:creation:success", call.stage)
         socket.emit("report:creation:success", call.report)
 
         const employees = call.call.kit?.employees.map((item) => item.user)
