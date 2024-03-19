@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `Kit` ADD COLUMN `equipment` VARCHAR(191) NULL,
+    ADD COLUMN `model` VARCHAR(191) NULL;

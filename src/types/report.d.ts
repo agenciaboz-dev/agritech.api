@@ -15,7 +15,7 @@ declare interface Flight {
 declare interface Product {
     id: number
     name: string
-    dosage: number
+    dosage: string
     unit: string
 }
 
@@ -46,5 +46,4 @@ declare interface NewReport {
     techReport: TechReport
     approved?: boolean
     totalPrice?: number
-    
 }

@@ -83,7 +83,7 @@ const create = async (data: NewReport) => {
                         create: data.treatment.products.map((product) => ({
                             name: product.name,
                             dosage: product.dosage,
-                            unit: product.unit,
+                            
                         })),
                     },
                 },

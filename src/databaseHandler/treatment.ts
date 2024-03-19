@@ -29,7 +29,6 @@ const update = async (data: NewTreatment) => {
                         create: data.products.map((product) => ({
                             name: product.name,
                             dosage: product.dosage,
-                            unit: product.unit,
                         })),
                     },
                 },
