@@ -134,6 +134,8 @@ export const handleSocket = (socket: Socket) => {
   socket.on("user:toggle:manager", (id: number) =>
     user.toggleManager(socket, id)
   );
+    
+    socket.on("user:delete", (user_id: number) => user.remove(socket, user_id))
 
   // TILLAGE OPS
   socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) =>

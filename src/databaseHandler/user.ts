@@ -450,6 +450,8 @@ const toggleManager = async (id: number) => {
     })
 }
 
+const remove = async (id: number) => await prisma.user.delete({ where: { id } })
+
 export default {
     inclusions,
     approve,
@@ -465,4 +467,5 @@ export default {
     update,
     toggleAdmin,
     toggleManager,
+    remove,
 }

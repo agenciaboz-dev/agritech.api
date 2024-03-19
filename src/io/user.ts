@@ -249,6 +249,17 @@ const toggleManager = async (socket: Socket, id: number) => {
     }
 }
 
+const remove = async (socket: Socket, user_id: number) => {
+    try {
+        const deleted = await user.remove(user_id)
+        socket.emit("user:delete", deleted)
+        socket.broadcast.emit("user:delete", deleted)
+    } catch (error) {
+        console.log(error)
+        socket.emit("user:delete:error", error?.toString())
+    }
+}
+
 export default {
     logout,
     newUser,
@@ -262,4 +273,5 @@ export default {
     listPendingApproval,
     toggleAdmin,
     toggleManager,
+    remove,
 }
