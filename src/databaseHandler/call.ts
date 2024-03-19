@@ -1,5 +1,7 @@
 import { Call, PrismaClient } from "@prisma/client"
 import { OpenCall, AdminCall, ApproveCall } from "../types/call"
+import report_db from "./report"
+import { checkMidnight } from "../io/report"
 
 const prisma = new PrismaClient()
 
@@ -233,45 +235,12 @@ const approve = async (data: ApproveCall) => {
                 },
             })
 
-            const report = await prisma.report.create({
-                data: {
-                    callId: call.id,
-                    stage: 1,
-                    date: new Date().getTime().toString(),
-                    hour: new Date().getTime().toString(),
-
-                    operation: {
-                        create: {
-                            service: "",
-                            culture: "",
-                            areaMap: 0,
-                            equipment: "",
-                            model: "",
-                        },
-                    },
-                    material: { create: [] },
-                    techReport: {
-                        create: {
-                            date: "",
-                            init: "",
-                            finish: "",
-                            comments: "",
-                            flight: { create: [] },
-                        },
-                    },
-                    treatment: {
-                        create: {
-                            products: { create: [] },
-                        },
-                    },
-                },
-                include: {
-                    operation: true,
-                    treatment: { include: { products: true } },
-                    material: true,
-                    techReport: { include: { flight: true } },
-                },
-            })
+            const report = await report_db.create(call.id)
+            try {
+                await checkMidnight(report)
+            } catch (error) {
+                console.log(error)
+            }
 
             return { call: updatedCall, report }
         } else {

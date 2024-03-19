@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import databaseHandler, { report_include } from "../databaseHandler/report"
+import databaseHandler, { ReportClosingType, report_include } from "../databaseHandler/report"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
 import { Notification } from "../class/Notification"
@@ -7,17 +7,35 @@ import pdf_handler from "../tools/pdf_handler"
 import { existsSync, mkdirSync } from "fs"
 import { PrismaClient, Call } from "@prisma/client"
 import { env } from "../env"
-import cron from "node-cron"
-import { getIoInstance } from "./socket"
 import normalize from "../tools/normalize"
+import { getIoInstance } from "./socket"
 
 const prisma = new PrismaClient()
+
+const handleMidnight = async (report: ReportClosingType) => {
+    if (report.stage !== 4) {
+        closeReport(report.id)
+
+        if (report.areaTrabalhada < report.call.talhao.area) {
+            const new_report = await databaseHandler.create(report.call.id)
+            const io = getIoInstance()
+            io.emit("report:update", new_report)
+        }
+    }
+}
+
+export const checkMidnight = async (report: ReportClosingType) => {
+    const now = new Date()
+    const end_date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
+    const delay = end_date.getTime() - now.getTime()
+    setTimeout(() => handleMidnight(report), delay)
+}
 
 const newReport = async (socket: Socket, data: NewReport) => {
     console.log(data)
 
     try {
-        const report = await databaseHandler.create(data)
+        const report = await databaseHandler.create(data.callId)
         socket.emit("report:creation:success", report)
     } catch (error) {
         console.log(error)
@@ -43,7 +61,8 @@ const approvedReport = async (socket: Socket, reportId: number) => {
         socket.emit("report:approved:failed", { error: error })
     }
 }
-const closeReport = async (socket: Socket, reportId: number) => {
+
+const closeReport = async (reportId: number, socket?: Socket) => {
     try {
         const report = await databaseHandler.close(reportId)
         new Notification({
@@ -88,10 +107,16 @@ const closeReport = async (socket: Socket, reportId: number) => {
             data: { pdf_path: url },
             include: report_include,
         })
-        socket.emit("report:closed:success", updated_report)
+
+        if (socket) {
+            socket.emit("report:closed:success", updated_report)
+        } else {
+            const io = getIoInstance()
+            io.emit("report:closed", updated_report)
+        }
     } catch (error) {
         console.log(error)
-        socket.emit("report:closed:failed", { error: error })
+        socket?.emit("report:closed:failed", { error: error })
     }
 }
 

@@ -354,9 +354,7 @@ export const handleSocket = (socket: Socket) => {
     report.approvedReport(socket, reportId)
   );
 
-  socket.on("report:close", (reportId: number) =>
-    report.closeReport(socket, reportId)
-  );
+  socket.on("report:close", (reportId: number) => report.closeReport(reportId, socket))
 
   socket.on("report:list", () => report.listReport(socket));
 
@@ -364,9 +362,7 @@ export const handleSocket = (socket: Socket) => {
     report.approvedReport(socket, reportId)
   );
 
-  socket.on("report:close", (reportId: number) =>
-    report.closeReport(socket, reportId)
-  );
+  socket.on("report:close", (reportId: number) => report.closeReport(reportId, socket))
 
   // notifications
   socket.on("notification:list", (user_id: number) =>
