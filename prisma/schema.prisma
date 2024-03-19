@@ -270,7 +270,9 @@ model Kit {
     hectareDay      Float
     objects         Object[]
     employees       Employee[]  
-    calls           Call[]        
+    calls           Call[]   
+    equipment       String?
+    model           String?     
 
     calendar        Calendar?
 }
@@ -349,8 +351,8 @@ model Treatment {
 model Product{ 
     id              Int             @id @default(autoincrement())
     name            String          
-    dosage          Float     
-    unit            String      
+    dosage          String     
+   
 
     treatment       Treatment        @relation(fields: [treatmentId],references: [id],onDelete: Cascade)
     treatmentId     Int           
@@ -361,12 +363,12 @@ model Material{
     talhao          String        @default("")
     area            Float
     product         String        @default("")
-    dosage          Float         
+    dosage          String         
     classification  String        @default("")
-    total           Float
-    removed         Float
-    applied         Float
-    returned        Float
+    total           String
+    removed         String
+    applied         String
+    returned        String
     comments        String        @db.Text 
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)
