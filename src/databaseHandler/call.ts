@@ -1,6 +1,6 @@
 import { Call, PrismaClient } from "@prisma/client"
 import { OpenCall, AdminCall, ApproveCall } from "../types/call"
-import report_db from "./report"
+import report_db, { report_include } from "./report"
 import { checkMidnight } from "../io/report"
 
 const prisma = new PrismaClient()
@@ -26,8 +26,6 @@ const inclusions = {
 
 const adminCreate = async (data: AdminCall) => {
     try {
-        console.log({ Ola_aqui: data })
-
         // Create the call
         const call = await prisma.call.create({
             data: {
@@ -89,12 +87,7 @@ const adminCreate = async (data: AdminCall) => {
                     },
                 },
             },
-            include: {
-                operation: true,
-                treatment: { include: { products: true } },
-                material: true,
-                techReport: { include: { flight: true } },
-            },
+            include: report_include,
         })
 
         // Update the call
@@ -130,12 +123,11 @@ const adminCreate = async (data: AdminCall) => {
             },
         })
 
-        console.log("Call, Producer, Stage, and Updated Call created/updated:", {
-            call,
-            tillage,
-            report,
-            updatedCall,
-        })
+        try {
+            await checkMidnight(report)
+        } catch (error) {
+            console.log(error)
+        }
         return {
             ...updatedCall,
             talhao: updatedCall.talhao

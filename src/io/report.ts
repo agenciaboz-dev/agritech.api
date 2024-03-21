@@ -12,11 +12,16 @@ import { getIoInstance } from "./socket"
 
 const prisma = new PrismaClient()
 
-const handleMidnight = async (report: ReportClosingType) => {
+const handleMidnight = async (report_id: number) => {
+    const report = await databaseHandler.find(report_id)
+    if (!report) throw `report ${report_id} not found`
+    console.log(`handling midnight for ${report.id}`)
     if (report.stage !== 4) {
         closeReport(report.id)
 
         if (report.areaTrabalhada < report.call.talhao.area) {
+            console.log({ area_trabalhada: report.areaTrabalhada, area_talhao: report.call.talhao.area })
+            console.log("creating new report")
             const new_report = await databaseHandler.create(report.call.id)
             const io = getIoInstance()
             io.emit("report:update", new_report)
@@ -25,15 +30,16 @@ const handleMidnight = async (report: ReportClosingType) => {
 }
 
 export const checkMidnight = async (report: ReportClosingType) => {
+    console.log(
+        `scheduling handle for report ${report.id} and call ${report.callId} and farm ${report.call.talhao.tillage.name} and talhao ${report.call.talhaoId}`
+    )
     const now = new Date()
     const end_date = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0)
     const delay = end_date.getTime() - now.getTime()
-    setTimeout(() => handleMidnight(report), delay)
+    setTimeout(() => handleMidnight(report.id), delay)
 }
 
 const newReport = async (socket: Socket, data: NewReport) => {
-    console.log(data)
-
     try {
         const report = await databaseHandler.create(data.callId)
         socket.emit("report:creation:success", report)
@@ -88,8 +94,6 @@ const closeReport = async (reportId: number, socket?: Socket) => {
         const file_path = `${output_dir}/${filename}`
         const port = process.env.PORT
         const url = `${env == "dev" ? `http://localhost:${port}` : `https://agencyboz.com:${port}`}/${file_path}`
-
-        console.log({ report, url })
 
         // report.call.kit.employees.forEach((item, index) => {
         //     const pilot = item.office == 'pilot'

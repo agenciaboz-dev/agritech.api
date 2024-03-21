@@ -6,8 +6,6 @@ import { ApproveCall, OpenCall } from "../types/call"
 import { Notification } from "../class/Notification"
 
 const newAdminCall = async (socket: Socket, data: any) => {
-    console.log(data)
-
     try {
         const call = await databaseHandler.adminCreate(data)
         socket.emit("adminCall:creation:success", call)

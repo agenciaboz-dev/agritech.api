@@ -117,7 +117,7 @@ const approve = async (reportId: number) => {
 const close = async (reportId: number) => {
     const report = await prisma.report.update({
         where: { id: reportId },
-        data: { close: new Date().getTime().toString() },
+        data: { close: new Date().getTime().toString(), stage: 4 },
         include: report_include,
     })
 
@@ -147,12 +147,7 @@ const close = async (reportId: number) => {
 const find = async (id: number) => {
     return await prisma.report.findUnique({
         where: { id },
-        include: {
-            operation: true,
-            treatment: true,
-            material: true,
-            techReport: true,
-        },
+        include: report_include,
     })
 }
 
