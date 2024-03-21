@@ -42,9 +42,11 @@ const fillForm = async (options: PdfFormOptions) => {
             const key = _field.getName()
 
             if (key == "report['call']['kit']['employees']['pilot_copilot']") {
-                const employees = options.report.call.kit.employees.sort((a, b) => (a.office == "pilot" ? -1 : 1)).map((item) => item.user.name)
+                const employees = options.report.call.kit?.employees
+                    .sort((a, b) => (a.office == "pilot" ? -1 : 1))
+                    .map((item) => item.user.name)
 
-                writeFieldValue(form, key, `${employees.join(" / ")}`)
+                if (employees) writeFieldValue(form, key, `${employees.join(" / ")}`)
                 skip = true
             }
 
@@ -53,7 +55,9 @@ const fillForm = async (options: PdfFormOptions) => {
                 writeFieldValue(
                     form,
                     key,
-                    `${address?.street || address?.adjunct}, ${address?.number || "S/N"}, ${address?.district}, ${address?.city}`
+                    `${address?.street || address?.adjunct}, ${address?.number || "S/N"}, ${address?.district}, ${
+                        address?.city
+                    }`
                 )
                 skip = true
             }
@@ -74,8 +78,8 @@ const fillForm = async (options: PdfFormOptions) => {
                 if (value) {
                     writeFieldValue(form, key, value)
                 } else {
-                    console.log("chave não encontrada:")
-                    console.log(key)
+                    // console.log("chave não encontrada:")
+                    // console.log(key)
                 }
             }
         } catch (error) {

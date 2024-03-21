@@ -10,12 +10,12 @@ declare interface OpenCall {
     talhao: Talhao
     talhaoId: number
     kit?: Kit
-    kitId: number
+    kitId?: number
     producerId: number
     userId: number
     forecast: string
 
-    hectarePrice: number
+    hectarePrice?: number
 }
 
 declare interface AdminCall {
@@ -28,7 +28,7 @@ declare interface AdminCall {
     talhao?: Talhao
     talhaoId: number
     kit?: Kit
-    kitId?: number
+    kitId: number
     producerId: number
     userId: number
     forecast: string

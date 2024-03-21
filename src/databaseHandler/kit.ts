@@ -62,6 +62,8 @@ const create = async (data: NewKit) => {
             name: data.name,
             description: data.description,
             hectareDay: data.hectareDay,
+            equipment: data.equipment,
+            model: data.model,
 
             employees: {
                 connect: data.employees?.map((employee) => ({ id: employee.id })),
@@ -117,6 +119,8 @@ const update = async (data: NewKit) => {
             description: data.description,
             active: data.active,
             hectareDay: data.hectareDay,
+            equipment: data.equipment,
+            model: data.model,
             objects: {
                 deleteMany: { kitId: data.id },
                 create: data.objects?.map((item) => ({

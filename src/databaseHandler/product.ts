@@ -9,7 +9,6 @@ const create = async (data: NewProduct) => {
         data: {
             name: data.name,
             dosage: data.dosage,
-            unit: data.unit,
             treatmentId: data.treatmentId,
         },
     })
@@ -23,7 +22,6 @@ const update = async (data: NewProduct) => {
         data: {
             name: data.name,
             dosage: data.dosage,
-            unit: data.unit,
             treatmentId: data.treatmentId,
         },
     })

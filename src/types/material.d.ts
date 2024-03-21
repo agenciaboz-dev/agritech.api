@@ -4,12 +4,12 @@ declare interface NewMaterial {
     talhao: string
     area: number
     product: string
-    dosage: number
+    dosage: string
     classification: string
-    total: number
-    removed: number
-    applied: number
-    returned: number
+    total: string
+    removed: string
+    applied: string
+    returned: string
     comments: string
     reportId: number
 }

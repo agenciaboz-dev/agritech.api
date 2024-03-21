@@ -3,108 +3,60 @@ import { Prisma, PrismaClient } from "@prisma/client"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
 
-export const closing_report_include = Prisma.validator<Prisma.ReportInclude>()({
-    material: true,
+export const report_include = Prisma.validator<Prisma.ReportInclude>()({
     operation: true,
     treatment: { include: { products: true } },
+    material: true,
     techReport: { include: { flight: true } },
     call: {
         include: {
-            talhao: { include: { tillage: { include: { address: true } } } },
-            kit: { include: { employees: { include: { user: true } } } },
             producer: { include: { user: true } },
+            kit: { include: { employees: { include: { user: true } } } },
+            talhao: { include: { tillage: { include: { address: true } } } },
             reports: true,
         },
     },
 })
 
-export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof closing_report_include }>
+export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof report_include }>
 
 const prisma = new PrismaClient()
 
-const create = async (data: NewReport) => {
-    console.log(data)
-
-    const report = await prisma.report.create({
+const create = async (call_id: number) =>
+    await prisma.report.create({
         data: {
-            call: { connect: { id: data.callId } },
-
-            areaTrabalhada: data.areaTrabalhada,
+            callId: call_id,
+            stage: 1,
             date: new Date().getTime().toString(),
             hour: new Date().getTime().toString(),
 
             operation: {
                 create: {
-                    service: data.operation.service,
-                    culture: data.operation.culture,
-                    areaMap: data.operation.areaMap,
-                    equipment: data.operation.equipment,
-                    model: data.operation.model,
+                    service: "",
+                    culture: "",
+                    areaMap: 0,
+                    equipment: "",
+                    model: "",
                 },
             },
-            material: {
-                create: data.material.map((material) => ({
-                    talhao: material.talhao,
-                    area: material.area,
-                    product: material.product,
-                    dosage: material.dosage,
-                    classification: material.classification,
-                    total: material.total,
-                    removed: material.removed,
-                    applied: material.applied,
-                    returned: material.returned,
-                    comments: material.comments,
-                })),
-            },
+            material: { create: [] },
             techReport: {
                 create: {
-                    date: data.techReport.date,
-                    init: data.techReport.init,
-                    finish: data.techReport.finish,
-                    comments: data.techReport.comments,
-                    flight: {
-                        create: data.techReport.flight.map((flight) => ({
-                            humidity: flight.humidity,
-                            temperature: flight.temperature,
-                            wind_velocity: flight.wind_velocity,
-                            height: flight.height,
-                            faixa: flight.faixa,
-                            flight_velocity: flight.flight_velocity,
-                            tank_volume: flight.tank_volume,
-                            rate: flight.rate,
-                            performance: flight.performance,
-                        })),
-                    },
+                    date: "",
+                    init: "",
+                    finish: "",
+                    comments: "",
+                    flight: { create: [] },
                 },
             },
             treatment: {
                 create: {
-                    products: {
-                        create: data.treatment.products.map((product) => ({
-                            name: product.name,
-                            dosage: product.dosage,
-                            unit: product.unit,
-                        })),
-                    },
+                    products: { create: [] },
                 },
             },
         },
-        include: {
-            stages: true,
-            call: true,
-            operation: true,
-            treatment: { include: { products: true } },
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+        include: report_include,
     })
-    console.log(report)
-
-    return prisma.report.findUnique({
-        where: { id: report.id },
-        include: { operation: true, material: true, techReport: true, treatment: true, call: true },
-    })
-}
 
 const update = async (data: { reportId: number; totalPrice: number; areaTrabalhada: number; materials: NewMaterial[] }) => {
     console.log(data)
@@ -130,19 +82,16 @@ const update = async (data: { reportId: number; totalPrice: number; areaTrabalha
                 })),
             },
         },
-        include: {
-            operation: true,
-            treatment: { include: { products: true } },
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+        include: report_include,
     })
 
-    console.log(report)
-    return prisma.report.findUnique({
-        where: { id: report.id },
-        include: { operation: true, material: true, techReport: true, treatment: true, call: true },
-    })
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
 const approve = async (reportId: number) => {
     const report = await prisma.report.update({
@@ -169,7 +118,7 @@ const close = async (reportId: number) => {
     const report = await prisma.report.update({
         where: { id: reportId },
         data: { close: new Date().getTime().toString() },
-        include: closing_report_include,
+        include: report_include,
     })
 
     return {
@@ -208,46 +157,17 @@ const find = async (id: number) => {
 }
 
 const list = async () => {
-    return await prisma.report.findMany({
-        include: {
-            call: { include: { kit: true, talhao: { include: { tillage: true } } } },
-            operation: true,
-            treatment: true,
-            material: true,
-            techReport: { include: { flight: true } },
-        },
+    const reports = await prisma.report.findMany({
+        include: report_include,
     })
-}
 
-const createNewReportAtMidnight = async (data: NewReport) => {
-    console.log(data)
-    // Get the current date
-    const currentDate = new Date()
-
-    // Calculate the date for the previous day
-    const previousDay = new Date(currentDate)
-    previousDay.setDate(previousDay.getDate() - 1)
-
-    try {
-        // Check if a report for the previous day already exists
-        const existingReport = await prisma.report.findFirst({
-            where: {
-                AND: [{ callId: data.callId }, { date: previousDay.toISOString().slice(0, 10) }],
-            },
-        })
-
-        // If no report exists for the previous day, create a new report
-        if (!existingReport) {
-            // Create a new report
-            const lateReport = await create(data)
-            console.log("New report created at midnight for the previous day:", lateReport)
-            return lateReport
-        } else {
-            console.log("Report for the previous day already exists. No action needed.")
-        }
-    } catch (error) {
-        console.error(`Error creating report for the previous day: ${error}`)
-    }
+    return reports.map((item) => ({
+        ...item,
+        call: {
+            ...item.call,
+            talhao: { ...item.call.talhao, cover: "", tillage: { ...item.call.talhao.tillage, cover: "" } },
+        },
+    }))
 }
 
 export default {
@@ -255,7 +175,6 @@ export default {
     update,
     find,
     list,
-    createNewReportAtMidnight,
     approve,
     close,
 }

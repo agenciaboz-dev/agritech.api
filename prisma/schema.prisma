@@ -248,8 +248,8 @@ model Call {
     talhao          Talhao       @relation(fields: [talhaoId],references: [id])
     talhaoId        Int
 
-    kit             Kit          @relation(fields: [kitId],references: [id])
-    kitId           Int         
+    kit             Kit?          @relation(fields: [kitId],references: [id])
+    kitId           Int?         
 
     producer        Producer     @relation(fields: [producerId],references: [id],onDelete: Cascade)
     producerId      Int              
@@ -270,7 +270,9 @@ model Kit {
     hectareDay      Float
     objects         Object[]
     employees       Employee[]  
-    calls           Call[]        
+    calls           Call[]   
+    equipment       String?
+    model           String?     
 
     calendar        Calendar?
 }
@@ -302,14 +304,6 @@ model Stage {
     
 }
 
-enum ReportStages {
-    STAGE0
-    STAGE1
-    STAGE2
-    STAGE3
-    STAGE4
-}
-
 model Report {
     id              Int           @id @default(autoincrement())
     areaTrabalhada  Float         @default(0)
@@ -323,7 +317,7 @@ model Report {
     call            Call          @relation(fields: [callId],references: [id],onDelete: Cascade)
     callId          Int
 
-    stage           ReportStages    @default(STAGE0)
+    stage           Int           @default(0)
     stages          Stage[]
 
     operation       Operation?
@@ -357,8 +351,8 @@ model Treatment {
 model Product{ 
     id              Int             @id @default(autoincrement())
     name            String          
-    dosage          Float     
-    unit            String      
+    dosage          String     
+   
 
     treatment       Treatment        @relation(fields: [treatmentId],references: [id],onDelete: Cascade)
     treatmentId     Int           
@@ -369,12 +363,12 @@ model Material{
     talhao          String        @default("")
     area            Float
     product         String        @default("")
-    dosage          Float         
+    dosage          String         
     classification  String        @default("")
-    total           Float
-    removed         Float
-    applied         Float
-    returned        Float
+    total           String
+    removed         String
+    applied         String
+    returned        String
     comments        String        @db.Text 
 
     report          Report        @relation(fields: [reportId],references: [id],onDelete: Cascade)

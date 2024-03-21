@@ -1,5 +1,6 @@
 import { Stage, PrismaClient, Report, Call } from "@prisma/client"
 import { NewTechReport } from "../types/techReport"
+import { report_include } from "./report"
 
 const prisma = new PrismaClient()
 
@@ -19,44 +20,44 @@ const create = async (data: NewTechReport) => {
 }
 
 const update = async (data: NewTechReport) => {
-    console.log(data)
-    console.log({ voos: data.flight })
-    const flights = data.flight || []
-    const techReport = await prisma.techReport.update({
-        where: { id: data.id },
+    const report = await prisma.report.update({
+        where: { id: data.reportId },
         data: {
-            date: data.date,
-            init: data.init,
-            finish: data.finish,
-            comments: data.comments,
-            reportId: data.reportId,
-
-            flight: {
-                deleteMany: { techReportId: data.id },
-                create: [
-                    ...flights.map((flight) => ({
-                        humidity: flight.humidity,
-                        temperature: flight.temperature,
-                        wind_velocity: flight.wind_velocity,
-                        height: flight.height,
-                        faixa: flight.faixa,
-                        flight_velocity: flight.flight_velocity,
-                        tank_volume: flight.tank_volume,
-                        rate: flight.rate,
-                        performance: flight.performance,
-                    })),
-                ],
+            techReport: {
+                update: {
+                    date: data.date,
+                    init: data.init,
+                    finish: data.finish,
+                    comments: data.comments,
+                    flight: {
+                        deleteMany: { techReportId: data.id },
+                        create: [
+                            ...data.flight.map((flight) => ({
+                                humidity: flight.humidity,
+                                temperature: flight.temperature,
+                                wind_velocity: flight.wind_velocity,
+                                height: flight.height,
+                                faixa: flight.faixa,
+                                flight_velocity: flight.flight_velocity,
+                                tank_volume: flight.tank_volume,
+                                rate: flight.rate,
+                                performance: flight.performance,
+                            })),
+                        ],
+                    },
+                },
             },
         },
-        include: {
-            report: {
-                include: { operation: true, treatment: true, techReport: true, material: true, stages: true, call: true },
-            },
-        },
+        include: report_include,
     })
-    console.log(techReport)
 
-    return techReport
+    return {
+        ...report,
+        call: {
+            ...report.call,
+            talhao: { ...report.call.talhao, cover: "", tillage: { ...report.call.talhao.tillage, cover: "" } },
+        },
+    }
 }
 
 const find = async (id: number) => {
