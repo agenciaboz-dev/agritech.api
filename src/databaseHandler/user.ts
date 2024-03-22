@@ -115,25 +115,29 @@ const exists = async (data: NewUser) => {
 const login = async (data: { login: string; password: string }) => {
     const user = await prisma.user.findFirst({
         where: {
-            OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }],
-            AND: { password: data.password },
+            AND: [{ OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }] }, { password: data.password }],
         },
         include: inclusions.user,
     })
 
-    return {
-        ...user,
-        producer: user?.producer
-            ? {
-                  ...user?.producer,
-                  tillage: user?.producer?.tillage.map((tillage) => ({
-                      ...tillage,
-                      cover: "",
-                      talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
-                  })),
-              }
-            : null,
+    if (user) {
+        return {
+            ...user,
+            producer: user?.producer
+                ? {
+                      ...user?.producer,
+                      tillage: user?.producer?.tillage.map((tillage) => ({
+                          ...tillage,
+                          cover: "",
+                          talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                      })),
+                  }
+                : null,
+        }
     }
+
+    return null
+
 }
 
 const pendingList = async () => {
