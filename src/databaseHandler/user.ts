@@ -26,7 +26,7 @@ const inclusions = {
                 bank: true,
                 professional: true,
                 calendars: true,
-                producers: true,
+                producers: { include: { user: true } },
                 kits: { include: { calls: true } },
             },
         },

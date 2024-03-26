@@ -150,7 +150,7 @@ const list = async () => {
         include: {
             objects: true,
             employees: true,
-            calls: { include: { talhao: true } },
+            calls: { include: { talhao: true, reports: true } },
         },
     })
 }
