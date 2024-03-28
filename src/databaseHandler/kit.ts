@@ -111,6 +111,8 @@ const update = async (data: NewKit) => {
         image = saveImage(`kit/`, data.image.file, data.image.name)
     }
 
+    const findKit = await prisma.kit.findFirst({ where: { id: data.id }, include: { employees: true } })
+
     const kit = await prisma.kit.update({
         where: { id: data.id },
         data: {
@@ -130,7 +132,7 @@ const update = async (data: NewKit) => {
                 })),
             },
             employees: {
-                disconnect: data.employees?.map((employee) => ({ id: employee.id })),
+                disconnect: findKit?.employees,
                 connect: data.employees?.map((employee) => ({ id: employee.id })),
             },
         },
