@@ -159,7 +159,7 @@ const listPendingApproval = async (socket: Socket) => {
     try {
         const users = await prisma.pendingList()
         socket.emit("user:pendingApprovalList:success", users)
-        socket.broadcast.emit("admin:list:update", users)
+        socket.broadcast.emit("users:list:pending", users)
 
     } catch (error) {
         console.error(`Error fetching users pending admin approval`)
@@ -171,6 +171,7 @@ const listUsersApproved = async (socket: Socket) => {
     try {
         const users = await prisma.approvedList()
         socket.emit("users:list:success", users)
+        socket.broadcast.emit("users:list:approved", users)
        
 
         // console.log({ users: users })
