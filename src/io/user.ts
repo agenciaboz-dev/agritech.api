@@ -159,7 +159,7 @@ const listPendingApproval = async (socket: Socket) => {
     try {
         const users = await prisma.pendingList()
         socket.emit("user:pendingApprovalList:success", users)
-        socket.broadcast.emit("users:list:pending", users)
+        socket.broadcast.emit("user:pendingApprovalList:success", users)
 
     } catch (error) {
         console.error(`Error fetching users pending admin approval`)
@@ -171,7 +171,7 @@ const listUsersApproved = async (socket: Socket) => {
     try {
         const users = await prisma.approvedList()
         socket.emit("users:list:success", users)
-        socket.broadcast.emit("users:list:approved", users)
+        socket.broadcast.emit("users:list:success", users)
        
 
         // console.log({ users: users })
@@ -197,7 +197,7 @@ const update = async (socket: Socket, data: Partial<UserFull>, id: number) => {
     try {
         const updatedUser = await prisma.update(data, id)
         socket.emit("user:update:success", updatedUser)
-        socket.broadcast.emit("user:update", updatedUser)
+        socket.broadcast.emit("user:update:success", updatedUser)
     } catch (error) {
         console.log(error)
         socket.emit("user:update:failed", { error: error })
