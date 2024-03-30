@@ -43,7 +43,7 @@ const newReport = async (socket: Socket, data: NewReport) => {
     try {
         const report = await databaseHandler.create(data.callId)
         socket.emit("report:creation:success", report)
-        socket.broadcast.emit("report:new", report)
+        socket.broadcast.emit("report:creation:success", report)
     } catch (error) {
         console.log(error)
         socket.emit("report:creation:failed", { error: error })
@@ -54,7 +54,7 @@ const approvedReport = async (socket: Socket, reportId: number) => {
     try {
         const report = await databaseHandler.approve(reportId)
         socket.emit("report:approved:success", report)
-        socket.broadcast.emit("report:approve", report)
+        socket.broadcast.emit("report:approve:success", report)
         const employees = report.call.kit?.employees.map((item) => item.user)
         if (employees)
             new Notification({
@@ -115,7 +115,7 @@ const closeReport = async (reportId: number, socket?: Socket) => {
 
         if (socket) {
             socket.emit("report:closed:success", updated_report)
-            socket.broadcast.emit("report:closed", report)
+            socket.broadcast.emit("report:closed:success", report)
         } else {
             const io = getIoInstance()
             io.emit("report:closed", updated_report)
@@ -141,7 +141,7 @@ const updateReport = async (
         const report = await databaseHandler.update(data)
 
         socket.emit("report:update:success", report)
-        socket.broadcast.emit("report:update", report)
+        socket.broadcast.emit("report:update:success", report)
     } catch (error) {
         console.log(error)
         socket.emit("report:update:failed", { error: error })
@@ -163,7 +163,7 @@ const listReport = async (socket: Socket) => {
     try {
         const report = await databaseHandler.list()
         socket.emit("report:list:success", report)
-        socket.broadcast.emit("report:list", report)
+        socket.broadcast.emit("report:list:success", report)
     } catch (error) {
         console.log(error)
         socket.emit("report:list:failed", { error: error })
