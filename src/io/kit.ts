@@ -9,6 +9,7 @@ const newKit = async (socket: Socket, data: any) => {
     try {
         const kit = await databaseHandler.create(data)
         socket.emit("kit:creation:success", kit)
+        socket.broadcast.emit("kit:new", kit)
 
         if (kit) {
             const users = kit.employees.map((employee) => employee.user)
@@ -26,6 +27,7 @@ const updateKit = async (socket: Socket, data: any) => {
     try {
         const kit = await databaseHandler.update(data)
         socket.emit("kit:update:success", kit)
+        socket.broadcast.emit("kit:update", kit)
 
         if (kit) {
             const users = kit.employees.map((employee) => employee.user)
@@ -50,6 +52,7 @@ const activateKit = async (socket: Socket, data: Kit) => {
     try {
         const kit = await databaseHandler.toggle(data.id)
         socket.emit("kit:toggle:success", kit)
+        socket.broadcast.emit("kit:update", kit)
 
         if (kit) {
             const users = kit.employees.map((employee) => employee.user)

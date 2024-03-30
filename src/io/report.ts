@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import { Socket } from "socket.io"
 import databaseHandler, { ReportClosingType, report_include } from "../databaseHandler/report"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
@@ -25,6 +25,7 @@ const handleMidnight = async (report_id: number) => {
             const new_report = await databaseHandler.create(report.call.id)
             const io = getIoInstance()
             io.emit("report:update", new_report)
+           
         }
     }
 }
@@ -43,6 +44,7 @@ const newReport = async (socket: Socket, data: NewReport) => {
     try {
         const report = await databaseHandler.create(data.callId)
         socket.emit("report:creation:success", report)
+        socket.broadcast.emit("report:new", report)
     } catch (error) {
         console.log(error)
         socket.emit("report:creation:failed", { error: error })
@@ -53,7 +55,7 @@ const approvedReport = async (socket: Socket, reportId: number) => {
     try {
         const report = await databaseHandler.approve(reportId)
         socket.emit("report:approved:success", report)
-
+        socket.broadcast.emit("report:approve", report)
         const employees = report.call.kit?.employees.map((item) => item.user)
         if (employees)
             new Notification({
@@ -84,9 +86,9 @@ const closeReport = async (reportId: number, socket?: Socket) => {
         }
 
         const filename = normalize(
-            `Relatório_${new Date(Number(report.date)).toLocaleDateString("pt-br")}_${report.call.producer.user.name}_${report.call.talhao.name}_${
-                report.call.talhao.tillage.name
-            }_${report.call.id}.pdf`
+            `Relatório_${new Date(Number(report.date)).toLocaleDateString("pt-br")}_${report.call.producer.user.name}_${
+                report.call.talhao.name
+            }_${report.call.talhao.tillage.name}_${report.call.id}.pdf`
         )
             .replace(/\s/g, "-")
             .replace(/\//g, "-")
@@ -114,6 +116,7 @@ const closeReport = async (reportId: number, socket?: Socket) => {
 
         if (socket) {
             socket.emit("report:closed:success", updated_report)
+            socket.broadcast.emit("report:closed", report)
         } else {
             const io = getIoInstance()
             io.emit("report:closed", updated_report)
@@ -125,76 +128,53 @@ const closeReport = async (reportId: number, socket?: Socket) => {
 }
 
 const updateReport = async (
-  socket: Socket,
-  data: {
-    reportId: number;
-    totalPrice: number;
-    areaTrabalhada: number;
-    materials: NewMaterial[];
-  }
+    socket: Socket,
+    data: {
+        reportId: number
+        totalPrice: number
+        areaTrabalhada: number
+        materials: NewMaterial[]
+    }
 ) => {
-  console.log(data);
+    console.log(data)
 
-  try {
-    const report = await databaseHandler.update(data);
+    try {
+        const report = await databaseHandler.update(data)
 
-    socket.emit("report:update:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("report:update:failed", { error: error });
-  }
-};
+        socket.emit("report:update:success", report)
+        socket.broadcast.emit("report:update", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:update:failed", { error: error })
+    }
+}
 
 const findReport = async (socket: Socket, id: number) => {
-  try {
-    const report = await databaseHandler.find(id);
-    socket.emit("report:find:success", report);
-  } catch (error) {
-    console.error(`Error fetching report for ID: ${id}. Error: ${error}`);
-    socket.emit("report:find:error", { error: error });
-  }
-};
+    try {
+        const report = await databaseHandler.find(id)
+        socket.emit("report:find:success", report)
+    } catch (error) {
+        console.error(`Error fetching report for ID: ${id}. Error: ${error}`)
+        socket.emit("report:find:error", { error: error })
+    }
+}
 
 const listReport = async (socket: Socket) => {
     console.log("report:list")
-  try {
-    const report = await databaseHandler.list();
-    socket.emit("report:list:success", report);
-  } catch (error) {
-    console.log(error);
-    socket.emit("report:list:failed", { error: error });
-  }
-};
-
-// cron.schedule("* * * * *", async () => {
-//   console.log("Cron job started");
-//   try {
-//     const unclosedReports = await prisma.report.findMany({
-//       where: { close: "" },
-//     });
-//     console.log(unclosedReports);
-//     if (unclosedReports.length === 0) {
-//       console.log("No unclosed reports found");
-//     } else {
-//       console.log("Unclosed reports found");
-//     }
-
-//     //   await prisma.report.create({
-//     //     data: reportData,
-//     //     // Include other necessary setup based on your Prisma model relations
-//     //   });
-
-//     //   console.log(`Report created for call ID: ${call.id}`);
-//   } catch (error) {
-//     console.error(`Error`, error);
-//   }
-// });
+    try {
+        const report = await databaseHandler.list()
+        socket.emit("report:list:success", report)
+    } catch (error) {
+        console.log(error)
+        socket.emit("report:list:failed", { error: error })
+    }
+}
 
 export default {
-  newReport,
-  updateReport,
-  findReport,
-  listReport,
-  approvedReport,
-  closeReport,
-};
+    newReport,
+    updateReport,
+    findReport,
+    listReport,
+    approvedReport,
+    closeReport,
+}
