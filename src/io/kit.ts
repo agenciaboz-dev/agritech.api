@@ -27,7 +27,7 @@ const updateKit = async (socket: Socket, data: any) => {
     try {
         const kit = await databaseHandler.update(data)
         socket.emit("kit:update:success", kit)
-        socket.broadcast.emit("kit:update", kit)
+        socket.broadcast.emit("kit:update:success", kit)
 
         if (kit) {
             const users = kit.employees.map((employee) => employee.user)
