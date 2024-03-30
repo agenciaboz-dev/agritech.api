@@ -11,7 +11,6 @@ const newTalhao = async (socket: Socket, data: any, isAdmin: boolean) => {
         socket.emit("talhao:create:success", talhao)
         socket.broadcast.emit("talhao:new", talhao)
 
-
         if (isAdmin && talhao) {
             new Notification({
                 action: "new",
@@ -33,7 +32,6 @@ const updateTalhao = async (socket: Socket, data: any) => {
         const talhao = await databaseHandler.update(data)
         socket.emit("talhao:update:success", talhao)
         socket.broadcast.emit("talhao:update", talhao)
-
     } catch (error) {
         console.log(error)
         socket.emit("talhao:update:failed", { error: error })
@@ -48,6 +46,7 @@ const findTalhao = async (socket: Socket, id: number) => {
 const listTalhao = async (socket: Socket) => {
     const talhao = await databaseHandler.list()
     socket.emit("talhao:list:success", talhao)
+    socket.broadcast.emit("talhao:list", talhao)
 }
 
 const talhao_cover = async (socket: Socket, tillageId: number) => {
@@ -55,7 +54,6 @@ const talhao_cover = async (socket: Socket, tillageId: number) => {
         const talhao = await databaseHandler.coverTalhao(tillageId)
         socket.emit("tillage:cover:success", { talhaoId: talhao?.id, cover: talhao?.cover })
         socket.broadcast.emit("talhao:cover", talhao)
-   
     } catch (error) {
         console.log(error)
         socket.emit("tillage:coover:failed", error)
