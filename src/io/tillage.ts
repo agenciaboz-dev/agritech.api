@@ -52,6 +52,7 @@ const updateTillage = async (socket: Socket, data: any) => {
 const listTillage = async (socket: Socket) => {
     const tillage = await databaseHandler.list()
     socket.emit("tillage:list:success", tillage)
+    socket.broadcast.emit("tillage:list", tillage)
 }
 
 export default {
