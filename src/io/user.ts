@@ -53,7 +53,7 @@ const newUser = async (socket: Socket, userNew: any) => {
             socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
 
             socket.emit("user:status:review", pendingUser)
-            socket.broadcast.emit("admin:list:update", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
+            socket.broadcast.emit("admin:new:user", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
 
             if (pendingUser?.employee) {
                 new Notification({
@@ -105,7 +105,7 @@ const newEmployee = async (socket: Socket, userNew: any) => {
             socket.emit("user:signup:success", pendingUser) // <<<<<<<<<<<<
 
             socket.emit("user:status:review", pendingUser)
-            socket.broadcast.emit("admin:list:update", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
+            socket.broadcast.emit("admin:new:user", pendingUser) // coloquei .user aqui pra gambiarrar o broadcast
         }
     } catch (error: any) {
         console.log("OLHA O GRANDE ERRO: ------------", error)
@@ -137,6 +137,7 @@ const approve = async (socket: Socket, id: number) => {
     try {
         const user = await prisma.approve(id)
         socket.emit("application:status:approved", user)
+        socket.broadcast.emit("user:approve", user)
     } catch (error: any) {
         socket.emit("application:approval:error", { error: error.message })
         console.log(error)
@@ -147,6 +148,7 @@ const reject = async (socket: Socket, id: number) => {
     try {
         const user = await prisma.reject(id)
         socket.emit("application:status:rejected", user)
+        socket.broadcast.emit("user:reject", user)
     } catch (error: any) {
         socket.emit("application:rejection:error", { error: error.message })
         console.log(error)
@@ -157,6 +159,8 @@ const listPendingApproval = async (socket: Socket) => {
     try {
         const users = await prisma.pendingList()
         socket.emit("user:pendingApprovalList:success", users)
+        socket.broadcast.emit("admin:list:update", users)
+
     } catch (error) {
         console.error(`Error fetching users pending admin approval`)
         socket.emit("user:pendingApprovalList:error", { error })
@@ -167,6 +171,8 @@ const listUsersApproved = async (socket: Socket) => {
     try {
         const users = await prisma.approvedList()
         socket.emit("users:list:success", users)
+       
+
         // console.log({ users: users })
     } catch (error) {
         console.error("Erro para acessar lista de usuários")
@@ -201,6 +207,7 @@ const toggleAdmin = async (socket: Socket, id: number) => {
     try {
         const user = await prisma.toggleAdmin(id)
         socket.emit("user:admin:toggle:success", user)
+        socket.broadcast.emit("admin:list:update", user)
         console.log({ Admin: user.isAdmin })
         user.isAdmin
             ? new Notification({
@@ -227,6 +234,8 @@ const toggleManager = async (socket: Socket, id: number) => {
     try {
         const user = await prisma.toggleManager(id)
         socket.emit("user:manager:toggle:success", user)
+        socket.broadcast.emit("admin:list:update", user)
+
         console.log({ Manager: user.isManager })
         user.isManager
             ? new Notification({
