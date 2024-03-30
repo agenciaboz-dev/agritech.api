@@ -11,7 +11,7 @@ const newTillage = async (socket: Socket, data: any, isAdmin: boolean) => {
         const tillage = await databaseHandler.create(data)
 
         socket.emit("tillage:creation:success", tillage)
-        socket.broadcast.emit("tillage:new", tillage)
+        socket.broadcast.emit("tillage:creation:success", tillage)
         const owner = await user.findById(tillage.tillage.producerId)
         if (isAdmin && owner) {
             new Notification({ action: "new", target_id: tillage.tillage.id, target_key: "tillage", users: [owner] })
@@ -27,12 +27,12 @@ const tillage_cover = async (socket: Socket, tillageId: number) => {
         const tillage = await databaseHandler.coverTillage(tillageId)
         
         socket.emit("tillage:cover:success", { tillageId: tillage?.id, cover: tillage?.cover })
-        socket.broadcast.emit("tillage:cover", { tillageId: tillage?.id, cover: tillage?.cover })
+        socket.broadcast.emit("tillage:cover:success", { tillageId: tillage?.id, cover: tillage?.cover })
         
 
     } catch {
         console.log(error)
-        socket.emit("tillage:coover:failed", error)
+        socket.emit("tillage:cover:failed", error)
     }
 }
 const updateTillage = async (socket: Socket, data: any) => {
@@ -52,7 +52,7 @@ const updateTillage = async (socket: Socket, data: any) => {
 const listTillage = async (socket: Socket) => {
     const tillage = await databaseHandler.list()
     socket.emit("tillage:list:success", tillage)
-    socket.broadcast.emit("tillage:list", tillage)
+    socket.broadcast.emit("tillage:list:success", tillage)
 }
 
 export default {
