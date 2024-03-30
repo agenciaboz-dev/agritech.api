@@ -25,7 +25,6 @@ const handleMidnight = async (report_id: number) => {
             const new_report = await databaseHandler.create(report.call.id)
             const io = getIoInstance()
             io.emit("report:update", new_report)
-           
         }
     }
 }
@@ -164,6 +163,7 @@ const listReport = async (socket: Socket) => {
     try {
         const report = await databaseHandler.list()
         socket.emit("report:list:success", report)
+        socket.broadcast.emit("report:list", report)
     } catch (error) {
         console.log(error)
         socket.emit("report:list:failed", { error: error })
