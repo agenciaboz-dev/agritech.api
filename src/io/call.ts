@@ -1,7 +1,7 @@
 import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler/call"
 import tillage from "../databaseHandler/tillage"
-import { Call } from "@prisma/client"
+import { Call, User } from "@prisma/client"
 import { ApproveCall, OpenCall } from "../types/call"
 import { Notification } from "../class/Notification"
 
@@ -139,10 +139,14 @@ const listCallPending = async (socket: Socket) => {
     socket.emit("call:listPending:success", call)
     socket.broadcast.emit("call:listPending:success", call)
 }
-const listCallApproved = async (socket: Socket) => {
-    const call = await databaseHandler.listApproved()
-    socket.emit("call:listApproved:success", call)
-    socket.broadcast.emit("call:listApproved:success", call)
+const listCallApproved = async (socket: Socket, user: User) => {
+    try {
+        const call = await databaseHandler.listApproved(user)
+        socket.emit("call:listApproved:success", call)
+        socket.broadcast.emit("call:listApproved:success", call)
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export default {

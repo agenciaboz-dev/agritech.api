@@ -1,4 +1,4 @@
-import { Call } from "@prisma/client"
+import { Call, User } from "@prisma/client"
 import { OpenCall, AdminCall, ApproveCall } from "../types/call"
 import report_db, { report_include } from "./report"
 import { checkMidnight } from "../io/report"
@@ -366,9 +366,9 @@ const listPending = async () => {
         },
     })
 }
-const listApproved = async () => {
+const listApproved = async (user?: User) => {
     return await prisma.call.findMany({
-        where: { approved: true },
+        where: { AND: [{ approved: true }, { producer: { userid: user?.id } }] },
         include: {
             kit: {
                 include: {

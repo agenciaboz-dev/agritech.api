@@ -15,6 +15,10 @@ ssh ${user}@agencyboz "source ~/.nvm/nvm.sh; cd ${path}; rm -rf dist node_module
 echo 'Uploading build to server'
 scp -r dist ${user}@agencyboz:${path}/
 
+echo 'uploading templates'
+ssh ${user}@agencyboz "mkdir -p ${user}@agencyboz:${path}/src"
+scp -r src/templates/ ${user}@agencyboz:${path}/src
+
 echo 'uploading .env to server'
 scp .env ${user}@agencyboz:${path}/
 
