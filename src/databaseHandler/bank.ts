@@ -1,7 +1,5 @@
 import { NewBank } from "../types/bank"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewBank) => {
     console.log("Input: ", data)

@@ -1,8 +1,6 @@
 import { NewObject } from "../types/object"
 import { Object } from "@prisma/client"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewObject) => {
     console.log(data)

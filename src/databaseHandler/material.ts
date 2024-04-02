@@ -1,8 +1,6 @@
 import { NewMaterial } from "../types/material"
 import { Material } from "@prisma/client"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewMaterial) => {
     const material = await prisma.material.create({

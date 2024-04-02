@@ -1,9 +1,8 @@
-import { Call, PrismaClient } from "@prisma/client"
+import { Call } from "@prisma/client"
 import { OpenCall, AdminCall, ApproveCall } from "../types/call"
 import report_db, { report_include } from "./report"
 import { checkMidnight } from "../io/report"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const inclusions = {
     call: {

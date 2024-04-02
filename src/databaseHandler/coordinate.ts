@@ -1,7 +1,5 @@
 import { NewCoordinate } from "../types/coordinate"
-import { PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewCoordinate) => {
     console.log(data)

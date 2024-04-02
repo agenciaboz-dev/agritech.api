@@ -2,6 +2,7 @@ import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler/talhao"
 import { Notification } from "../class/Notification"
 import user from "../databaseHandler/user"
+import { User } from "@prisma/client"
 
 const newTalhao = async (socket: Socket, data: any, isAdmin: boolean) => {
     console.log("Talhao Recieved:", data)
@@ -43,9 +44,12 @@ const updateTalhao = async (socket: Socket, data: any) => {
 //     socket.emit("talhao:find:success", talhao)
 // }
 
-const listTalhao = async (socket: Socket) => {
-    const talhao = await databaseHandler.list()
-    socket.emit("talhao:list:success", talhao)
+const listTalhao = async (socket: Socket, user: User) => {
+    try {
+        const talhao = await databaseHandler.list(user.isAdmin ? undefined : user.id)
+        socket.emit("talhao:list:success", talhao)
+        console.log(`talhoes: ${talhao.length}`)
+    } catch (error) {}
     // socket.broadcast.emit("talhao:list", talhao)
 }
 

@@ -1,7 +1,5 @@
-import { CalendarHandler } from "../types/calendar"
-import { Calendar, PrismaClient } from "@prisma/client"
-
-const prisma = new PrismaClient()
+import { Calendar } from "@prisma/client"
+import { prisma } from "./prisma"
 
 // const createEmp = async (data: NewEmployeeCalendar) => {
 //   console.log("Iniciando a criação do calendario do Empregado...");

@@ -1,7 +1,8 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
-import { Prisma, PrismaClient } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { NewReport } from "../types/report"
 import { NewMaterial } from "../types/material"
+import { prisma } from "./prisma"
 
 export const report_include = Prisma.validator<Prisma.ReportInclude>()({
     operation: true,
@@ -20,7 +21,6 @@ export const report_include = Prisma.validator<Prisma.ReportInclude>()({
 
 export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof report_include }>
 
-const prisma = new PrismaClient()
 
 const create = async (call_id: number) =>
     await prisma.report.create({

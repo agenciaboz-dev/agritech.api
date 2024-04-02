@@ -1,8 +1,8 @@
 // import { CloseCall, OpenCall } from "../definitions/call";
-import { PrismaClient, Operation } from "@prisma/client";
+import { Operation } from "@prisma/client"
 import { report_include } from "./report"
+import { prisma } from "./prisma"
 
-const prisma = new PrismaClient()
 
 const create = async (data: Operation) => {
     console.log(data)

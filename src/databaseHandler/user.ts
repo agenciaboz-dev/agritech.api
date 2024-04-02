@@ -1,10 +1,8 @@
 import { NewUser } from "../types/user"
-import { PrismaClient } from "@prisma/client"
 import normalize from "../normalize"
 import { saveImage } from "../tools/saveImage"
 import { UserFull, user_include } from "../prisma/types/user"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const inclusions = {
     user: {
@@ -137,7 +135,6 @@ const login = async (data: { login: string; password: string }) => {
     }
 
     return null
-
 }
 
 const pendingList = async () => {

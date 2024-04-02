@@ -141,7 +141,7 @@ export const handleSocket = (socket: Socket) => {
     //   talhao.findTalhao(socket, talhaoId)
     // );
 
-    socket.on("talhao:list", () => talhao.listTalhao(socket))
+    socket.on("talhao:list", (user: User) => talhao.listTalhao(socket, user))
 
     socket.on("talhao:cover", (id: number) => talhao.talhao_cover(socket, id))
 

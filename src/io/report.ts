@@ -5,12 +5,10 @@ import { NewMaterial } from "../types/material"
 import { Notification } from "../class/Notification"
 import pdf_handler from "../tools/pdf_handler"
 import { existsSync, mkdirSync } from "fs"
-import { PrismaClient, Call } from "@prisma/client"
 import { env } from "../env"
 import normalize from "../tools/normalize"
 import { getIoInstance } from "./socket"
-
-const prisma = new PrismaClient()
+import { prisma } from "../databaseHandler/prisma"
 
 const handleMidnight = async (report_id: number) => {
     const report = await databaseHandler.find(report_id)

@@ -1,9 +1,7 @@
 import { NewTreatment } from "../types/treatment"
-import { Treatment } from "@prisma/client"
-import { PrismaClient } from "@prisma/client"
+import { prisma } from "./prisma"
 import { report_include } from "./report"
 
-const prisma = new PrismaClient()
 
 const create = async (data: NewTreatment) => {
     console.log("Initiating Treatment Creation...")

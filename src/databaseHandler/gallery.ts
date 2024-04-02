@@ -1,8 +1,6 @@
 import { NewGallery } from "../types/gallery"
-import { PrismaClient } from "@prisma/client"
 import { saveImage } from "../tools/saveImage"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewGallery) => {
     console.log(data)

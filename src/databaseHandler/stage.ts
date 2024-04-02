@@ -1,10 +1,6 @@
-// import { CloseCall, OpenCall } from "../definitions/call";
-import { Stage, PrismaClient, Report, Call } from "@prisma/client";
-import { NewStage } from "../types/stage";
-import cronLib from "node-cron"; // Renamed import to avoid conflict
+import { NewStage } from "../types/stage"
+import { prisma } from "./prisma"
 import { report_include } from "./report"
-
-const prisma = new PrismaClient()
 
 const create = async (data: NewStage, stage: number) => {
     console.log(data)

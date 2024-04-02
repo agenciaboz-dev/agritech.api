@@ -1,8 +1,6 @@
-import { Stage, PrismaClient, Report, Call } from "@prisma/client"
 import { NewTechReport } from "../types/techReport"
+import { prisma } from "./prisma"
 import { report_include } from "./report"
-
-const prisma = new PrismaClient()
 
 const create = async (data: NewTechReport) => {
     console.log(data)

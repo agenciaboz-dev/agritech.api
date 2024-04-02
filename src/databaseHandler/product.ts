@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client"
 import { NewProduct } from "../types/product"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const create = async (data: NewProduct) => {
     console.log(data)

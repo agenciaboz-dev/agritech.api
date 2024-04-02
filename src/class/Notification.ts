@@ -1,13 +1,11 @@
-import { Prisma, PrismaClient } from "@prisma/client"
-import { User } from "../types/user"
+import { Prisma } from "@prisma/client"
 import { getIoInstance } from "../io/socket"
 import { Socket } from "socket.io"
+import { prisma } from "../databaseHandler/prisma"
 
 export const include = Prisma.validator<Prisma.NotificationInclude>()({ users: true })
 export type NotificationPrisma = Prisma.NotificationGetPayload<{ include: typeof include }>
 export type NewNotification = Omit<NotificationPrisma, "id" | "viewed_by" | "datetime">
-
-const prisma = new PrismaClient()
 
 export class NotificationClass {
     id: number

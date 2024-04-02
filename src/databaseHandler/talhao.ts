@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
 import { NewTalhao } from "../types/talhao"
 import { saveImage } from "../tools/saveImage"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const inclusions_talhao = {
     location: true,
@@ -107,10 +105,20 @@ const update = async (data: NewTalhao) => {
 //     })
 // }
 
-const list = async () => {
+const list = async (id?: number) => {
     const talhoes = await prisma.talhao.findMany({
+        where: {
+            OR: [
+                // produtor
+                { tillage: { producer: { userid: id } } },
+
+                // employee
+                { calls: { some: { kit: { employees: { some: { userid: id } } } } } },
+            ],
+        },
         include: inclusions_talhao,
     })
+
     return talhoes.map((item) => ({
         ...item,
         cover: "",

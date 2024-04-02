@@ -1,8 +1,6 @@
 import { NewKit, ManageKitMembers } from "../types/kit"
-import { Kit, PrismaClient } from "@prisma/client"
 import { saveImage } from "../tools/saveImage"
-
-const prisma = new PrismaClient()
+import { prisma } from "./prisma"
 
 const inclusions = {
     user: {
