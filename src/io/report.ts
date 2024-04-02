@@ -115,6 +115,7 @@ const closeReport = async (reportId: number, socket?: Socket) => {
 
         if (socket) {
             socket.emit("report:closed:success", updated_report)
+
             socket.broadcast.emit("report:closed:success", report)
         } else {
             const io = getIoInstance()
