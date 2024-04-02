@@ -113,6 +113,7 @@ const cancelCall = async (socket: Socket, data: Call) => {
         socket.emit("call:cancel:success", call)
         socket.broadcast.emit("call:cancel", call)
         // socket.emit("report:creation:success", report)
+        console.log(call)
         const employees = call.call.kit?.employees.map((item) => item.user)
         if (employees)
             new Notification({
@@ -131,17 +132,17 @@ const cancelCall = async (socket: Socket, data: Call) => {
 const listCall = async (socket: Socket) => {
     const call = await databaseHandler.list()
     socket.emit("call:list:success", call)
-    socket.broadcast.emit("call:list:all", call)
+    socket.broadcast.emit("call:list:success", call)
 }
 const listCallPending = async (socket: Socket) => {
     const call = await databaseHandler.listPending()
     socket.emit("call:listPending:success", call)
-    socket.broadcast.emit("call:list:pending", call)
+    socket.broadcast.emit("call:listPending:success", call)
 }
 const listCallApproved = async (socket: Socket) => {
     const call = await databaseHandler.listApproved()
     socket.emit("call:listApproved:success", call)
-    socket.broadcast.emit("call:list:approved", call)
+    socket.broadcast.emit("call:listApproved:success", call)
 }
 
 export default {

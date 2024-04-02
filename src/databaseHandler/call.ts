@@ -208,10 +208,6 @@ const approve = async (data: ApproveCall) => {
                 },
             })
 
-            if (existingReport) {
-                throw new Error("A STAGE1 status stage already exists for this call's initial report")
-            }
-
             const updatedCall = await prisma.call.update({
                 where: { id: data.id },
                 data: {
