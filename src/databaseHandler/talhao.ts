@@ -1,6 +1,7 @@
 import { NewTalhao } from "../types/talhao"
 import { saveImage } from "../tools/saveImage"
 import { prisma } from "./prisma"
+import { inclusions_tillage } from "./tillage"
 
 const inclusions_talhao = {
     location: true,
@@ -130,10 +131,10 @@ const list = async (id?: number) => {
     }))
 }
 
-const coverTalhao = async (talhaoId: number) => {
-    const talhao = await prisma.talhao.findUnique({ where: { id: talhaoId } })
+const coverTalhao = async (tillageId: number) => {
+    const tillageWithTalhaos = await prisma.tillage.findFirst({ where: { id: tillageId }, include: inclusions_tillage })
 
-    return talhao
+    return tillageWithTalhaos
 }
 
 export default {

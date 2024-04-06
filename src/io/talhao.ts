@@ -56,11 +56,11 @@ const listTalhao = async (socket: Socket, user: User) => {
 const talhao_cover = async (socket: Socket, tillageId: number) => {
     try {
         const talhao = await databaseHandler.coverTalhao(tillageId)
-        socket.emit("tillage:cover:success", { talhaoId: talhao?.id, cover: talhao?.cover })
+        socket.emit("talhao:cover:success", talhao)
         // socket.broadcast.emit("talhao:cover:success", talhao)
     } catch (error) {
         console.log(error)
-        socket.emit("tillage:coover:failed", error)
+        socket.emit("talhao:cover:failed", error)
     }
 }
 

@@ -2,7 +2,7 @@ import { NewTillage } from "../types/tillage"
 import { saveImage } from "../tools/saveImage"
 import { prisma } from "./prisma"
 
-const inclusions_tillage = {
+export const inclusions_tillage = {
     address: true,
     location: true,
     gallery: { include: { images: true } },
