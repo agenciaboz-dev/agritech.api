@@ -25,7 +25,7 @@ const inclusions = {
                 professional: true,
                 calendars: true,
                 producers: { include: { user: true } },
-                kits: { include: { calls: true } },
+                kits: { include: { calls: { include: { talhao: true } } } },
             },
         },
         address: true,
@@ -113,7 +113,10 @@ const exists = async (data: NewUser) => {
 const login = async (data: { login: string; password: string }) => {
     const user = await prisma.user.findFirst({
         where: {
-            AND: [{ OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }] }, { password: data.password }],
+            AND: [
+                { OR: [{ email: data.login }, { username: data.login }, { cpf: data.login }] },
+                { password: data.password },
+            ],
         },
         include: inclusions.user,
     })
@@ -121,6 +124,20 @@ const login = async (data: { login: string; password: string }) => {
     if (user) {
         return {
             ...user,
+            employee: user.employee
+                ? {
+                      ...user.employee,
+                      kits: user.employee.kits.map((kit) => ({
+                          ...kit,
+                          calls: kit.calls
+                              ? kit.calls.map((call) => ({
+                                    ...call,
+                                    talhao: { ...call.talhao, cover: "" },
+                                }))
+                              : null,
+                      })),
+                  }
+                : null,
             producer: user?.producer
                 ? {
                       ...user?.producer,
@@ -144,6 +161,7 @@ const pendingList = async () => {
     })
     return users.map((user) => ({
         ...user,
+
         producer: {
             ...user.producer,
             tillage: user.producer?.tillage.map((tillage) => ({
@@ -162,6 +180,22 @@ const approvedList = async () => {
     })
     return users.map((user) => ({
         ...user,
+        employee: user.employee
+            ? {
+                  ...user.employee,
+                  kits: user.employee?.kits
+                      ? {
+                            ...user.employee?.kits.map((kit) => ({
+                                ...kit,
+                                calls: kit.calls.map((call) => ({
+                                    ...call,
+                                    talhao: { ...call.talhao, cover: "opinha" },
+                                })),
+                            })),
+                        }
+                      : null,
+              }
+            : null,
         producer: user.producer
             ? {
                   ...user.producer,

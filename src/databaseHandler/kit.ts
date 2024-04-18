@@ -146,13 +146,22 @@ const update = async (data: NewKit) => {
 }
 
 const list = async () => {
-    return await prisma.kit.findMany({
+    const kits = await prisma.kit.findMany({
         include: {
             objects: true,
             employees: true,
             calls: { include: { talhao: true, reports: true } },
         },
     })
+
+    return kits.map((kit) => ({
+        ...kit,
+        calls: {
+            ...kit.calls.map((call) => ({
+                talhao: { ...call.talhao, cover: "" },
+            })),
+        },
+    }))
 }
 
 const toggle = async (id: number) => {

@@ -305,48 +305,6 @@ const list = async () => {
     }))
 }
 
-// // Process each call and update the totalPrice
-// const updatedCalls = await Promise.all(
-//   calls.map(async (call) => {
-//     const findTillage = await prisma.tillage.findUnique({
-//       where: { id: call.talhao?.tillageId || 0 },
-//     });
-//     const tillageHectarePrice = findTillage?.hectarePrice || 0;
-
-//     // Calculate the total areaTrabalhada from all reports
-//     const totalAreaTrabalhada = call.reports.reduce((total, report) => {
-//       return total + (report.areaTrabalhada || 0);
-//     }, 0);
-
-//     // Calculate the desired value for each call
-//     const calculatedValue = tillageHectarePrice * totalAreaTrabalhada;
-
-//     // Update the totalPrice in the database
-//     const updatedCall = await prisma.call.update({
-//       where: { id: call.id },
-//       data: {
-//         totalPrice: calculatedValue,
-//       },
-//       include: {
-//         kit: { include: { employees: true, calls: true, objects: true } },
-//         producer: { include: { user: true } },
-//         user: true,
-//         talhao: true,
-//         reports: {
-//           include: {
-//             operation: true,
-//           },
-//         },
-//       },
-//     });
-
-//     return updatedCall;
-//   })
-// );
-
-//   return call;
-// };
-
 const listPending = async () => {
     return await prisma.call.findMany({
         where: { approved: false },
@@ -367,7 +325,7 @@ const listPending = async () => {
     })
 }
 const listApproved = async (user?: User) => {
-    return await prisma.call.findMany({
+    const calls = await prisma.call.findMany({
         where: { AND: [{ approved: true }, { producer: { userid: user?.id } }] },
         include: {
             kit: {
@@ -403,6 +361,22 @@ const listApproved = async (user?: User) => {
             },
         },
     })
+
+    return calls.map((call) => ({
+        ...call,
+        talhao: {
+            ...call.talhao,
+            cover: "",
+            tillage: { ...call.talhao.tillage, cover: "" },
+        },
+        reports: {
+            ...call.reports,
+            call: call.reports.map((item) => ({
+                ...item,
+                talhao: { ...item.call.talhao, cover: "", tillage: { ...item.call.talhao.tillage, cover: "" } },
+            })),
+        },
+    }))
 }
 
 // const find = async (id: number) => {
