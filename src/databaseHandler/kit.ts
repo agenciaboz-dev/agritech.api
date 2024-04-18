@@ -153,14 +153,15 @@ const list = async () => {
             calls: { include: { talhao: true, reports: true } },
         },
     })
-
+    console.log({ OPIHAAA: kits })
     return kits.map((kit) => ({
         ...kit,
-        calls: {
-            ...kit.calls.map((call) => ({
-                talhao: { ...call.talhao, cover: "" },
-            })),
-        },
+        calls: kit.calls
+            ? kit.calls.map((call) => ({
+                  ...call,
+                  talhao: { ...call.talhao, cover: "" },
+              }))
+            : null,
     }))
 }
 
