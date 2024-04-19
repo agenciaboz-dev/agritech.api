@@ -348,9 +348,9 @@ const listApproved = async (user?: User) => {
             user: true,
             reports: {
                 include: {
-                    call: {
-                        include: { talhao: { include: { tillage: true } }, kit: true },
-                    },
+                    // call: {
+                    //     include: { talhao: { include: { tillage: true } }, kit: true },
+                    // },
 
                     stages: true,
                     operation: true,
@@ -369,13 +369,15 @@ const listApproved = async (user?: User) => {
             cover: "",
             tillage: { ...call.talhao.tillage, cover: "" },
         },
-        reports: {
-            ...call.reports,
-            call: call.reports.map((item) => ({
-                ...item,
-                talhao: { ...item.call.talhao, cover: "", tillage: { ...item.call.talhao.tillage, cover: "" } },
-            })),
-        },
+        reports: call.reports
+            ? call.reports.map((report) => ({
+                  ...report,
+                  //   call: call.reports.map((item) => ({
+                  //       ...item,
+                  //       talhao: { ...item.call.talhao, cover: "", tillage: { ...item.call.talhao.tillage, cover: "" } },
+                  //   })),
+              }))
+            : null,
     }))
 }
 

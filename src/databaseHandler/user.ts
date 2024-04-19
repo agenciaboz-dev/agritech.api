@@ -25,7 +25,9 @@ const inclusions = {
                 professional: true,
                 calendars: true,
                 producers: { include: { user: true } },
-                kits: { include: { calls: { include: { talhao: true } } } },
+                kits: {
+                    include: { calls: { include: { talhao: true, producer: { include: { user: true } }, kit: true } } },
+                },
             },
         },
         address: true,
@@ -184,15 +186,14 @@ const approvedList = async () => {
             ? {
                   ...user.employee,
                   kits: user.employee?.kits
-                      ? {
-                            ...user.employee?.kits.map((kit) => ({
-                                ...kit,
-                                calls: kit.calls.map((call) => ({
-                                    ...call,
-                                    talhao: { ...call.talhao, cover: "opinha" },
-                                })),
+                      ? user.employee?.kits.map((kit) => ({
+                            ...kit,
+
+                            calls: kit.calls.map((call) => ({
+                                ...call,
+                                talhao: { ...call.talhao, cover: "opinha" },
                             })),
-                        }
+                        }))
                       : null,
               }
             : null,
