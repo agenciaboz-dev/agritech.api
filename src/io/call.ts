@@ -130,14 +130,22 @@ const cancelCall = async (socket: Socket, data: Call) => {
 }
 
 const listCall = async (socket: Socket) => {
-    const call = await databaseHandler.list()
-    socket.emit("call:list:success", call)
-    socket.broadcast.emit("call:list:success", call)
+    try {
+        const call = await databaseHandler.list()
+        socket.emit("call:list:success", call)
+        socket.broadcast.emit("call:list:success", call)
+    } catch (error) {
+        console.log(error)
+    }
 }
 const listCallPending = async (socket: Socket) => {
-    const call = await databaseHandler.listPending()
-    socket.emit("call:listPending:success", call)
-    socket.broadcast.emit("call:listPending:success", call)
+    try {
+        const call = await databaseHandler.listPending()
+        socket.emit("call:listPending:success", call)
+        socket.broadcast.emit("call:listPending:success", call)
+    } catch (error) {
+        console.log(error)
+    }
 }
 const listCallApproved = async (socket: Socket, user: User) => {
     try {
