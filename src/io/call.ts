@@ -114,13 +114,13 @@ const cancelCall = async (socket: Socket, data: Call) => {
         socket.broadcast.emit("call:cancel", call)
         // socket.emit("report:creation:success", report)
         console.log(call)
-        const employees = call.call.kit?.employees.map((item) => item.user)
+        const employees = call.kit?.employees.map((item) => item.user)
         if (employees)
             new Notification({
                 action: "cancel",
-                target_id: call.call.id,
+                target_id: call.id,
                 target_key: "call",
-                users: [...employees, call.call.producer.user],
+                users: [...employees, call.producer.user],
             })
     } catch (error) {
         console.log(error)

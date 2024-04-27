@@ -262,6 +262,8 @@ const cancel = async (data: Call) => {
         where: { id: data.id },
         data: {
             status: "CANCELED",
+            kit: undefined,
+            kitId: undefined,
         },
         include: {
             producer: { include: { user: true } },
@@ -276,7 +278,7 @@ const cancel = async (data: Call) => {
     //   },
     // });
     // console.log("Report criado para o chamado:", report);
-    return { call }
+    return call
 }
 
 const list = async () => {
@@ -326,7 +328,7 @@ const listPending = async () => {
 }
 const listApproved = async (user?: User) => {
     const calls = await prisma.call.findMany({
-        where: { AND: [{ approved: true }, { producer: { userid: user?.id } }] },
+        where: { approved: true },
         include: {
             kit: {
                 include: {
