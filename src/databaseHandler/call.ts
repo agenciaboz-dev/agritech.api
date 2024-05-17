@@ -229,7 +229,7 @@ const approve = async (data: ApproveCall) => {
                 console.log(error)
             }
 
-            return { call: updatedCall, report }
+            return { ...updatedCall, report }
         } else {
             throw new Error("Call not found or kit already assigned")
         }

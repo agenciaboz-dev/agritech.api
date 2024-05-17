@@ -212,18 +212,117 @@ const approvedList = async () => {
     }))
 }
 const findById = async (id: number) => {
-    return await prisma.user.findFirst({
+    const user = await prisma.user.findFirst({
         where: { id },
 
         include: inclusions.user,
     })
+    return {
+        ...user,
+        employee: user?.employee
+            ? {
+                  ...user.employee,
+                  kits: user.employee?.kits
+                      ? user.employee?.kits.map((kit) => ({
+                            ...kit,
+
+                            calls: kit.calls.map((call) => ({
+                                ...call,
+                                talhao: { ...call.talhao, cover: "opinha" },
+                            })),
+                        }))
+                      : null,
+              }
+            : null,
+        producer: user?.producer
+            ? {
+                  ...user.producer,
+                  tillage: user.producer
+                      ? user.producer?.tillage.map((tillage) => ({
+                            ...tillage,
+                            cover: "",
+                            talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                        }))
+                      : null,
+              }
+            : null,
+    }
 }
 
-const findByUsername = async (username: string) =>
-    await prisma.user.findFirst({
+const findByProducerId = async (id: number) => {
+    const user = await prisma.user.findFirst({
+        where: { producer: { id } },
+
+        include: inclusions.user,
+    })
+    return {
+        ...user,
+        employee: user?.employee
+            ? {
+                  ...user.employee,
+                  kits: user.employee?.kits
+                      ? user.employee?.kits.map((kit) => ({
+                            ...kit,
+
+                            calls: kit.calls.map((call) => ({
+                                ...call,
+                                talhao: { ...call.talhao, cover: "opinha" },
+                            })),
+                        }))
+                      : null,
+              }
+            : null,
+        producer: user?.producer
+            ? {
+                  ...user.producer,
+                  tillage: user.producer
+                      ? user.producer?.tillage.map((tillage) => ({
+                            ...tillage,
+                            cover: "",
+                            talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                        }))
+                      : null,
+              }
+            : null,
+    }
+}
+
+const findByUsername = async (username: string) => {
+    const user = await prisma.user.findFirst({
         where: { username },
         include: inclusions.user,
     })
+    return {
+        ...user,
+        employee: user?.employee
+            ? {
+                  ...user.employee,
+                  kits: user.employee?.kits
+                      ? user.employee?.kits.map((kit) => ({
+                            ...kit,
+
+                            calls: kit.calls.map((call) => ({
+                                ...call,
+                                talhao: { ...call.talhao, cover: "opinha" },
+                            })),
+                        }))
+                      : null,
+              }
+            : null,
+        producer: user?.producer
+            ? {
+                  ...user.producer,
+                  tillage: user.producer
+                      ? user.producer?.tillage.map((tillage) => ({
+                            ...tillage,
+                            cover: "",
+                            talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                        }))
+                      : null,
+              }
+            : null,
+    }
+}
 
 const newUser = async (data: NewUser) => {
     console.log(data)
@@ -504,4 +603,5 @@ export default {
     toggleAdmin,
     toggleManager,
     remove,
+    findByProducerId,
 }
