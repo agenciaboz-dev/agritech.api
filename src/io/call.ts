@@ -1,11 +1,12 @@
 import { Socket } from "socket.io"
 import databaseHandler from "../databaseHandler/call"
+import report from "../databaseHandler/report"
 import tillage from "../databaseHandler/tillage"
 import { Call, User } from "@prisma/client"
-import { ApproveCall, OpenCall } from "../types/call"
+import { AdminCall, ApproveCall, OpenCall } from "../types/call"
 import { Notification } from "../class/Notification"
 
-const newAdminCall = async (socket: Socket, data: any) => {
+const newAdminCall = async (socket: Socket, data: AdminCall) => {
     try {
         const call = await databaseHandler.adminCreate(data)
         socket.emit("adminCall:creation:success", call)
@@ -25,7 +26,7 @@ const newAdminCall = async (socket: Socket, data: any) => {
     }
 }
 
-const newCall = async (socket: Socket, data: any) => {
+const newCall = async (socket: Socket, data: OpenCall) => {
     console.log(data)
 
     try {
@@ -65,17 +66,18 @@ const approveCall = async (socket: Socket, data: ApproveCall) => {
 
     try {
         const call = await databaseHandler.approve(data)
+
         socket.emit("call:approve:success", call)
         socket.emit("report:creation:success", call.report)
         socket.broadcast.emit("call:approved", call)
 
-        const employees = call.call.kit?.employees.map((item) => item.user)
+        const employees = call.kit?.employees.map((item) => item.user)
         if (employees)
             new Notification({
                 action: "approve",
-                target_id: call.call.id,
+                target_id: call.id,
                 target_key: "call",
-                users: [...employees, call.call.producer.user],
+                users: [...employees, call.producer.user],
             })
     } catch (error) {
         console.log(error)
