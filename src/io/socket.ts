@@ -48,6 +48,8 @@ import { NewGallery } from "../types/gallery"
 import { UserFull } from "../prisma/types/user"
 import { NotificationClass as Notification } from "../class/Notification"
 import { NewStage } from "../types/stage"
+import { NewTillage } from "../types/tillage"
+import { AdminCall, OpenCall } from "../types/call"
 
 let io: SocketIoServer | null = null
 
@@ -126,7 +128,9 @@ export const handleSocket = (socket: Socket) => {
     socket.on("user:delete", (user_id: number) => user.remove(socket, user_id))
 
     // TILLAGE OPS
-    socket.on("tillage:create", (newTillage: Tillage, isAdmin: boolean) => tillage.newTillage(socket, newTillage, isAdmin))
+    socket.on("tillage:create", (newTillage: NewTillage, isAdmin: boolean) =>
+        tillage.newTillage(socket, newTillage, isAdmin)
+    )
     socket.on("tillage:update", (updateTillage: Tillage) => tillage.updateTillage(socket, updateTillage))
 
     socket.on("tillage:list", () => tillage.listTillage(socket))
@@ -201,9 +205,9 @@ export const handleSocket = (socket: Socket) => {
     })
 
     // CALL OPS
-    socket.on("admin:call:create", (newCall: Call) => call.newAdminCall(socket, newCall))
+    socket.on("admin:call:create", (newCall: AdminCall) => call.newAdminCall(socket, newCall))
 
-    socket.on("call:create", (newCall: Call) => call.newCall(socket, newCall))
+    socket.on("call:create", (newCall: OpenCall) => call.newCall(socket, newCall))
     socket.on("call:update", (updateCall: Call) => call.updateCall(socket, updateCall))
     socket.on("call:approve", (data: any) => call.approveCall(socket, data))
     socket.on("call:list", () => call.listCall(socket))
