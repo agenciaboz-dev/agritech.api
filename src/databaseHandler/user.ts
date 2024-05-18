@@ -21,6 +21,7 @@ const inclusions = {
         },
         employee: {
             include: {
+                user: true,
                 bank: true,
                 professional: true,
                 calendars: true,

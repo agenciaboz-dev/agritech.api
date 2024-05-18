@@ -280,7 +280,31 @@ const cancel = async (data: Call) => {
     // console.log("Report criado para o chamado:", report);
     return call
 }
-
+const find = async (id: number) => {
+    const call = await prisma.call.findUnique({
+        where: { id },
+        include: {
+            kit: { include: { employees: true, calls: true, objects: true } },
+            producer: { include: { user: true } },
+            user: true,
+            talhao: { include: { tillage: { include: { address: true } } } },
+            reports: {
+                include: {
+                    stages: true,
+                    call: true,
+                    material: true,
+                    operation: true,
+                    treatment: true,
+                    techReport: true,
+                },
+            },
+        },
+    })
+    return {
+        ...call,
+        talhao: { ...call?.talhao, cover: "", tillage: { ...call?.talhao.tillage, cover: "" } },
+    }
+}
 const list = async () => {
     const calls = await prisma.call.findMany({
         include: {
@@ -395,6 +419,7 @@ export default {
     update,
     approve,
     close,
+    find,
     cancel,
     list,
     listPending,

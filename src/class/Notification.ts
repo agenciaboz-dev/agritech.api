@@ -36,18 +36,48 @@ export class NotificationClass {
 
     static async getData(id: number, key: NotificationKeyType) {
         const options = {
-            employee: async (id: number) => (await databaseHandler.user.findById(id))?.employee,
-            report: async (id: number) => await databaseHandler.report.find(id),
-            call: async (id: number) => (await databaseHandler.call.listApproved()).find((item) => item.id == id),
-            talhao: async (id: number) => (await databaseHandler.talhao.list()).find((item) => item.id == id),
-            kit: async (id: number) => (await databaseHandler.kit.list()).find((item) => item.id == id),
-            tillage: async (id: number) => (await databaseHandler.tillage.list()).find((item) => item.id == id),
-            admin: async (id: number) => await databaseHandler.user.findById(id),
-            manager: async (id: number) => await databaseHandler.user.findById(id),
+            employee: async (id: number) => {
+                const result = await databaseHandler.user.findById(id)
+                return result?.employee
+            },
+            report: async (id: number) => {
+                const result = await databaseHandler.report.find(id)
+                return result
+            },
+            call: async (id: number) => {
+                console.log("Buscando dados de call com id:", id)
+                const result = await databaseHandler.call.find(id)
+                console.log("Resultado call:", result)
+                return result
+            },
+            talhao: async (id: number) => {
+                const result = await databaseHandler.talhao.find(id)
+                return result
+            },
+            kit: async (id: number) => {
+                const result = (await databaseHandler.kit.list()).find((item) => item.id == id)
+                return result
+            },
+            tillage: async (id: number) => {
+                const result = (await databaseHandler.tillage.list()).find((item) => item.id == id)
+                return result
+            },
+            admin: async (id: number) => {
+                const result = await databaseHandler.user.findById(id)
+                return result
+            },
+            manager: async (id: number) => {
+                const result = await databaseHandler.user.findById(id)
+                console.log("Resultado manager:", result)
+                return result
+            },
         }
 
         const getDataOption = options[key]
         const data = await getDataOption(id)
+        if (!data) {
+            console.log(`Dados retornados como undefined para key: ${key}, id: ${id}`)
+        }
         return data
     }
 
@@ -87,20 +117,33 @@ export class NotificationClass {
         const notification = await NotificationClass.load(id)
         if (notification.viewed_by.includes(user_id)) throw "notificação já vista por esse usuário"
         notification.viewed_by.push(user_id)
-        const updated = await prisma.notification.update({ where: { id }, data: { viewed_by: notification.viewed_by.toString() } })
+        const updated = await prisma.notification.update({
+            where: { id },
+            data: { viewed_by: notification.viewed_by.toString() },
+        })
         socket.emit("notification:viewed")
     }
 
     static async list(socket: Socket, user_id: number) {
-        const notifications = await Promise.all(
-            (
-                await prisma.notification.findMany({ where: { users: { some: { id: user_id } } }, include })
-            ).map(async (item) => {
-                const data = await NotificationClass.getData(item.id, item.target_key as NotificationKeyType)
-                return new NotificationClass(item, data)
+        try {
+            const notificationsFromDb = await prisma.notification.findMany({
+                where: { users: { some: { id: user_id } } },
+                include,
             })
-        )
-        socket.emit("notification:list", notifications)
+
+            const notifications = await Promise.all(
+                notificationsFromDb.map(async (item) => {
+                    console.log("Dentro do map - Antes de NotificationClass.getData", item.id)
+                    const data = await NotificationClass.getData(item.target_id, item.target_key as NotificationKeyType)
+                    console.log("Dentro do map - Depois de NotificationClass.getData", data)
+                    return new NotificationClass(item, data)
+                })
+            )
+
+            socket.emit("notification:list", notifications)
+        } catch (error) {
+            console.error("Erro na função list:", error)
+        }
     }
 }
 

@@ -99,12 +99,21 @@ const update = async (data: NewTalhao) => {
     return { talhao }
 }
 
-// const find = async (id: number) => {
-//     return await prisma.talhao.findUnique({
-//         where: { id },
-//         include: inclusions_talhao,
-//     })
-// }
+const find = async (id: number) => {
+    const talhao = await prisma.talhao.findUnique({
+        where: { id },
+        include: inclusions_talhao,
+    })
+    return {
+        ...talhao,
+        cover: "",
+        tillage: { ...talhao?.tillage, cover: "" },
+        calls: talhao?.calls.map((call) => ({
+            ...call,
+            talhao: { ...call.talhao, cover: "" },
+        })),
+    }
+}
 
 const list = async (id?: number) => {
     const talhoes = await prisma.talhao.findMany({
@@ -140,7 +149,7 @@ const coverTalhao = async (tillageId: number) => {
 export default {
     create,
     update,
-    // find,
+    find,
     list,
     coverTalhao,
 }
