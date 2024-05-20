@@ -45,7 +45,7 @@ export class NotificationClass {
                 return result
             },
             call: async (id: number) => {
-                console.log("Buscando dados de call com id:", id)
+                // console.log("Buscando dados de call com id:", id)
                 const result = await databaseHandler.call.find(id)
                 console.log("Resultado call:", result)
                 return result
@@ -133,9 +133,9 @@ export class NotificationClass {
 
             const notifications = await Promise.all(
                 notificationsFromDb.map(async (item) => {
-                    console.log("Dentro do map - Antes de NotificationClass.getData", item.id)
+                    // console.log("Dentro do map - Antes de NotificationClass.getData", item.id)
                     const data = await NotificationClass.getData(item.target_id, item.target_key as NotificationKeyType)
-                    console.log("Dentro do map - Depois de NotificationClass.getData", data)
+                    // console.log("Dentro do map - Depois de NotificationClass.getData", data)
                     return new NotificationClass(item, data)
                 })
             )

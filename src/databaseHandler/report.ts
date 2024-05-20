@@ -21,7 +21,6 @@ export const report_include = Prisma.validator<Prisma.ReportInclude>()({
 
 export type ReportClosingType = Prisma.ReportGetPayload<{ include: typeof report_include }>
 
-
 const create = async (call_id: number) =>
     await prisma.report.create({
         data: {
@@ -145,10 +144,20 @@ const close = async (reportId: number) => {
 // })
 
 const find = async (id: number) => {
-    return await prisma.report.findUnique({
+    const report = await prisma.report.findUnique({
         where: { id },
         include: report_include,
     })
+
+    return report
+        ? {
+              ...report,
+              call: {
+                  ...report?.call,
+                  talhao: { ...report?.call.talhao, cover: "", tillage: { ...report?.call.talhao.tillage, cover: "" } },
+              },
+          }
+        : null
 }
 
 const list = async () => {

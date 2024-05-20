@@ -266,19 +266,26 @@ const cancel = async (data: Call) => {
             kitId: undefined,
         },
         include: {
+            kit: { include: { employees: { include: { user: true } }, calls: true, objects: true } },
             producer: { include: { user: true } },
-            kit: { include: { employees: { include: { user: true } } } },
+            user: true,
+            talhao: { include: { tillage: { include: { address: true } } } },
+            reports: {
+                include: {
+                    stages: true,
+                    call: true,
+                    material: true,
+                    operation: true,
+                    treatment: true,
+                    techReport: true,
+                },
+            },
         },
     })
-    console.log({ call })
-
-    // const report = await prisma.report.create({
-    //   data: {
-    //     callId: call.id,
-    //   },
-    // });
-    // console.log("Report criado para o chamado:", report);
-    return call
+    return {
+        ...call,
+        talhao: { ...call?.talhao, cover: "", tillage: { ...call?.talhao.tillage, cover: "" } },
+    }
 }
 const find = async (id: number) => {
     const call = await prisma.call.findUnique({
