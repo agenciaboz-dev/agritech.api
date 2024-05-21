@@ -38,37 +38,51 @@ export class NotificationClass {
         const options = {
             employee: async (id: number) => {
                 const result = await databaseHandler.user.findById(id)
+                console.log(1)
                 return result?.employee
             },
             report: async (id: number) => {
                 const result = await databaseHandler.report.find(id)
+                console.log(2)
+
                 return result
             },
             call: async (id: number) => {
                 // console.log("Buscando dados de call com id:", id)
                 const result = await databaseHandler.call.find(id)
-                console.log("Resultado call:", result)
+                console.log(3)
+                // console.log("Resultado call:", result)
                 return result
             },
             talhao: async (id: number) => {
                 const result = await databaseHandler.talhao.find(id)
+                console.log(4)
+
                 return result
             },
             kit: async (id: number) => {
                 const result = (await databaseHandler.kit.list()).find((item) => item.id == id)
+                console.log(5)
+
                 return result
             },
             tillage: async (id: number) => {
                 const result = (await databaseHandler.tillage.list()).find((item) => item.id == id)
+                console.log(6)
+
                 return result
             },
             admin: async (id: number) => {
                 const result = await databaseHandler.user.findById(id)
+                console.log(7)
+
                 return result
             },
             manager: async (id: number) => {
                 const result = await databaseHandler.user.findById(id)
-                console.log("Resultado manager:", result)
+                console.log(8)
+
+                // console.log("Resultado manager:", result)
                 return result
             },
         }
@@ -140,6 +154,7 @@ export class NotificationClass {
                 })
             )
 
+            console.log(notifications)
             socket.emit("notification:list", notifications)
         } catch (error) {
             console.error("Erro na função list:", error)

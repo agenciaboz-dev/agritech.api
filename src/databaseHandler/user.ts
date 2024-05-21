@@ -256,36 +256,38 @@ const findByProducerId = async (id: number) => {
 
         include: inclusions.user,
     })
-    return {
-        ...user,
-        employee: user?.employee
-            ? {
-                  ...user.employee,
-                  kits: user.employee?.kits
-                      ? user.employee?.kits.map((kit) => ({
-                            ...kit,
+    return user
+        ? {
+              ...user,
+              employee: user?.employee
+                  ? {
+                        ...user.employee,
+                        kits: user.employee?.kits
+                            ? user.employee?.kits.map((kit) => ({
+                                  ...kit,
 
-                            calls: kit.calls.map((call) => ({
-                                ...call,
-                                talhao: { ...call.talhao, cover: "opinha" },
-                            })),
-                        }))
-                      : null,
-              }
-            : null,
-        producer: user?.producer
-            ? {
-                  ...user.producer,
-                  tillage: user.producer
-                      ? user.producer?.tillage.map((tillage) => ({
-                            ...tillage,
-                            cover: "",
-                            talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
-                        }))
-                      : null,
-              }
-            : null,
-    }
+                                  calls: kit.calls.map((call) => ({
+                                      ...call,
+                                      talhao: { ...call.talhao, cover: "opinha" },
+                                  })),
+                              }))
+                            : null,
+                    }
+                  : null,
+              producer: user?.producer
+                  ? {
+                        ...user.producer,
+                        tillage: user.producer
+                            ? user.producer?.tillage.map((tillage) => ({
+                                  ...tillage,
+                                  cover: "",
+                                  talhao: tillage.talhao.map((talhao) => ({ ...talhao, cover: "" })),
+                              }))
+                            : null,
+                    }
+                  : null,
+          }
+        : undefined
 }
 
 const findByUsername = async (username: string) => {
