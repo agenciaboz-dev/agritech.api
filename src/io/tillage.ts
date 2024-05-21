@@ -15,6 +15,7 @@ const newTillage = async (socket: Socket, data: NewTillage, isAdmin: boolean) =>
         socket.broadcast.emit("tillage:creation:success", tillage)
         const owner = await user.findByProducerId(tillage.tillage.producerId)
         socket.emit("user:update:success", owner)
+        console.log({ OWNER: owner })
         socket.broadcast.emit("user:update:success", owner)
         if (isAdmin && owner) {
             new Notification({ action: "new", target_id: tillage.tillage.id, target_key: "tillage", users: [owner] })

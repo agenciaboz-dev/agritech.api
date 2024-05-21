@@ -50,6 +50,7 @@ import { NotificationClass as Notification } from "../class/Notification"
 import { NewStage } from "../types/stage"
 import { NewTillage } from "../types/tillage"
 import { AdminCall, OpenCall } from "../types/call"
+import { NewTalhao } from "../types/talhao"
 
 let io: SocketIoServer | null = null
 
@@ -137,7 +138,7 @@ export const handleSocket = (socket: Socket) => {
     socket.on("tillage:cover", (id: number) => tillage.tillage_cover(socket, id))
 
     // TALHAO OPS
-    socket.on("talhao:create", (newTalhao: Talhao, isAdmin: boolean) => talhao.newTalhao(socket, newTalhao, isAdmin))
+    socket.on("talhao:create", (newTalhao: NewTalhao, isAdmin: boolean) => talhao.newTalhao(socket, newTalhao, isAdmin))
 
     socket.on("talhao:update", (updateTalhao: Talhao) => talhao.updateTalhao(socket, updateTalhao))
 

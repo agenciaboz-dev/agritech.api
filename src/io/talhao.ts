@@ -3,13 +3,19 @@ import databaseHandler from "../databaseHandler/talhao"
 import { Notification } from "../class/Notification"
 import user from "../databaseHandler/user"
 import { User } from "@prisma/client"
+import { NewTalhao } from "../types/talhao"
+import tillage from "../databaseHandler/tillage"
 
-const newTalhao = async (socket: Socket, data: any, isAdmin: boolean) => {
+const newTalhao = async (socket: Socket, data: NewTalhao, isAdmin: boolean) => {
     console.log("Talhao Recieved:", data)
 
     try {
         const talhao = await databaseHandler.create(data)
         socket.emit("talhao:create:success", talhao)
+        const find_tillage = await tillage.find(data.tillageId)
+        const owner = find_tillage.producerId && (await user.findByProducerId(find_tillage.producerId))
+        socket.emit("user:update:success", owner)
+        socket.broadcast.emit("user:update:success", owner)
         // socket.broadcast.emit("talhao:create:success", talhao)
 
         if (isAdmin && talhao) {
@@ -32,6 +38,7 @@ const updateTalhao = async (socket: Socket, data: any) => {
     try {
         const talhao = await databaseHandler.update(data)
         socket.emit("talhao:update:success", talhao)
+
         // socket.broadcast.emit("talhao:update:success", talhao)
     } catch (error) {
         console.log(error)

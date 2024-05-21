@@ -180,9 +180,27 @@ const coverTillage = async (tillageId: number) => {
     return tillage
 }
 
+const find = async (id: number) => {
+    const tillage = await prisma.tillage.findUnique({
+        where: { id },
+        include: inclusions_tillage,
+    })
+    return {
+        ...tillage,
+        cover: "",
+        talhao: tillage?.talhao
+            ? {
+                  ...tillage.talhao,
+                  cover: "",
+              }
+            : null,
+    }
+}
+
 export default {
     create,
     update,
     list,
     coverTillage,
+    find,
 }
