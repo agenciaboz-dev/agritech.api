@@ -176,6 +176,8 @@ export const handleSocket = (socket: Socket) => {
 
     // KIT OPS
     socket.on("kit:create", (newKit: Kit) => kit.newKit(socket, newKit))
+    // KIT OPS
+    socket.on("kit:find", (id: number) => kit.findKit(socket, id))
 
     socket.on("kit:update", (updateKit: Kit) => kit.updateKit(socket, updateKit))
 

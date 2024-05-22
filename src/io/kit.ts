@@ -50,6 +50,15 @@ const listKit = async (socket: Socket) => {
         console.log(error)
     }
 }
+const findKit = async (socket: Socket, id: number) => {
+    try {
+        const kit = await databaseHandler.find(id)
+        socket.emit("kit:find:success", kit)
+        console.log({ kitEncontrado: kit })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
 const activateKit = async (socket: Socket, data: Kit) => {
     console.log(data)
@@ -108,4 +117,5 @@ export default {
     activateKit,
     addEmployeeKit,
     removeEmployeeKit,
+    findKit,
 }

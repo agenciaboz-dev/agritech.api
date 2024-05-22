@@ -165,6 +165,27 @@ const list = async () => {
     }))
 }
 
+const find = async (id: number) => {
+    const kit = await prisma.kit.findFirst({
+        where: { id: id },
+
+        include: {
+            objects: true,
+            employees: true,
+            calls: { include: { talhao: true, reports: true, producer: { include: { user: true } }, kit: true } },
+        },
+    })
+    return {
+        ...kit,
+        calls: kit?.calls
+            ? kit.calls.map((call) => ({
+                  ...call,
+                  talhao: { ...call.talhao, cover: "" },
+              }))
+            : null,
+    }
+}
+
 const toggle = async (id: number) => {
     const kit = await prisma.kit.findUnique({
         where: { id },
@@ -218,6 +239,7 @@ export default {
     create,
     update,
     list,
+    find,
     toggle,
     add,
     remove,
